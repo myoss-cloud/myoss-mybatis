@@ -93,6 +93,7 @@ public class MybatisProperties {
      * 优先级：实体类上的 {@link com.github.myoss.phoenix.mybatis.table.annotation.Table}
      * 注解 -> 全局配置 <code>tableConfig</code>
      */
+    @NestedConfigurationProperty
     private TableConfig                          tableConfig;
 
     public Resource[] resolveMapperLocations() {
