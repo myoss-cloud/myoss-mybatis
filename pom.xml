@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>phoenix-mybatis</artifactId>
-    <version>1.0.0</version>
+    <version>1.0.1</version>
     <packaging>jar</packaging>
 
     <name>phoenix-mybatis</name>
@@ -51,7 +51,7 @@
         <dependency>
             <groupId>com.github.myoss</groupId>
             <artifactId>phoenix-core</artifactId>
-            <version>1.0.2</version>
+            <version>1.0.3</version>
         </dependency>
 
         <!-- mybatis start -->
@@ -70,5 +70,18 @@
             <artifactId>spring-jdbc</artifactId>
         </dependency>
         <!-- mybatis end -->
+
+        <!-- test start -->
+        <dependency>
+            <groupId>com.h2database</groupId>
+            <artifactId>h2</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.zaxxer</groupId>
+            <artifactId>HikariCP</artifactId>
+            <scope>test</scope>
+        </dependency>
+        <!-- test end -->
     </dependencies>
 </project>
