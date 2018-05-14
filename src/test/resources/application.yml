@@ -1,0 +1,15 @@
+spring:
+  datasource:
+    # 使用h2内存数据库进行集成单元测试
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:mem:db_test;DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM 'classpath:scripts/h2/1-init-schema.sql'
+    username: sa
+    password: sa
+    hikari:
+      data-source-properties:
+        # 设置可以获取remarks信息
+        remarks: true
+        # 设置可以获取tables remarks信息
+        useInformationSchema: true
+
+logging.level.com.github.myoss: DEBUG
