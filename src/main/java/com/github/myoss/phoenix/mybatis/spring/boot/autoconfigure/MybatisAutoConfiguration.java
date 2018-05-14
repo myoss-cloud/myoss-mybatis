@@ -69,6 +69,7 @@ import com.github.myoss.phoenix.mybatis.plugin.ParameterHandlerCustomizer;
 import com.github.myoss.phoenix.mybatis.plugin.ParameterHandlerInterceptor;
 import com.github.myoss.phoenix.mybatis.spring.mapper.ClassPathMapperScanner;
 import com.github.myoss.phoenix.mybatis.table.Sequence;
+import com.github.myoss.phoenix.mybatis.table.TableConfig;
 import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
 
 /**
@@ -96,6 +97,10 @@ public class MybatisAutoConfiguration {
                                     ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
                                     ApplicationContext applicationContext) {
         this.properties = properties;
+        if (this.properties.getTableConfig() == null) {
+            log.debug("MybatisProperties.tableConfig not config, initialize default");
+            this.properties.setTableConfig(new TableConfig());
+        }
         this.interceptors = interceptorsProvider.getIfAvailable();
         this.resourceLoader = resourceLoader;
         this.databaseIdProvider = databaseIdProvider.getIfAvailable();

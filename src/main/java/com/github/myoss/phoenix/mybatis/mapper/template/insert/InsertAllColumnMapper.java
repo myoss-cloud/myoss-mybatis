@@ -28,14 +28,14 @@ import com.github.myoss.phoenix.mybatis.mapper.template.insert.impl.InsertMapper
  * @author Jerry.Chen 2018年4月29日 下午4:39:55
  */
 @RegisterMapper
-public interface InsertSelectiveMapper<T> {
+public interface InsertAllColumnMapper<T> {
     /**
-     * 创建新的记录，字段的值为 null 不会插入（会使用数据库字段的默认值）
+     * 创建新的记录，字段的值为 null 也会插入（不会使用数据库字段的默认值）
      *
      * @param record 待保存的实体对象
      * @return SQL执行成功之后，影响的行数
-     * @see InsertMapperTemplate#insertSelective
+     * @see InsertMapperTemplate#insertAllColumn
      */
     @InsertProvider(type = InsertMapperTemplate.class, method = "dynamicSql")
-    int insertSelective(T record);
+    int insertAllColumn(T record);
 }

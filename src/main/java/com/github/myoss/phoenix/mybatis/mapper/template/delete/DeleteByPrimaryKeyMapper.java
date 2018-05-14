@@ -40,4 +40,14 @@ public interface DeleteByPrimaryKeyMapper<T> {
      */
     @DeleteProvider(type = DeleteMapperTemplate.class, method = "dynamicSql")
     int deleteByPrimaryKey(Serializable id);
+
+    /**
+     * 根据主键id删除记录
+     *
+     * @param condition 主键id
+     * @return SQL执行成功之后，影响的行数
+     * @see DeleteMapperTemplate#deleteWithPrimaryKey
+     */
+    @DeleteProvider(type = DeleteMapperTemplate.class, method = "dynamicSql")
+    int deleteWithPrimaryKey(T condition);
 }

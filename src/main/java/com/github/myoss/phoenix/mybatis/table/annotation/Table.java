@@ -46,38 +46,42 @@ import com.github.myoss.phoenix.core.utils.NameStyle;
 @Documented
 public @interface Table {
     /**
-     * 数据库表名
      * <p>
      * (Optional) The name of the table.
      * <p>
      * Defaults to the entity name.
+     *
+     * @return 数据库表名
      */
     String name() default "";
 
     /**
-     * 数据库中的catalog，如果设置了此属性，将在表名前面加上catalog指定的值
      * <p>
      * (Optional) The catalog of the table.
      * <p>
      * Defaults to the default catalog.
+     *
+     * @return 数据库中的catalog，如果设置了此属性，将在表名前面加上catalog指定的值
      */
     String catalog() default "";
 
     /**
-     * 数据库中的schema
      * <p>
      * (Optional) The schema of the table.
      * <p>
      * Defaults to the default schema for user.
+     *
+     * @return 数据库中的schema
      */
     String schema() default "";
 
     /**
-     * 数据库表名、数据库字段命名风格
      * <p>
      * table name or column name style
      * <p>
      * Defaults to snake_case.
+     *
+     * @return 数据库表名、数据库字段命名风格
      */
     NameStyle nameStyle() default NameStyle.SNAKE_CASE;
 }

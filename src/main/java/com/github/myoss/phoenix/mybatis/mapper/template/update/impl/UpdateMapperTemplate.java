@@ -25,8 +25,8 @@ import org.apache.ibatis.session.Configuration;
 
 import com.github.myoss.phoenix.mybatis.mapper.template.AbstractMapperTemplate;
 import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateByConditionMapper;
+import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateByPrimaryKeyAllColumnMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateByPrimaryKeyMapper;
-import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateByPrimaryKeySelectiveMapper;
 import com.github.myoss.phoenix.mybatis.table.TableColumnInfo;
 import com.github.myoss.phoenix.mybatis.table.TableInfo;
 import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
@@ -58,9 +58,9 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
-     * @see UpdateByPrimaryKeySelectiveMapper#updateByPrimaryKeySelective(Object)
+     * @see UpdateByPrimaryKeyMapper#updateByPrimaryKey(Object)
      */
-    public String updateByPrimaryKeySelective(TableInfo tableInfo, MappedStatement ms) {
+    public String updateByPrimaryKey(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         Configuration configuration = ms.getConfiguration();
 
@@ -110,9 +110,9 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
-     * @see UpdateByPrimaryKeyMapper#updateByPrimaryKey(Object)
+     * @see UpdateByPrimaryKeyAllColumnMapper#updateByPrimaryKeyAllColumn(Object)
      */
-    public String updateByPrimaryKey(TableInfo tableInfo, MappedStatement ms) {
+    public String updateByPrimaryKeyAllColumn(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         Configuration configuration = ms.getConfiguration();
 

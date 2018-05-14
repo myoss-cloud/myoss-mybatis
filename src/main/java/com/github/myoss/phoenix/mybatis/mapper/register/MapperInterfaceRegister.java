@@ -23,6 +23,7 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Set;
 import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
@@ -78,6 +79,7 @@ public class MapperInterfaceRegister {
     private Set<Class<? extends Annotation>>              sqlProviderAnnotationTypes;
 
     public MapperInterfaceRegister(TableConfig tableConfig) {
+        Objects.requireNonNull(tableConfig, "tableConfig is null");
         this.tableConfig = tableConfig;
         this.sqlProviderAnnotationTypes = new HashSet<>();
         this.sqlProviderAnnotationTypes.add(SelectProvider.class);

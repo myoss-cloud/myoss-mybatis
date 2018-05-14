@@ -51,6 +51,7 @@ import org.springframework.util.ClassUtils;
 import com.github.myoss.phoenix.core.exception.BizRuntimeException;
 import com.github.myoss.phoenix.core.utils.NameStyle;
 import com.github.myoss.phoenix.mybatis.table.annotation.Column;
+import com.github.myoss.phoenix.mybatis.table.annotation.FillRule;
 import com.github.myoss.phoenix.mybatis.table.annotation.GenerationType;
 import com.github.myoss.phoenix.mybatis.table.annotation.SelectKey;
 import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator;
@@ -138,7 +139,9 @@ public class TableMetaObject {
             columns.add(columnInfo);
             columnInfo.setTableInfo(tableInfo);
             columnInfo.setProperty(name);
-            columnInfo.setJavaType(propertyDescriptorMap.get(name).getPropertyType());
+            PropertyDescriptor propertyDescriptor = propertyDescriptorMap.get(name);
+            columnInfo.setJavaType(propertyDescriptor.getPropertyType());
+            columnInfo.setPropertyDescriptor(propertyDescriptor);
             Column column = field.getAnnotation(Column.class);
             if (column != null) {
                 if (StringUtils.isNotBlank(column.name())) {
@@ -152,6 +155,10 @@ public class TableMetaObject {
                 }
                 columnInfo.setInsertable(column.insertable());
                 columnInfo.setUpdatable(column.updatable());
+                columnInfo.setSelectable(column.selectable());
+                Map<FillRule, String> fillRules = Stream.of(column.fillRule()).filter(s -> !FillRule.NONE.equals(s))
+                        .collect(Collectors.toMap(Function.identity(), FillRule::getValue));
+                columnInfo.setFillRules(fillRules);
             }
             if (StringUtils.isBlank(columnInfo.getColumn())) {
                 columnInfo.setColumn(columnNameStyle.transform(name));

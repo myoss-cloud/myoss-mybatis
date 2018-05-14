@@ -39,13 +39,14 @@ import org.apache.ibatis.session.Configuration;
 
 import com.github.myoss.phoenix.mybatis.executor.keygen.SequenceKeyGenerator;
 import com.github.myoss.phoenix.mybatis.mapper.template.AbstractMapperTemplate;
+import com.github.myoss.phoenix.mybatis.mapper.template.insert.InsertAllColumnMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.insert.InsertBatchMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.insert.InsertMapper;
-import com.github.myoss.phoenix.mybatis.mapper.template.insert.InsertSelectiveMapper;
 import com.github.myoss.phoenix.mybatis.table.TableColumnInfo;
 import com.github.myoss.phoenix.mybatis.table.TableInfo;
 import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
 import com.github.myoss.phoenix.mybatis.table.TableSequence;
+import com.github.myoss.phoenix.mybatis.table.annotation.FillRule;
 import com.github.myoss.phoenix.mybatis.table.annotation.GenerationType;
 import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator.Order;
 
@@ -138,9 +139,9 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
-     * @see InsertMapper#insert(Object)
+     * @see InsertAllColumnMapper#insertAllColumn(Object)
      */
-    public String insert(TableInfo tableInfo, MappedStatement ms) {
+    public String insertAllColumn(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         String id = ms.getId();
         Configuration configuration = ms.getConfiguration();
@@ -198,9 +199,9 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
-     * @see InsertSelectiveMapper#insertSelective(Object)
+     * @see InsertMapper#insert(Object)
      */
-    public String insertSelective(TableInfo tableInfo, MappedStatement ms) {
+    public String insert(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         String id = ms.getId();
         Configuration configuration = ms.getConfiguration();
@@ -218,17 +219,27 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
             if (!columnInfo.isInsertable() || columnInfo.isAutoIncrement()) {
                 continue;
             }
-            builder.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
+            // 字段自动填充的时候，不加 if 表达式判断
+            boolean fillInsert = columnInfo.haveFillRule(FillRule.INSERT);
+            if (!fillInsert) {
+                builder.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
+            }
             builder.append("    `").append(columnInfo.getColumn()).append("`,\n");
-            builder.append("  </if>\n");
+            if (!fillInsert) {
+                builder.append("  </if>\n");
+            }
 
-            values.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
+            if (!fillInsert) {
+                values.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
+            }
             values.append("    #{").append(columnInfo.getProperty());
             if (columnInfo.getJdbcType() != null) {
                 values.append(",jdbcType=BIGINT");
             }
             values.append("},\n");
-            values.append("  </if>\n");
+            if (!fillInsert) {
+                values.append("  </if>\n");
+            }
         }
         builder.append("</trim>\n").append(values).append("</trim>\n");
         String sql = builder.toString();

@@ -25,5 +25,6 @@ import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
  * @author Jerry.Chen 2018年4月29日 下午5:14:41
  */
 @RegisterMapper
-public interface RetrieveMapper<T> extends SelectOneMapper<T>, SelectByPrimaryKeyMapper<T> {
+public interface RetrieveMapper<T> extends SelectOneMapper<T>, SelectListMapper<T>, SelectCountMapper<T>,
+        SelectPageMapper<T>, SelectByPrimaryKeyMapper<T> {
 }

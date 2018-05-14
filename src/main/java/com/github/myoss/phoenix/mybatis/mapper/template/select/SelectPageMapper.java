@@ -17,37 +17,33 @@
 
 package com.github.myoss.phoenix.mybatis.mapper.template.select;
 
-import java.io.Serializable;
+import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 
+import com.github.myoss.phoenix.core.lang.dto.Order;
 import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.select.impl.SelectMapperTemplate;
 
 /**
  * 查询记录通用 Mapper 接口
  *
- * @author Jerry.Chen 2018年4月27日 下午5:23:03
+ * @author Jerry.Chen 2018年5月10日 上午10:25:43
  */
 @RegisterMapper
-public interface SelectByPrimaryKeyMapper<T> {
+public interface SelectPageMapper<T> {
     /**
-     * 根据主键id查询实体对象
+     * 根据条件分页查询匹配的实体对象
      *
-     * @param id 主键id
-     * @return 对应的实体对象
-     * @see SelectMapperTemplate#selectByPrimaryKey
+     * @param condition 匹配的条件
+     * @param offset 记录行的偏移量（SELECT * FROM table LIMIT 0,10; // 检索记录行 1-10）
+     * @param pageSize 分页的条数
+     * @param orders 排序字段
+     * @return 匹配的实体对象
+     * @see SelectMapperTemplate#selectPage
      */
     @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
-    T selectByPrimaryKey(Serializable id);
-
-    /**
-     * 根据主键字段查询实体对象，可以支持多主键字段的表
-     *
-     * @param condition 匹配的条件，主键有值的实体对象
-     * @return 对应的实体对象
-     * @see SelectMapperTemplate#selectWithPrimaryKey
-     */
-    @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
-    T selectWithPrimaryKey(T condition);
+    List<T> selectPage(@Param("condition") T condition, @Param("offset") int offset, @Param("pageSize") int pageSize,
+                       @Param("orders") List<Order> orders);
 }

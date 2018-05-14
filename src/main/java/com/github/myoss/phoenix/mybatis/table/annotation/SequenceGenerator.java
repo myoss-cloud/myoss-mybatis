@@ -39,16 +39,22 @@ import com.github.myoss.phoenix.mybatis.table.Sequence;
 public @interface SequenceGenerator {
     /**
      * 序列生成策略
+     *
+     * @return 序列生成策略
      */
     GenerationType strategy();
 
     /**
      * (Optional) 用于 {@link GenerationType#SELECT_KEY} 策略
+     *
+     * @return select sql 策略
      */
     SelectKey selectKey() default @SelectKey(sql = "");
 
     /**
      * (Optional) 用于 {@link GenerationType#SEQUENCE_KEY} 策略
+     *
+     * @return sequence 策略
      */
     SequenceKey sequenceKey() default @SequenceKey(sequenceClass = Sequence.class);
 

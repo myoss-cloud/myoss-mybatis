@@ -17,37 +17,42 @@
 
 package com.github.myoss.phoenix.mybatis.mapper.template.select;
 
-import java.io.Serializable;
+import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 
+import com.github.myoss.phoenix.core.lang.dto.Order;
 import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.select.impl.SelectMapperTemplate;
+import com.github.myoss.phoenix.mybatis.mapper.template.select.impl.SelectSortMapperTemplate;
 
 /**
  * 查询记录通用 Mapper 接口
  *
- * @author Jerry.Chen 2018年4月27日 下午5:23:03
+ * @author Jerry.Chen 2018年5月10日 上午12:37:53
  */
 @RegisterMapper
-public interface SelectByPrimaryKeyMapper<T> {
+public interface SelectListMapper<T> {
     /**
-     * 根据主键id查询实体对象
+     * 根据条件查询匹配的实体对象，查询结果可能有多条记录
      *
-     * @param id 主键id
-     * @return 对应的实体对象
-     * @see SelectMapperTemplate#selectByPrimaryKey
+     * @param condition 匹配的条件
+     * @return 匹配的实体对象
+     * @see SelectMapperTemplate#selectList
      */
     @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
-    T selectByPrimaryKey(Serializable id);
+    List<T> selectList(T condition);
 
     /**
-     * 根据主键字段查询实体对象，可以支持多主键字段的表
+     * 根据条件查询匹配的实体对象，查询结果可能有多条记录，并支持字段排序
      *
-     * @param condition 匹配的条件，主键有值的实体对象
-     * @return 对应的实体对象
-     * @see SelectMapperTemplate#selectWithPrimaryKey
+     * @param condition 匹配的条件
+     * @param orders 排序字段
+     * @return 匹配的实体对象
+     * @see SelectSortMapperTemplate#selectListWithSort
      */
-    @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
-    T selectWithPrimaryKey(T condition);
+    @SelectProvider(type = SelectSortMapperTemplate.class, method = "dynamicSql")
+    List<T> selectListWithSort(@Param("condition") T condition, @Param("orders") List<Order> orders);
+
 }

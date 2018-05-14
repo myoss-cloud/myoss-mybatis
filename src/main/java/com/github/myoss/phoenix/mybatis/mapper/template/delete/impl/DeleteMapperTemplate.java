@@ -54,6 +54,7 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
      * @see DeleteByPrimaryKeyMapper#deleteByPrimaryKey(Serializable)
+     * @see DeleteByPrimaryKeyMapper#deleteWithPrimaryKey(Object)
      */
     public String deleteByPrimaryKey(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
@@ -70,6 +71,28 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
                 .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
+    }
+
+    /**
+     * 删除记录，生成 delete 语句。
+     * <p>
+     * 示例如下：
+     *
+     * <pre>
+     * DELETE FROM `table_name`
+     * &lt;where&gt;
+     *  AND id = #{id}
+     *  AND is_deleted = 'N'
+     * &lt;/where&gt;
+     * </pre>
+     *
+     * @param tableInfo 数据库表结构信息
+     * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
+     * @return 生成的sql语句
+     * @see DeleteByPrimaryKeyMapper#deleteWithPrimaryKey(Object)
+     */
+    public String deleteWithPrimaryKey(TableInfo tableInfo, MappedStatement ms) {
+        return deleteByPrimaryKey(tableInfo, ms);
     }
 
     /**

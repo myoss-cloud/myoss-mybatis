@@ -17,11 +17,16 @@
 
 package com.github.myoss.phoenix.mybatis.table;
 
+import java.beans.PropertyDescriptor;
+import java.util.Map;
+
 import lombok.Data;
 import lombok.ToString;
 
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
+
+import com.github.myoss.phoenix.mybatis.table.annotation.FillRule;
 
 /**
  * 数据库表结构字段信息
@@ -56,6 +61,10 @@ public class TableColumnInfo {
      * 属性Java类型
      */
     private Class<?>                        javaType;
+    /**
+     * 属性getter/setter方法
+     */
+    private PropertyDescriptor              propertyDescriptor;
 
     /**
      * 是否为主键字段
@@ -89,6 +98,11 @@ public class TableColumnInfo {
     private boolean                         selectable    = true;
 
     /**
+     * 字段填充规则，用于 SQL 语句在 INSERT/UPDATE 的时候，字段是否需要进行填充，参考 {@link FillRule} 的详细说明
+     */
+    private Map<FillRule, String>           fillRules;
+
+    /**
      * 逻辑删除数据，软删除，用字段标记数据被删除了，不做物理删除
      */
     private boolean                         logicDelete   = false;
@@ -100,5 +114,15 @@ public class TableColumnInfo {
      * 数据标记为"逻辑未删除"的值
      */
     private String                          logicUnDeleteValue;
+
+    /**
+     * 是否包含某种字段填充规则
+     *
+     * @param fillRule 字段填充规则
+     * @return true：有；false：没有
+     */
+    public boolean haveFillRule(FillRule fillRule) {
+        return fillRules != null && fillRules.containsKey(fillRule);
+    }
 
 }

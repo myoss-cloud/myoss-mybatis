@@ -56,18 +56,21 @@ public @interface SelectKey {
      * <li>如果 {@link SequenceGenerator} 注解不是放在 Field 上面，则需要设置。
      * <li>如果 {@link SequenceGenerator} 注解放在 Field 上面则，取此字段的属性名。
      * </ul>
+     *
+     * @return 主键属性字段名
      */
     String[] keyProperty() default {};
 
     /**
      * 从 {@link KeyGenerator} 中获取到的返回值，和 {@link #keyProperty} 的映射关系。绝大多数情况下，如果
      * {@link KeyGenerator} 返回的的值是单一的列，则不需要设置 {@code keyColumn }
-     * <p>
      * <ul>
      * <li>可以设置多个字段
      * <li>可选属性
      * <li>默认会从对应的 <code>keyProperty</code> 字段中获取"数据库字段名"
      * </ul>
+     *
+     * @return SELECT SQL中取哪几个字段名
      */
     String[] keyColumn() default {};
 
@@ -77,21 +80,29 @@ public @interface SelectKey {
      * <li>可选属性
      * <li>默认会从对应的 <code>keyProperty</code> 字段中获取"Java类型"
      * </ul>
+     *
+     * @return 主键Java类型
      */
     Class<?> resultType() default Class.class;
 
     /**
      * 使用自定义 select sql 语句生成字段的值
+     *
+     * @return select sql
      */
     String sql();
 
     /**
      * 自定义 select sql 语句类型
+     *
+     * @return select sql statement type
      */
     StatementType statementType() default StatementType.PREPARED;
 
     /**
      * {@link SelectKeyGenerator} 在 INSERT 之前/之后执行
+     *
+     * @return 在 INSERT 之前/之后执行
      */
     Order order() default Order.BEFORE;
 }

@@ -28,14 +28,14 @@ import com.github.myoss.phoenix.mybatis.mapper.template.update.impl.UpdateMapper
  * @author Jerry.Chen 2018年4月29日 下午9:15:55
  */
 @RegisterMapper
-public interface UpdateByPrimaryKeySelectiveMapper<T> {
+public interface UpdateByPrimaryKeyAllColumnMapper<T> {
     /**
-     * 根据主键id更新记录（只会更新有值的字段）
+     * 根据主键id更新记录，字段的值为 null 也会更新
      *
      * @param record 待更新的实体对象
      * @return SQL执行成功之后，影响的行数
-     * @see UpdateMapperTemplate#updateByPrimaryKeySelective
+     * @see UpdateMapperTemplate#updateByPrimaryKeyAllColumn
      */
     @UpdateProvider(type = UpdateMapperTemplate.class, method = "dynamicSql")
-    int updateByPrimaryKeySelective(T record);
+    int updateByPrimaryKeyAllColumn(T record);
 }

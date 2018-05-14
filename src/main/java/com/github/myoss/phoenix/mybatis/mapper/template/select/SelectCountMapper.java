@@ -15,15 +15,27 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.mapper.template.insert;
+package com.github.myoss.phoenix.mybatis.mapper.template.select;
+
+import org.apache.ibatis.annotations.SelectProvider;
 
 import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
+import com.github.myoss.phoenix.mybatis.mapper.template.select.impl.SelectMapperTemplate;
 
 /**
- * 创建（Create）操作，通用 Mapper 接口
+ * 查询记录通用 Mapper 接口
  *
- * @author Jerry.Chen 2018年4月29日 下午5:10:59
+ * @author Jerry.Chen 2018年5月10日 上午10:00:17
  */
 @RegisterMapper
-public interface CreateMapper<T> extends InsertMapper<T>, InsertAllColumnMapper<T>, InsertBatchMapper<T> {
+public interface SelectCountMapper<T> {
+    /**
+     * 根据条件查询匹配的实体对象总记录数
+     *
+     * @param condition 匹配的条件
+     * @return 匹配的实体对象
+     * @see SelectMapperTemplate#selectCount
+     */
+    @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
+    int selectCount(T condition);
 }
