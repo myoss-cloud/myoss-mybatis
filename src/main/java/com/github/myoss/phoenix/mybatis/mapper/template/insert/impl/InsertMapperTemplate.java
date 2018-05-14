@@ -105,10 +105,11 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
     /**
      * 生成"序列生成器"
      */
-    private void addKeyGenerator(TableInfo tableInfo, MetaObject metaObject, String id, Configuration configuration) {
+    private GenerationType addKeyGenerator(TableInfo tableInfo, MetaObject metaObject, String id,
+                                           Configuration configuration) {
         TableSequence tableSequence = tableInfo.getTableSequence();
         if (tableSequence == null) {
-            return;
+            return null;
         }
         GenerationType strategy = tableSequence.getStrategy();
         KeyGenerator keyGenerator;
@@ -125,6 +126,7 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
             throw new UnsupportedOperationException("keyGenerator strategy " + strategy.getType() + " unsupported");
         }
         metaObject.setValue("keyGenerator", keyGenerator);
+        return strategy;
     }
 
     /**
@@ -207,7 +209,7 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
         Configuration configuration = ms.getConfiguration();
 
         // 生成"序列生成器"
-        addKeyGenerator(tableInfo, metaObject, id, configuration);
+        GenerationType generationType = addKeyGenerator(tableInfo, metaObject, id, configuration);
 
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(4096);
@@ -219,8 +221,9 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
             if (!columnInfo.isInsertable() || columnInfo.isAutoIncrement()) {
                 continue;
             }
-            // 字段自动填充的时候，不加 if 表达式判断
-            boolean fillInsert = columnInfo.haveFillRule(FillRule.INSERT);
+            // 如果是主键字段（不是自动增长的主键）或者字段有自动填充的规则，不加 if 表达式判断
+            boolean fillInsert = (columnInfo.isPrimaryKey() && GenerationType.USE_GENERATED_KEYS != generationType)
+                    || columnInfo.haveFillRule(FillRule.INSERT);
             if (!fillInsert) {
                 builder.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
             }

@@ -15,27 +15,20 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.repository.entity;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.service;
 
-import java.io.Serializable;
+import com.github.myoss.phoenix.mybatis.repository.service.CrudService;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.UserHistory;
 
 /**
- * 主键实体基类
+ * This service interface access the database table t_sys_user_history
+ * <p>
+ * Database Table Remarks: 系统用户信息历史备份表
+ * </p>
  *
- * @author Jerry.Chen 2018年5月9日 下午6:23:17
+ * @author jerry
+ * @since 2018年5月14日 下午3:39:43
  */
-public interface PrimaryKeyEntity<I extends Serializable> {
-    /**
-     * 获取主键的值
-     *
-     * @return 主键的值
-     */
-    I getPrimaryKey();
+public interface UserHistoryService extends CrudService<UserHistory> {
 
-    /**
-     * 设置主键的值
-     *
-     * @param primaryKey 主键的值
-     */
-    void setPrimaryKey(I primaryKey);
 }

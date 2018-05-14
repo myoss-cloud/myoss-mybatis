@@ -22,6 +22,8 @@ import java.io.Serializable;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 
+import com.github.myoss.phoenix.mybatis.table.annotation.Column;
+
 /**
  * 审计实体基类，包含审计的字段，增加了主键id字段
  *
@@ -29,7 +31,7 @@ import lombok.EqualsAndHashCode;
  */
 @EqualsAndHashCode(callSuper = true)
 @Data
-public class AuditIdEntity extends AuditEntity implements PrimaryKeyEntity {
+public class AuditIdEntity<I extends Serializable> extends AuditEntity implements PrimaryKeyEntity<I> {
     private static final long serialVersionUID = -7391784386524900465L;
 
     /**
@@ -37,15 +39,16 @@ public class AuditIdEntity extends AuditEntity implements PrimaryKeyEntity {
      * <p>
      * Database Column Remarks: 主键id
      */
-    protected Serializable    id;
+    @Column(primaryKey = true)
+    protected I               id;
 
     @Override
-    public Serializable getPrimaryKey() {
+    public I getPrimaryKey() {
         return id;
     }
 
     @Override
-    public void setPrimaryKey(Serializable primaryKey) {
+    public void setPrimaryKey(I primaryKey) {
         id = primaryKey;
     }
 }
