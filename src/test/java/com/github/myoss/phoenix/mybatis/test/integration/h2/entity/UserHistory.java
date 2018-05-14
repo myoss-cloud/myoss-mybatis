@@ -30,6 +30,7 @@ import com.github.myoss.phoenix.mybatis.table.annotation.GenerationType;
 import com.github.myoss.phoenix.mybatis.table.annotation.SelectKey;
 import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator;
 import com.github.myoss.phoenix.mybatis.table.annotation.Table;
+import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator.Order;
 
 /**
  * This class corresponds to the database table t_sys_user_history
@@ -44,7 +45,7 @@ import com.github.myoss.phoenix.mybatis.table.annotation.Table;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @Data
-@SequenceGenerator(strategy = GenerationType.SELECT_KEY, selectKey = @SelectKey(sql = "select ifnull(max(`id`) ,1) from t_sys_user_history", keyProperty = { "id" }, keyColumn = { "id" }, resultType = Long.class))
+@SequenceGenerator(strategy = GenerationType.SELECT_KEY, selectKey = @SelectKey(sql = "select ifnull(max(`id`) ,0) + 1 from t_sys_user_history", keyProperty = { "id" }, keyColumn = { "id" }, resultType = Long.class, order = Order.BEFORE))
 @Table(name = "t_sys_user_history")
 public class UserHistory extends AuditIdEntity<Long> {
     private static final long serialVersionUID = 1L;
