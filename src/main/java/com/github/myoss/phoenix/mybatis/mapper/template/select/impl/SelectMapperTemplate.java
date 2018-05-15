@@ -165,7 +165,7 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
      *     &lt;/if&gt;
      *   &lt;/if&gt;
      *   &lt;if test=&quot;extraCondition != null&quot;&gt;
-     *     &lt;!-- Mapper.XML &#20013;&#33258;&#23450;&#20041;&#30340; sql id=&quot;Where_Extra_Condition&quot; --&gt;
+     *     &lt;include refid=&quot;Where_Extra_Condition&quot; /&gt;
      *   &lt;/if&gt;
      *   and is_deleted = 'N'
      * &lt;/where&gt;
@@ -268,7 +268,7 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
      *   &lt;/if&gt;
      *   and is_deleted = 'N'
      *   &lt;if test=&quot;extraCondition != null&quot;&gt;
-     *     &lt;!-- Mapper.XML &#20013;&#33258;&#23450;&#20041;&#30340; sql id=&quot;Where_Extra_Condition&quot; --&gt;
+     *     &lt;include refid=&quot;Where_Extra_Condition&quot; /&gt;
      *   &lt;/if&gt;
      * &lt;/where&gt;
      * &lt;if test=&quot;orders != null and orders.size &gt; 0&quot;&gt;
