@@ -44,17 +44,15 @@ import com.github.myoss.phoenix.mybatis.table.annotation.SequenceKey;
  * @see Sequence
  */
 public class SequenceKeyGenerator implements KeyGenerator {
-    private String[]  keyProperties;
-    private String[]  keyColumns;
-    private TableInfo tableInfo;
-    private boolean   executeBefore;
-    private Sequence  sequence;
+    private String[] keyProperties;
+    private String[] keyColumns;
+    private boolean  executeBefore;
+    private Sequence sequence;
 
     public SequenceKeyGenerator(TableInfo tableInfo, boolean executeBefore) {
         TableSequence tableSequence = tableInfo.getTableSequence();
         this.keyProperties = tableSequence.getKeyProperties();
         this.keyColumns = tableSequence.getKeyColumns();
-        this.tableInfo = tableInfo;
         this.executeBefore = executeBefore;
 
         // 获取 Sequence 实例对象
@@ -68,10 +66,14 @@ public class SequenceKeyGenerator implements KeyGenerator {
         } else {
             try {
                 this.sequence = tableSequence.getSequenceClass().newInstance();
+                String name = StringUtils.defaultString(tableSequence.getSequenceName(), tableInfo.getEntityClass()
+                        .getCanonicalName() + ".SequenceKey");
+                TableMetaObject.addSequenceBean(name, this.sequence);
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new BindingException("new instance of [" + tableSequence.getSequenceClass() + "] failed", e);
             }
         }
+        this.sequence.setTableInfo(tableInfo);
     }
 
     @Override
@@ -86,7 +88,6 @@ public class SequenceKeyGenerator implements KeyGenerator {
         if (!executeBefore) {
             processGeneratedKeys(ms, parameter);
         }
-
     }
 
     private void processGeneratedKeys(MappedStatement ms, Object parameter) {
@@ -95,7 +96,7 @@ public class SequenceKeyGenerator implements KeyGenerator {
                 final Configuration configuration = ms.getConfiguration();
                 final MetaObject metaParam = configuration.newMetaObject(parameter);
 
-                Object value = sequence.nextValue(tableInfo, parameter);
+                Object value = sequence.nextValue(parameter);
                 MetaObject metaResult = configuration.newMetaObject(value);
                 if (keyProperties.length == 1) {
                     String keyProperty = keyProperties[0];

@@ -29,11 +29,19 @@ import com.github.myoss.phoenix.mybatis.table.annotation.SequenceKey;
  */
 public interface Sequence {
     /**
-     * 生成下一个序列值
+     * 设置数据库表结构信息，会在生成 {@link SequenceKeyGenerator} 初始化的时候调用
      *
      * @param tableInfo 数据库表结构信息
+     */
+    default void setTableInfo(TableInfo tableInfo) {
+        // do nothing
+    };
+
+    /**
+     * 生成下一个序列值
+     *
      * @param parameter 待保存的实体对象
      * @return 下一个序列值
      */
-    Object nextValue(TableInfo tableInfo, Object parameter);
+    Object nextValue(Object parameter);
 }

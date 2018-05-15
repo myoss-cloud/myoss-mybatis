@@ -29,7 +29,6 @@ import org.springframework.jdbc.core.JdbcTemplate;
 
 import com.alibaba.fastjson.JSON;
 import com.github.myoss.phoenix.mybatis.table.Sequence;
-import com.github.myoss.phoenix.mybatis.table.TableInfo;
 
 /**
  * 集成测试基础配置，使用H2内存数据库
@@ -47,7 +46,7 @@ public class H2DataBaseIntTest {
         public SequenceCustomizer seqUserLog(JdbcTemplate jdbcTemplate) {
             return new SequenceCustomizer() {
                 @Override
-                public Object nextValue(TableInfo tableInfo, Object parameter) {
+                public Object nextValue(Object parameter) {
                     Long nextId = jdbcTemplate.queryForObject("select ifnull(max(`id`) ,0) + 1 from t_sys_user_log",
                             Long.class);
                     log.info("nextId: {}, parameter: {}", nextId, JSON.toJSONString(parameter));
@@ -59,7 +58,7 @@ public class H2DataBaseIntTest {
 
     public static class SequenceCustomizer implements Sequence {
         @Override
-        public Object nextValue(TableInfo tableInfo, Object parameter) {
+        public Object nextValue(Object parameter) {
             return null;
         }
     }

@@ -81,18 +81,98 @@ public class TableMetaObject {
         return null;
     }
 
+    /**
+     * 将"序列生成器实例对象"添加到缓存中
+     * 
+     * @param sequenceBeanName 序列的 Spring Bean 实例名称
+     * @param sequence 序列生成器实例对象
+     */
     public static void addSequenceBean(String sequenceBeanName, Sequence sequence) {
-        SEQUENCE_BEAN_MAP.put(sequenceBeanName, sequence);
+        SEQUENCE_BEAN_MAP.putIfAbsent(sequenceBeanName, sequence);
     }
 
+    /**
+     * 获取缓存中的"序列生成器实例对象"
+     *
+     * @param sequenceBeanName 序列的 Spring Bean 实例名称
+     * @return 序列生成器实例对象
+     */
     public static Sequence getSequenceBean(String sequenceBeanName) {
         return SEQUENCE_BEAN_MAP.get(sequenceBeanName);
     }
 
+    /**
+     * 获取缓存中的全部"序列生成器实例对象"
+     *
+     * @return 全部"序列生成器实例对象"
+     */
+    public static Map<String, Sequence> getSequenceBeanMap() {
+        return SEQUENCE_BEAN_MAP;
+    }
+
+    /**
+     * 获取缓存中的全部"数据库表结构信息"
+     *
+     * @return 全部"数据库表结构信息"
+     */
+    public static Map<Class<?>, TableInfo> getTableInfoMap() {
+        return ENTITY_TABLE_MAP;
+    }
+
+    /**
+     * 获取缓存中的"数据库表结构信息"
+     *
+     * @param entityClass 实体类class
+     * @return 数据库表结构信息
+     */
     public static TableInfo getTableInfo(Class<?> entityClass) {
         return ENTITY_TABLE_MAP.get(entityClass);
     }
 
+    /**
+     * 根据"mapper interface class" 中的泛型获取"实体类class"
+     *
+     * @param mapperInterfaceClass mapper interface class
+     * @return 实体类class
+     */
+    public static Class<?> getEntityClassByMapperInterface(Class<?> mapperInterfaceClass) {
+        Type[] types = mapperInterfaceClass.getGenericInterfaces();
+        for (Type type : types) {
+            if (type instanceof ParameterizedType) {
+                Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
+                if (actualTypeArguments.length == 0) {
+                    continue;
+                }
+                return (Class<?>) actualTypeArguments[0];
+            }
+        }
+        return null;
+    }
+
+    /**
+     * 获取缓存中的"数据库表结构信息"，或者获取初始化"数据库表结构信息"
+     *
+     * @param mapperInterface mapper interface class
+     * @param config MyBatis Table 全局配置；实体类映射数据库表的全局配置
+     * @param configuration MyBatis 全局配置
+     * @return 数据库表结构信息
+     */
+    public static TableInfo getTableInfoByMapperInterface(Class<?> mapperInterface, TableConfig config,
+                                                          Configuration configuration) {
+        Class<?> entityClass = getEntityClassByMapperInterface(mapperInterface);
+        TableInfo tableInfo = getTableInfo(entityClass, config, configuration);
+        tableInfo.setMapperInterfaceClass(mapperInterface);
+        return tableInfo;
+    }
+
+    /**
+     * 获取缓存中的"数据库表结构信息"，或者获取初始化"数据库表结构信息"
+     *
+     * @param entityClass 实体类class
+     * @param config MyBatis Table 全局配置；实体类映射数据库表的全局配置
+     * @param configuration MyBatis 全局配置
+     * @return 数据库表结构信息
+     */
     public static TableInfo getTableInfo(Class<?> entityClass, TableConfig config, Configuration configuration) {
         TableInfo tableInfo = ENTITY_TABLE_MAP.get(entityClass);
         if (tableInfo != null) {
@@ -313,28 +393,6 @@ public class TableMetaObject {
             tableInfo.setLogicDelete(true);
             logicDeleteColumns.add(columnInfo);
         }
-    }
-
-    public static TableInfo getTableInfoByMapperInterface(Class<?> mapperInterface, TableConfig config,
-                                                          Configuration configuration) {
-        Class<?> entityClass = getEntityClassByMapperInterface(mapperInterface);
-        TableInfo tableInfo = getTableInfo(entityClass, config, configuration);
-        tableInfo.setMapperInterfaceClass(mapperInterface);
-        return tableInfo;
-    }
-
-    public static Class<?> getEntityClassByMapperInterface(Class<?> mapperInterfaceClass) {
-        Type[] types = mapperInterfaceClass.getGenericInterfaces();
-        for (Type type : types) {
-            if (type instanceof ParameterizedType) {
-                Type[] actualTypeArguments = ((ParameterizedType) type).getActualTypeArguments();
-                if (actualTypeArguments.length == 0) {
-                    continue;
-                }
-                return (Class<?>) actualTypeArguments[0];
-            }
-        }
-        return null;
     }
 
     /**
