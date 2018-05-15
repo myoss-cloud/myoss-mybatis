@@ -175,6 +175,7 @@ public class UserControllerIntTests {
         User updateUser = new User();
         updateUser.setId(exceptedId);
         updateUser.setAccount("10000");
+        updateUser.setName("Leo");
         Result<Boolean> updateResult = userController.updateByPrimaryKey(updateUser);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(updateResult).isNotNull();
@@ -195,6 +196,7 @@ public class UserControllerIntTests {
             User target = new User();
             BeanUtils.copyProperties(record, target);
             target.setAccount(updateUser.getAccount());
+            target.setName(updateUser.getName());
             softly.assertThat(idResult3.getValue()).isNotNull().isEqualTo(target);
         });
 

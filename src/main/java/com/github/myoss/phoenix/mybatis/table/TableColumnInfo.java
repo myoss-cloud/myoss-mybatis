@@ -46,6 +46,10 @@ public class TableColumnInfo {
      */
     private String                          column;
     /**
+     * 编码之后的字段名，比如：字段名是关键字、有空格
+     */
+    private String                          escapedColumn;
+    /**
      * 字段jdbc type
      */
     private JdbcType                        jdbcType;
@@ -114,6 +118,15 @@ public class TableColumnInfo {
      * 数据标记为"逻辑未删除"的值
      */
     private String                          logicUnDeleteValue;
+
+    /**
+     * 获取字段名，优先取 {@link #escapedColumn}，如果没有则取 {@link #column}
+     *
+     * @return 字段名
+     */
+    public String getActualColumn() {
+        return escapedColumn != null ? escapedColumn : column;
+    }
 
     /**
      * 是否包含某种字段填充规则

@@ -112,6 +112,10 @@ public class TableMetaObject {
                 String name = config.getTableNamePrefix() + table.name() + config.getTableNameSuffix();
                 tableInfo.setTableName(name);
             }
+            if (StringUtils.isNotBlank(table.escapedName())) {
+                String name = config.getTableNamePrefix() + table.escapedName() + config.getTableNameSuffix();
+                tableInfo.setEscapedTableName(name);
+            }
             tableNameStyle = table.nameStyle();
         }
         if (StringUtils.isBlank(tableInfo.getTableName())) {
@@ -146,6 +150,9 @@ public class TableMetaObject {
             if (column != null) {
                 if (StringUtils.isNotBlank(column.name())) {
                     columnInfo.setColumn(column.name());
+                }
+                if (StringUtils.isNotBlank(column.escapedName())) {
+                    columnInfo.setEscapedColumn(column.escapedName());
                 }
                 if (column.primaryKey()) {
                     columnInfo.setPrimaryKey(true);
@@ -393,7 +400,7 @@ public class TableMetaObject {
      * @return catalog.schema.tableName
      */
     public static String getTableName(TableInfo tableInfo) {
-        return Stream.of(tableInfo.getCatalog(), tableInfo.getSchema(), tableInfo.getTableName())
+        return Stream.of(tableInfo.getCatalog(), tableInfo.getSchema(), tableInfo.getActualTableName())
                 .filter(StringUtils::isNotBlank).collect(Collectors.joining("."));
     }
 
@@ -449,8 +456,8 @@ public class TableMetaObject {
      * @return sql语句
      */
     public static String builderSelectAllColumns(TableInfo tableInfo) {
-        return tableInfo.getColumns().stream().filter(TableColumnInfo::isSelectable).map(TableColumnInfo::getColumn)
-                .collect(Collectors.joining("`,`", "`", "`"));
+        return tableInfo.getColumns().stream().filter(TableColumnInfo::isSelectable)
+                .map(TableColumnInfo::getActualColumn).collect(Collectors.joining(", "));
     }
 
     /**
@@ -477,7 +484,7 @@ public class TableMetaObject {
             }
             sql.append("  <if test=\"").append(item.getProperty()).append(" != null\">\n");
 
-            sql.append("    and `").append(item.getColumn()).append("` = #{").append(item.getProperty());
+            sql.append("    and ").append(item.getActualColumn()).append(" = #{").append(item.getProperty());
             if (item.getJdbcType() != null) {
                 sql.append(",jdbcType=").append(item.getJdbcType().name());
             }
@@ -487,7 +494,7 @@ public class TableMetaObject {
         }
         if (tableInfo.isLogicDelete()) {
             for (TableColumnInfo item : tableInfo.getLogicDeleteColumns()) {
-                sql.append("  and `").append(item.getColumn()).append("` = ");
+                sql.append("  and ").append(item.getActualColumn()).append(" = ");
                 if (CharSequence.class.isAssignableFrom(item.getJavaType())) {
                     sql.append("'").append(item.getLogicUnDeleteValue()).append("'");
                 } else {
@@ -526,7 +533,8 @@ public class TableMetaObject {
             }
             sql.append("  <if test=\"").append(prefix).append(item.getProperty()).append(" != null\">\n");
 
-            sql.append("    and `").append(item.getColumn()).append("` = #{").append(prefix).append(item.getProperty());
+            sql.append("    and ").append(item.getActualColumn()).append(" = #{").append(prefix)
+                    .append(item.getProperty());
             if (item.getJdbcType() != null) {
                 sql.append(",jdbcType=").append(item.getJdbcType().name());
             }
@@ -536,7 +544,7 @@ public class TableMetaObject {
         }
         if (tableInfo.isLogicDelete()) {
             for (TableColumnInfo item : tableInfo.getLogicDeleteColumns()) {
-                sql.append("  and `").append(item.getColumn()).append("` = ");
+                sql.append("  and ").append(item.getActualColumn()).append(" = ");
                 if (CharSequence.class.isAssignableFrom(item.getJavaType())) {
                     sql.append("'").append(item.getLogicUnDeleteValue()).append("'");
                 } else {
@@ -566,7 +574,7 @@ public class TableMetaObject {
         StringBuilder sql = new StringBuilder(128);
         sql.append("<where>\n");
         for (TableColumnInfo columnInfo : tableInfo.getPrimaryKeyColumns()) {
-            sql.append("  AND `").append(columnInfo.getColumn()).append("` = ");
+            sql.append("  AND ").append(columnInfo.getActualColumn()).append(" = ");
             sql.append("#{").append(columnInfo.getProperty());
             if (columnInfo.getJdbcType() != null) {
                 sql.append(",jdbcType=BIGINT");
@@ -575,7 +583,7 @@ public class TableMetaObject {
         }
         if (tableInfo.isLogicDelete()) {
             for (TableColumnInfo item : tableInfo.getLogicDeleteColumns()) {
-                sql.append("  AND `").append(item.getColumn()).append("` = ");
+                sql.append("  AND ").append(item.getActualColumn()).append(" = ");
                 if (CharSequence.class.isAssignableFrom(item.getJavaType())) {
                     sql.append("'").append(item.getLogicUnDeleteValue()).append("'");
                 } else {

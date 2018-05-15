@@ -68,6 +68,13 @@ public @interface Column {
     String name() default "";
 
     /**
+     * (Optional) 编码之后的字段名，比如：字段名是关键字、有空格
+     *
+     * @return 编码之后的字段名
+     */
+    String escapedName() default "";
+
+    /**
      * (Optional) Whether the database column is nullable.
      *
      * @return 字段是否允许为 {@code null}

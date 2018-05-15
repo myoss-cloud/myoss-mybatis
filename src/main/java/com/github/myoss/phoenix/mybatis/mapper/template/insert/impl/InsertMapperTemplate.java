@@ -135,7 +135,7 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
-     * INSERT INTO `table_name` (`id`, ...) VALUES (#{id}, ...)
+     * INSERT INTO table_name (id, ...) VALUES (#{id}, ...)
      * </pre>
      *
      * @param tableInfo 数据库表结构信息
@@ -153,13 +153,13 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
 
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(2048);
-        builder.append("INSERT INTO `").append(TableMetaObject.getTableName(tableInfo)).append("` (");
+        builder.append("INSERT INTO ").append(TableMetaObject.getTableName(tableInfo)).append(" (");
         StringBuilder values = new StringBuilder(1024);
         for (TableColumnInfo columnInfo : tableInfo.getColumns()) {
             if (!columnInfo.isInsertable() || columnInfo.isAutoIncrement()) {
                 continue;
             }
-            builder.append("`").append(columnInfo.getColumn()).append("`, ");
+            builder.append(columnInfo.getActualColumn()).append(", ");
 
             values.append("#{").append(columnInfo.getProperty());
             if (columnInfo.getJdbcType() != null) {
@@ -185,10 +185,10 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
-     * INSERT INTO `table_name`
+     * INSERT INTO table_name
      * &lt;trim prefix=&quot;(&quot; suffix=&quot;)&quot; suffixOverrides=&quot;,&quot;&gt;
      *   &lt;if test=&quot;id != null&quot;&gt;
-     *     `id`,
+     *     id,
      *   &lt;/if&gt;
      * &lt;/trim&gt;
      * &lt;trim prefix=&quot;values (&quot; suffix=&quot;)&quot; suffixOverrides=&quot;,&quot;&gt;
@@ -213,7 +213,7 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
 
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(4096);
-        builder.append("INSERT INTO `").append(TableMetaObject.getTableName(tableInfo)).append("`\n");
+        builder.append("INSERT INTO ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append("<trim prefix=\"(\" suffix=\")\" suffixOverrides=\",\">\n");
         StringBuilder values = new StringBuilder(2048);
         values.append("<trim prefix=\"values (\" suffix=\")\" suffixOverrides=\",\">\n");
@@ -227,7 +227,7 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
             if (!fillInsert) {
                 builder.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
             }
-            builder.append("    `").append(columnInfo.getColumn()).append("`,\n");
+            builder.append("    ").append(columnInfo.getActualColumn()).append(",\n");
             if (!fillInsert) {
                 builder.append("  </if>\n");
             }
@@ -260,7 +260,7 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
-     * INSERT INTO `table_name` (`id`, ...) VALUES
+     * INSERT INTO table_name (id, ...) VALUES
      * &lt;foreach collection=&quot;list&quot; item=&quot;item&quot; separator=&quot;,&quot;&gt;
      * (#{id}, ...)
      * &lt;/foreach&gt;
@@ -281,7 +281,7 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
 
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(2048);
-        builder.append("INSERT INTO `").append(TableMetaObject.getTableName(tableInfo)).append("` (");
+        builder.append("INSERT INTO ").append(TableMetaObject.getTableName(tableInfo)).append(" (");
         StringBuilder values = new StringBuilder(1024);
         values.append("<foreach collection=\"list\" item=\"item\" separator=\",\">");
         values.append("\n(");
@@ -289,7 +289,7 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
             if (!columnInfo.isInsertable() || columnInfo.isAutoIncrement()) {
                 continue;
             }
-            builder.append("`").append(columnInfo.getColumn()).append("`, ");
+            builder.append(columnInfo.getActualColumn()).append(", ");
 
             values.append("#{item.").append(columnInfo.getProperty());
             if (columnInfo.getJdbcType() != null) {

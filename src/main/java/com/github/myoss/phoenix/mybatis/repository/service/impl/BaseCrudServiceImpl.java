@@ -83,7 +83,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         this.tableInfo = TableMetaObject.getTableInfo(this.entityClass);
         if (this.tableInfo != null) {
             this.fieldColumns = Collections.unmodifiableMap(this.tableInfo.getColumns().stream()
-                    .collect(Collectors.toMap(TableColumnInfo::getProperty, TableColumnInfo::getColumn)));
+                    .collect(Collectors.toMap(TableColumnInfo::getProperty, TableColumnInfo::getActualColumn)));
         } else {
             log.error("[{}] getTableInfo failed in [{}]", this.entityClass, this.getClass());
         }

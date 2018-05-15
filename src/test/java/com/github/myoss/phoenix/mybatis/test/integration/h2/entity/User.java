@@ -78,7 +78,7 @@ public class User implements Serializable {
      * Database Column Remarks: 密码
      * </p>
      */
-    @Column(name = "password", jdbcTypeName = "VARCHAR")
+    @Column(name = "password", escapedName = "`password`", jdbcTypeName = "VARCHAR")
     private String            password;
 
     /**
@@ -96,7 +96,7 @@ public class User implements Serializable {
      * Database Column Remarks: 姓名
      * </p>
      */
-    @Column(name = "name", jdbcTypeName = "VARCHAR")
+    @Column(name = "name", escapedName = "`name`", jdbcTypeName = "VARCHAR")
     private String            name;
 
     /**
@@ -186,7 +186,7 @@ public class User implements Serializable {
      * Database Column Remarks: 状态（1: 启用; 2: 禁用）
      * </p>
      */
-    @Column(name = "status", jdbcTypeName = "CHAR")
+    @Column(name = "status", escapedName = "`status`", jdbcTypeName = "CHAR")
     private String            status;
 
     /**

@@ -55,9 +55,9 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
      * SELECT id,... FROM table_name
      * &lt;where&gt;
      *   &lt;if test=&quot;id != null&quot;&gt;
-     *     and `id` = #{id}
+     *     and id = #{id}
      *   &lt;/if&gt;
-     *   and `is_deleted` = 'N'
+     *   and is_deleted = 'N'
      * &lt;/where&gt;
      * </pre>
      *
@@ -76,7 +76,7 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(2048);
         builder.append("SELECT ").append(tableInfo.getSelectAllColumnsSql());
-        builder.append(" FROM `").append(TableMetaObject.getTableName(tableInfo)).append("`\n");
+        builder.append(" FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWhereConditionSql());
         String sql = builder.toString();
 
@@ -97,9 +97,9 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
      * SELECT id,... FROM table_name
      * &lt;where&gt;
      *   &lt;if test=&quot;id != null&quot;&gt;
-     *     and `id` = #{id}
+     *     and id = #{id}
      *   &lt;/if&gt;
-     *   and `is_deleted` = 'N'
+     *   and is_deleted = 'N'
      * &lt;/where&gt;
      * </pre>
      *
@@ -121,9 +121,9 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
      * SELECT COUNT(1) FROM table_name
      * &lt;where&gt;
      *   &lt;if test=&quot;id != null&quot;&gt;
-     *     and `id` = #{id}
+     *     and id = #{id}
      *   &lt;/if&gt;
-     *   and `is_deleted` = 'N'
+     *   and is_deleted = 'N'
      * &lt;/where&gt;
      * </pre>
      *
@@ -137,7 +137,7 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
 
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(2048);
-        builder.append("SELECT COUNT(1) FROM `").append(TableMetaObject.getTableName(tableInfo)).append("`\n");
+        builder.append("SELECT COUNT(1) FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWhereConditionSql());
         String sql = builder.toString();
 
@@ -158,9 +158,9 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
      * SELECT id,... FROM table_name
      * &lt;where&gt;
      *   &lt;if test=&quot;id != null&quot;&gt;
-     *     and `id` = #{id}
+     *     and id = #{id}
      *   &lt;/if&gt;
-     *   and `is_deleted` = 'N'
+     *   and is_deleted = 'N'
      * &lt;/where&gt;
      * &lt;if test=&quot;orders != null and orders.size &gt; 0&quot;&gt;
      *   order by
@@ -186,7 +186,7 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(2048);
         builder.append("SELECT ").append(tableInfo.getSelectAllColumnsSql());
-        builder.append(" FROM `").append(TableMetaObject.getTableName(tableInfo)).append("`\n");
+        builder.append(" FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWhereConditionWithParameterSql());
         builder.append("\n<if test=\"orders != null and orders.size > 0\">");
         builder.append("\n  order by");
@@ -211,7 +211,7 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
-     * SELECT id,... FROM `table_name`
+     * SELECT id,... FROM table_name
      * &lt;where&gt;
      *  AND id = #{id}
      *  AND is_deleted = 'N'
@@ -234,7 +234,7 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(1024);
         builder.append("SELECT ").append(tableInfo.getSelectAllColumnsSql());
-        builder.append(" FROM `").append(TableMetaObject.getTableName(tableInfo)).append("`\n");
+        builder.append(" FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWherePrimaryKeySql());
         String sql = builder.toString();
 
@@ -252,7 +252,7 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
-     * SELECT id,... FROM `table_name`
+     * SELECT id,... FROM table_name
      * &lt;where&gt;
      *  AND id = #{id}
      *  AND is_deleted = 'N'

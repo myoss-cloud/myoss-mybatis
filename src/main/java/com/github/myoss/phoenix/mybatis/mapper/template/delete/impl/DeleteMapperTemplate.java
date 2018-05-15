@@ -43,7 +43,7 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
-     * DELETE FROM `table_name`
+     * DELETE FROM table_name
      * &lt;where&gt;
      *  AND id = #{id}
      *  AND is_deleted = 'N'
@@ -62,7 +62,7 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
 
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(128);
-        builder.append("DELETE FROM `").append(TableMetaObject.getTableName(tableInfo)).append("`\n");
+        builder.append("DELETE FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWherePrimaryKeySql());
         String sql = builder.toString();
 
@@ -79,7 +79,7 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
-     * DELETE FROM `table_name`
+     * DELETE FROM table_name
      * &lt;where&gt;
      *  AND id = #{id}
      *  AND is_deleted = 'N'
@@ -101,7 +101,7 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
-     * DELETE FROM `table_name`
+     * DELETE FROM table_name
      * &lt;where&gt;
      *    &lt;if test=&quot;id != null&quot;&gt;
      *      and id = #{id}
@@ -120,7 +120,7 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
 
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(2048);
-        builder.append("DELETE FROM `").append(TableMetaObject.getTableName(tableInfo)).append("`\n");
+        builder.append("DELETE FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWhereConditionSql());
         String sql = builder.toString();
 

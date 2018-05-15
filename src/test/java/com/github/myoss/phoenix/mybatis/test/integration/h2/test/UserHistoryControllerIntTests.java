@@ -175,6 +175,7 @@ public class UserHistoryControllerIntTests {
         UserHistory updateUser = new UserHistory();
         updateUser.setId(exceptedId);
         updateUser.setAccount("10000");
+        updateUser.setName("LEO");
         Result<Boolean> updateResult = userHistoryController.updateByPrimaryKey(updateUser);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(updateResult).isNotNull();
@@ -195,6 +196,7 @@ public class UserHistoryControllerIntTests {
             UserHistory target = new UserHistory();
             BeanUtils.copyProperties(record, target);
             target.setAccount(updateUser.getAccount());
+            target.setName(updateUser.getName());
             softly.assertThat(idResult3.getValue()).isNotNull().isEqualTo(target);
         });
 

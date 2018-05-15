@@ -56,6 +56,13 @@ public @interface Table {
     String name() default "";
 
     /**
+     * (Optional) 编码之后的数据库表名，比如：表名是关键字、有空格
+     *
+     * @return 编码之后的数据库表名
+     */
+    String escapedName() default "";
+
+    /**
      * <p>
      * (Optional) The catalog of the table.
      * <p>

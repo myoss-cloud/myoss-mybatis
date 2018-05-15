@@ -52,6 +52,10 @@ public class TableInfo {
      */
     private String               tableName;
     /**
+     * 编码之后的数据库表名，比如：表名是关键字、有空格
+     */
+    private String               escapedTableName;
+    /**
      * 实体类class
      */
     private Class<?>             entityClass;
@@ -115,4 +119,13 @@ public class TableInfo {
      *      String)
      */
     private StringBuilder        whereConditionWithParameterSql;
+
+    /**
+     * 获取表名称，优先取 {@link #escapedTableName}，如果没有则取 {@link #tableName}
+     *
+     * @return 表名称
+     */
+    public String getActualTableName() {
+        return escapedTableName != null ? escapedTableName : tableName;
+    }
 }

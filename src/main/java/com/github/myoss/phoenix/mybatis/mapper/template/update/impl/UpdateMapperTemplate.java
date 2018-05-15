@@ -43,7 +43,7 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
-     * UPDATE `table_name`
+     * UPDATE table_name
      * &lt;set&gt;
      *   &lt;if test=&quot;id != null&quot;&gt;
      *     id = #{id},
@@ -66,14 +66,15 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
 
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(2048);
-        builder.append("UPDATE `").append(TableMetaObject.getTableName(tableInfo)).append("`\n");
+        builder.append("UPDATE ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append("<set>\n");
         for (TableColumnInfo columnInfo : tableInfo.getColumns()) {
             if (!columnInfo.isUpdatable() || columnInfo.isPrimaryKey() || columnInfo.isLogicDelete()) {
                 continue;
             }
             builder.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
-            builder.append("    `").append(columnInfo.getColumn()).append("` = #{").append(columnInfo.getProperty());
+            builder.append("    ").append(columnInfo.getActualColumn()).append(" = #{")
+                    .append(columnInfo.getProperty());
             if (columnInfo.getJdbcType() != null) {
                 builder.append(",jdbcType=BIGINT");
             }
@@ -97,7 +98,7 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
-     * UPDATE `table_name`
+     * UPDATE table_name
      * &lt;set&gt;
      *     name = #{name},
      * &lt;/set&gt;
@@ -118,13 +119,13 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
 
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(1024);
-        builder.append("UPDATE `").append(TableMetaObject.getTableName(tableInfo)).append("`\n");
+        builder.append("UPDATE ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append("<set>\n");
         for (TableColumnInfo columnInfo : tableInfo.getColumns()) {
             if (!columnInfo.isUpdatable() || columnInfo.isPrimaryKey() || columnInfo.isLogicDelete()) {
                 continue;
             }
-            builder.append("  `").append(columnInfo.getColumn()).append("` = #{").append(columnInfo.getProperty());
+            builder.append("  ").append(columnInfo.getActualColumn()).append(" = #{").append(columnInfo.getProperty());
             if (columnInfo.getJdbcType() != null) {
                 builder.append(",jdbcType=BIGINT");
             }
@@ -147,15 +148,15 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
-     * UPDATE `table_name`
+     * UPDATE table_name
      * &lt;set&gt;
      *   &lt;if test=&quot;record.name != null&quot;&gt;
-     *     `name` = #{record.name},
+     *     name = #{record.name},
      *   &lt;/if&gt;
      * &lt;/set&gt;
      * &lt;where&gt;
      *  &lt;if test=&quot;condition.id != null&quot;&gt;
-     *    and `id` = #{condition.id}
+     *    and id = #{condition.id}
      *  &lt;/if&gt;
      *  AND is_deleted = 'N'
      * &lt;/where&gt;
@@ -172,14 +173,14 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
 
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(4096);
-        builder.append("UPDATE `").append(TableMetaObject.getTableName(tableInfo)).append("`\n");
+        builder.append("UPDATE ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append("<set>\n");
         for (TableColumnInfo columnInfo : tableInfo.getColumns()) {
             if (!columnInfo.isUpdatable() || columnInfo.isPrimaryKey() || columnInfo.isLogicDelete()) {
                 continue;
             }
             builder.append("  <if test=\"record.").append(columnInfo.getProperty()).append(" != null\">\n");
-            builder.append("    `").append(columnInfo.getColumn()).append("` = #{record.")
+            builder.append("    ").append(columnInfo.getActualColumn()).append(" = #{record.")
                     .append(columnInfo.getProperty());
             if (columnInfo.getJdbcType() != null) {
                 builder.append(",jdbcType=BIGINT");

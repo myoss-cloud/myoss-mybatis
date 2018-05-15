@@ -50,9 +50,9 @@ public class SelectSortMapperTemplate extends AbstractMapperTemplate {
      * SELECT id,... FROM table_name
      * &lt;where&gt;
      *   &lt;if test=&quot;id != null&quot;&gt;
-     *     and `id` = #{id}
+     *     and id = #{id}
      *   &lt;/if&gt;
-     *   and `is_deleted` = 'N'
+     *   and is_deleted = 'N'
      * &lt;/where&gt;
      * &lt;if test=&quot;orders != null and orders.size &gt; 0&quot;&gt;
      *   order by
@@ -77,7 +77,7 @@ public class SelectSortMapperTemplate extends AbstractMapperTemplate {
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(2048);
         builder.append("SELECT ").append(tableInfo.getSelectAllColumnsSql());
-        builder.append(" FROM `").append(TableMetaObject.getTableName(tableInfo)).append("`\n");
+        builder.append(" FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWhereConditionWithParameterSql());
         builder.append("\n<if test=\"orders != null and orders.size > 0\">");
         builder.append("\n  order by");
