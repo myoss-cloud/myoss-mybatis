@@ -18,6 +18,7 @@
 package com.github.myoss.phoenix.mybatis.mapper.template.select;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -55,4 +56,17 @@ public interface SelectListMapper<T> {
     @SelectProvider(type = SelectSortMapperTemplate.class, method = "dynamicSql")
     List<T> selectListWithSort(@Param("condition") T condition, @Param("orders") List<Order> orders);
 
+    /**
+     * 根据条件查询匹配的实体对象，查询结果可能有多条记录，并支持字段排序
+     *
+     * @param condition 匹配的条件
+     * @param extraCondition 扩展查询条件，需要自定义
+     * @param orders 排序字段
+     * @return 匹配的实体对象
+     * @see SelectSortMapperTemplate#selectListWithSort2
+     */
+    @SelectProvider(type = SelectSortMapperTemplate.class, method = "dynamicSql")
+    List<T> selectListWithSort2(@Param("condition") T condition,
+                                @Param("extraCondition") Map<String, Object> extraCondition,
+                                @Param("orders") List<Order> orders);
 }

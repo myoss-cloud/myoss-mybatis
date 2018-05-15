@@ -18,6 +18,7 @@
 package com.github.myoss.phoenix.mybatis.mapper.template.select;
 
 import java.util.List;
+import java.util.Map;
 
 import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
@@ -46,4 +47,20 @@ public interface SelectPageMapper<T> {
     @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
     List<T> selectPage(@Param("condition") T condition, @Param("offset") int offset, @Param("pageSize") int pageSize,
                        @Param("orders") List<Order> orders);
+
+    /**
+     * 根据条件分页查询匹配的实体对象
+     *
+     * @param condition 匹配的条件
+     * @param extraCondition 扩展查询条件，需要自定义
+     * @param offset 记录行的偏移量（SELECT * FROM table LIMIT 0,10; // 检索记录行 1-10）
+     * @param pageSize 分页的条数
+     * @param orders 排序字段
+     * @return 匹配的实体对象
+     * @see SelectMapperTemplate#selectPage2
+     */
+    @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
+    List<T> selectPage2(@Param("condition") T condition, @Param("extraCondition") Map<String, Object> extraCondition,
+                        @Param("offset") int offset, @Param("pageSize") int pageSize,
+                        @Param("orders") List<Order> orders);
 }

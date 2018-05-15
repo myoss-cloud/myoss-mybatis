@@ -19,6 +19,7 @@ package com.github.myoss.phoenix.mybatis.repository.service;
 
 import java.io.Serializable;
 import java.util.List;
+import java.util.Map;
 
 import com.github.myoss.phoenix.core.lang.dto.Page;
 import com.github.myoss.phoenix.core.lang.dto.Result;
@@ -126,6 +127,15 @@ public interface CrudService<T> {
      * @return 匹配的实体对象总记录数
      */
     Result<Integer> findCount(T condition);
+
+    /**
+     * 根据条件查询匹配的实体对象总记录数
+     *
+     * @param condition 匹配的条件
+     * @param extraCondition 扩展查询条件，需要自定义
+     * @return 匹配的实体对象总记录数
+     */
+    Result<Integer> findCount(T condition, Map<String, Object> extraCondition);
 
     /**
      * 根据条件查询匹配的实体对象，并进行分页

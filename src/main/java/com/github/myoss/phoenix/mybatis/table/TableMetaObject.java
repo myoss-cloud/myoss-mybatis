@@ -585,21 +585,23 @@ public class TableMetaObject {
         String prefix = conditionPrefix + ".";
         StringBuilder sql = new StringBuilder(2048);
         sql.append("<where>\n");
+        sql.append("  <if test=\"").append(conditionPrefix).append(" != null\">\n");
         for (TableColumnInfo item : tableInfo.getColumns()) {
             if (item.isLogicDelete()) {
                 continue;
             }
-            sql.append("  <if test=\"").append(prefix).append(item.getProperty()).append(" != null\">\n");
+            sql.append("    <if test=\"").append(prefix).append(item.getProperty()).append(" != null\">\n");
 
-            sql.append("    and ").append(item.getActualColumn()).append(" = #{").append(prefix)
+            sql.append("      and ").append(item.getActualColumn()).append(" = #{").append(prefix)
                     .append(item.getProperty());
             if (item.getJdbcType() != null) {
                 sql.append(",jdbcType=").append(item.getJdbcType().name());
             }
             sql.append("}\n");
 
-            sql.append("  </if>\n");
+            sql.append("    </if>\n");
         }
+        sql.append("  </if>\n");
         if (tableInfo.isLogicDelete()) {
             for (TableColumnInfo item : tableInfo.getLogicDeleteColumns()) {
                 sql.append("  and ").append(item.getActualColumn()).append(" = ");

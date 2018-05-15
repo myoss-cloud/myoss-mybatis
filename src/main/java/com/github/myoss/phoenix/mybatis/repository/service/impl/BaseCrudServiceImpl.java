@@ -681,7 +681,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         if (checkCommonQueryConditionIsAllNull(result, param)) {
             Sort sort = condition.getSort();
             List<Order> orders = convertToOrders(sort);
-            List<T> list = crudMapper.selectListWithSort(param, orders);
+            List<T> list = crudMapper.selectListWithSort2(param, condition.getExtraInfo(), orders);
             result.setValue(list);
         }
         return result;
@@ -692,6 +692,16 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         Result<Integer> result = new Result<>();
         if (checkCommonQueryConditionIsAllNull(result, condition)) {
             int count = crudMapper.selectCount(condition);
+            result.setValue(count);
+        }
+        return result;
+    }
+
+    @Override
+    public Result<Integer> findCount(T condition, Map<String, Object> extraCondition) {
+        Result<Integer> result = new Result<>();
+        if (checkCommonQueryConditionIsAllNull(result, condition)) {
+            int count = crudMapper.selectCount2(condition, extraCondition);
             result.setValue(count);
         }
         return result;
@@ -711,7 +721,8 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         T param = condition.getParam();
         Sort sort = condition.getSort();
         List<Order> orders = convertToOrders(sort);
-        List<T> details = crudMapper.selectPage(param, pageStart, pageSize, orders);
+        Map<String, Object> extraInfo = condition.getExtraInfo();
+        List<T> details = crudMapper.selectPage2(param, extraInfo, pageStart, pageSize, orders);
         int totalCount = crudMapper.selectCount(param);
         // 设置额外字段
         addPageExtraInfo(condition, result);

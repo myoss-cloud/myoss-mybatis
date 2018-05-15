@@ -17,6 +17,9 @@
 
 package com.github.myoss.phoenix.mybatis.mapper.template.select;
 
+import java.util.Map;
+
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 
 import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
@@ -38,4 +41,15 @@ public interface SelectCountMapper<T> {
      */
     @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
     int selectCount(T condition);
+
+    /**
+     * 根据条件查询匹配的实体对象总记录数
+     *
+     * @param condition 匹配的条件
+     * @param extraCondition 扩展可选查询条件，需要自定义
+     * @return 匹配的实体对象
+     * @see SelectMapperTemplate#selectCount2
+     */
+    @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
+    int selectCount2(@Param("condition") T condition, @Param("extraCondition") Map<String, Object> extraCondition);
 }

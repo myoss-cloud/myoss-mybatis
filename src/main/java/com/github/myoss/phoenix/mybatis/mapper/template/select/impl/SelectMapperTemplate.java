@@ -20,9 +20,11 @@ package com.github.myoss.phoenix.mybatis.mapper.template.select.impl;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.SqlSource;
@@ -155,6 +157,54 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
      * 示例如下：
      *
      * <pre>
+     * SELECT COUNT(1) FROM table_name
+     * &lt;where&gt;
+     *   &lt;if test=&quot;condition != null&quot;&gt;
+     *     &lt;if test=&quot;condition.id != null&quot;&gt;
+     *       and id = #{condition.id}
+     *     &lt;/if&gt;
+     *   &lt;/if&gt;
+     *   &lt;if test=&quot;extraCondition != null&quot;&gt;
+     *     &lt;!-- Mapper.XML &#20013;&#33258;&#23450;&#20041;&#30340; sql id=&quot;Where_Extra_Condition&quot; --&gt;
+     *   &lt;/if&gt;
+     *   and is_deleted = 'N'
+     * &lt;/where&gt;
+     * </pre>
+     *
+     * @param tableInfo 数据库表结构信息
+     * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
+     * @return 生成的sql语句
+     * @see SelectCountMapper#selectCount2(Object, Map)
+     */
+    public String selectCount2(TableInfo tableInfo, MappedStatement ms) {
+        MetaObject metaObject = SystemMetaObject.forObject(ms);
+        Configuration configuration = ms.getConfiguration();
+        String extraConditionId = StringUtils.substringBeforeLast(ms.getId(), ".") + ".Where_Extra_Condition";
+
+        // 生成 sql 语句
+        StringBuilder builder = new StringBuilder(2048);
+        builder.append("SELECT COUNT(1) FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
+        builder.append(tableInfo.getWhereConditionWithParameterSql());
+        if (configuration.getSqlFragments().containsKey(extraConditionId)) {
+            String extraConditionSql = configuration.getSqlFragments().get(extraConditionId).getStringBody();
+            String customSql = "  <if test=\"extraCondition != null\">\n    " + extraConditionSql + "\n  </if>\n";
+            builder.insert(builder.length() - 8, customSql);
+        }
+        String sql = builder.toString();
+
+        // 替换 sqlSource 对象
+        SqlSource sqlSource = xmlLanguageDriver
+                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        metaObject.setValue("sqlSource", sqlSource);
+        return sql;
+    }
+
+    /**
+     * 查询记录，生成 select 语句。
+     * <p>
+     * 示例如下：
+     *
+     * <pre>
      * SELECT id,... FROM table_name
      * &lt;where&gt;
      *   &lt;if test=&quot;id != null&quot;&gt;
@@ -199,6 +249,71 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
+        SqlSource sqlSource = xmlLanguageDriver
+                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        metaObject.setValue("sqlSource", sqlSource);
+        return sql;
+    }
+
+    /**
+     * 查询记录，生成 select 语句。
+     * <p>
+     * 示例如下：
+     *
+     * <pre>
+     * SELECT id,... FROM table_name
+     * &lt;where&gt;
+     *   &lt;if test=&quot;condition.id != null&quot;&gt;
+     *     and id = #{condition.id}
+     *   &lt;/if&gt;
+     *   and is_deleted = 'N'
+     *   &lt;if test=&quot;extraCondition != null&quot;&gt;
+     *     &lt;!-- Mapper.XML &#20013;&#33258;&#23450;&#20041;&#30340; sql id=&quot;Where_Extra_Condition&quot; --&gt;
+     *   &lt;/if&gt;
+     * &lt;/where&gt;
+     * &lt;if test=&quot;orders != null and orders.size &gt; 0&quot;&gt;
+     *   order by
+     *   &lt;foreach collection=&quot;orders&quot; item=&quot;item&quot; separator=&quot;,&quot;&gt;
+     *     ${item.property} ${item.direction}
+     *   &lt;/foreach&gt;
+     * &lt;/if&gt;
+     * limit #{offset}, #{pageSize}
+     * </pre>
+     *
+     * @param tableInfo 数据库表结构信息
+     * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
+     * @return 生成的sql语句
+     * @see SelectPageMapper#selectPage2(Object, Map, int, int, List)
+     */
+    public String selectPage2(TableInfo tableInfo, MappedStatement ms) {
+        MetaObject metaObject = SystemMetaObject.forObject(ms);
+        // 替换 resultMap 对象
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
+                Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        metaObject.setValue("resultMaps", resultMaps);
+        Configuration configuration = ms.getConfiguration();
+        String extraConditionId = StringUtils.substringBeforeLast(ms.getId(), ".") + ".Where_Extra_Condition";
+
+        // 生成 sql 语句
+        StringBuilder builder = new StringBuilder(2048);
+        builder.append("SELECT ").append(tableInfo.getSelectAllColumnsSql());
+        builder.append(" FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
+        builder.append(tableInfo.getWhereConditionWithParameterSql());
+        if (configuration.getSqlFragments().containsKey(extraConditionId)) {
+            String extraConditionSql = configuration.getSqlFragments().get(extraConditionId).getStringBody();
+            String customSql = "  <if test=\"extraCondition != null\">\n    " + extraConditionSql + "\n  </if>\n";
+            builder.insert(builder.length() - 8, customSql);
+        }
+        builder.append("\n<if test=\"orders != null and orders.size > 0\">");
+        builder.append("\n  order by");
+        builder.append("\n  <foreach collection=\"orders\" item=\"item\" separator=\",\">");
+        builder.append("\n    ${item.property} ${item.direction}");
+        builder.append("\n  </foreach>");
+        builder.append("\n</if>");
+        builder.append("\nlimit #{offset}, #{pageSize}");
+        String sql = builder.toString();
+
+        // 替换 sqlSource 对象
         SqlSource sqlSource = xmlLanguageDriver
                 .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
         metaObject.setValue("sqlSource", sqlSource);
