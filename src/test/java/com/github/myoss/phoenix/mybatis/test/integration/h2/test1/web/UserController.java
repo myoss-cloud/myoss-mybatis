@@ -15,7 +15,7 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.web;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test1.web;
 
 import java.io.Serializable;
 import java.util.List;
@@ -30,23 +30,23 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.myoss.phoenix.core.lang.dto.Page;
 import com.github.myoss.phoenix.core.lang.dto.Result;
 import com.github.myoss.phoenix.core.log.method.aspectj.annotation.LogMethodAround;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.UserHistory;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.service.UserHistoryService;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.entity.User;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.service.UserService;
 
 /**
- * This web rest api access the database table t_sys_user_history
+ * This web rest api access the database table t_sys_user
  * <p>
- * Database Table Remarks: 系统用户信息历史备份表
+ * Database Table Remarks: 系统用户信息表
  * </p>
  *
  * @author jerry
- * @since 2018年5月14日 下午3:39:43
+ * @since 2018年5月11日 上午10:41:47
  */
-@RequestMapping("/userHistory")
+@RequestMapping("/user")
 @RestController
-public class UserHistoryController {
+public class UserController {
     @Autowired
-    private UserHistoryService userHistoryService;
+    private UserService userService;
 
     /**
      * 创建新的记录
@@ -56,8 +56,8 @@ public class UserHistoryController {
      */
     @LogMethodAround
     @PostMapping(value = "/create")
-    public <I> Result<I> create(@RequestBody UserHistory record) {
-        return userHistoryService.create(record);
+    public <I> Result<I> create(@RequestBody User record) {
+        return userService.create(record);
     }
 
     /**
@@ -68,8 +68,8 @@ public class UserHistoryController {
      */
     @LogMethodAround
     @PostMapping(value = "/updateByPrimaryKey")
-    public Result<Boolean> updateByPrimaryKey(@RequestBody UserHistory record) {
-        return userHistoryService.updateByPrimaryKey(record);
+    public Result<Boolean> updateByPrimaryKey(@RequestBody User record) {
+        return userService.updateByPrimaryKey(record);
     }
 
     /**
@@ -80,8 +80,8 @@ public class UserHistoryController {
      */
     @LogMethodAround
     @PostMapping("/deleteByPrimaryKey")
-    public Result<Boolean> deleteByPrimaryKey(@RequestBody UserHistory condition) {
-        return userHistoryService.deleteByPrimaryKey(condition);
+    public Result<Boolean> deleteByPrimaryKey(@RequestBody User condition) {
+        return userService.deleteByPrimaryKey(condition);
     }
 
     /**
@@ -91,8 +91,8 @@ public class UserHistoryController {
      * @return 对应的实体对象
      */
     @RequestMapping(value = "/findByPrimaryKey")
-    public Result<UserHistory> findByPrimaryKey(@RequestParam("id") Serializable id) {
-        return userHistoryService.findByPrimaryKey(id);
+    public Result<User> findByPrimaryKey(@RequestParam("id") Serializable id) {
+        return userService.findByPrimaryKey(id);
     }
 
     /**
@@ -102,8 +102,8 @@ public class UserHistoryController {
      * @return 对应的实体对象
      */
     @PostMapping(value = "/findByPrimaryKey")
-    public Result<UserHistory> findByPrimaryKey(@RequestBody UserHistory condition) {
-        return userHistoryService.findByPrimaryKey(condition);
+    public Result<User> findByPrimaryKey(@RequestBody User condition) {
+        return userService.findByPrimaryKey(condition);
     }
 
     /**
@@ -113,8 +113,8 @@ public class UserHistoryController {
      * @return 匹配的实体对象
      */
     @PostMapping(value = "/findList")
-    public Result<List<UserHistory>> findList(@RequestBody UserHistory condition) {
-        return userHistoryService.findList(condition);
+    public Result<List<User>> findList(@RequestBody User condition) {
+        return userService.findList(condition);
     }
 
     /**
@@ -124,8 +124,8 @@ public class UserHistoryController {
      * @return 匹配的实体对象
      */
     @PostMapping(value = "/findListWithSort")
-    public Result<List<UserHistory>> findListWithSort(@RequestBody Page<UserHistory> condition) {
-        return userHistoryService.findListWithSort(condition);
+    public Result<List<User>> findListWithSort(@RequestBody Page<User> condition) {
+        return userService.findListWithSort(condition);
     }
 
     /**
@@ -135,7 +135,7 @@ public class UserHistoryController {
      * @return 匹配的实体对象
      */
     @PostMapping("/findPage")
-    public Page<UserHistory> findPage(@RequestBody Page<UserHistory> condition) {
-        return userHistoryService.findPage(condition);
+    public Page<User> findPage(@RequestBody Page<User> condition) {
+        return userService.findPage(condition);
     }
 }

@@ -22,12 +22,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
-import org.springframework.context.annotation.Bean;
-import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.jdbc.core.JdbcTemplate;
 
-import com.alibaba.fastjson.JSON;
 import com.github.myoss.phoenix.mybatis.table.Sequence;
 
 /**
@@ -39,21 +35,8 @@ import com.github.myoss.phoenix.mybatis.table.Sequence;
 public class H2DataBaseIntTest {
     @ImportAutoConfiguration(JdbcTemplateAutoConfiguration.class)
     @EnableAutoConfiguration
-    @ComponentScan(basePackageClasses = H2DataBaseIntTest.class)
     @Configuration
     public static class IntAutoConfig {
-        @Bean
-        public SequenceCustomizer seqUserLog(JdbcTemplate jdbcTemplate) {
-            return new SequenceCustomizer() {
-                @Override
-                public Object nextValue(Object parameter) {
-                    Long nextId = jdbcTemplate.queryForObject("select ifnull(max(`id`) ,0) + 1 from t_sys_user_log",
-                            Long.class);
-                    log.info("nextId: {}, parameter: {}", nextId, JSON.toJSONString(parameter));
-                    return nextId;
-                }
-            };
-        }
     }
 
     public static class SequenceCustomizer implements Sequence {

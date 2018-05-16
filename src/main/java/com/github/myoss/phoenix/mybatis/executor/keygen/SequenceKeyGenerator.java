@@ -44,12 +44,13 @@ import com.github.myoss.phoenix.mybatis.table.annotation.SequenceKey;
  * @see Sequence
  */
 public class SequenceKeyGenerator implements KeyGenerator {
-    private String[] keyProperties;
-    private String[] keyColumns;
-    private boolean  executeBefore;
-    private Sequence sequence;
+    public static final String SEQUENCE_KEY_SUFFIX = "!sequenceKey";
+    private String[]           keyProperties;
+    private String[]           keyColumns;
+    private boolean            executeBefore;
+    private Sequence           sequence;
 
-    public SequenceKeyGenerator(TableInfo tableInfo, boolean executeBefore) {
+    public SequenceKeyGenerator(TableInfo tableInfo, String sqlId, boolean executeBefore) {
         TableSequence tableSequence = tableInfo.getTableSequence();
         this.keyProperties = tableSequence.getKeyProperties();
         this.keyColumns = tableSequence.getKeyColumns();
@@ -66,9 +67,8 @@ public class SequenceKeyGenerator implements KeyGenerator {
         } else {
             try {
                 this.sequence = tableSequence.getSequenceClass().newInstance();
-                String name = StringUtils.defaultString(tableSequence.getSequenceName(), tableInfo.getEntityClass()
-                        .getCanonicalName() + ".SequenceKey");
-                TableMetaObject.addSequenceBean(name, this.sequence);
+                String name = StringUtils.defaultString(tableSequence.getSequenceName(), SEQUENCE_KEY_SUFFIX);
+                TableMetaObject.addSequenceBean(sqlId + "." + name, this.sequence);
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new BindingException("new instance of [" + tableSequence.getSequenceClass() + "] failed", e);
             }

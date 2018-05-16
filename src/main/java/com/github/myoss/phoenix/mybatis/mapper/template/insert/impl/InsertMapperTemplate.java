@@ -121,7 +121,7 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
                     xmlLanguageDriver, id);
         } else if (strategy == GenerationType.SEQUENCE_KEY) {
             boolean executeBefore = tableSequence.getOrder().equals(Order.BEFORE);
-            keyGenerator = new SequenceKeyGenerator(tableInfo, executeBefore);
+            keyGenerator = new SequenceKeyGenerator(tableInfo, id, executeBefore);
         } else {
             throw new UnsupportedOperationException("keyGenerator strategy " + strategy.getType() + " unsupported");
         }

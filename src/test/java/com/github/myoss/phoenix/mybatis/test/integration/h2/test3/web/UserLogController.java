@@ -15,13 +15,12 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.web;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test3.web;
 
 import java.io.Serializable;
 import java.util.List;
 
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -30,23 +29,23 @@ import org.springframework.web.bind.annotation.RestController;
 import com.github.myoss.phoenix.core.lang.dto.Page;
 import com.github.myoss.phoenix.core.lang.dto.Result;
 import com.github.myoss.phoenix.core.log.method.aspectj.annotation.LogMethodAround;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.User;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.service.UserService;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test3.entity.UserLog;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test3.service.UserLogService;
 
 /**
- * This web rest api access the database table t_sys_user
+ * This web rest api access the database table t_sys_user_log
  * <p>
- * Database Table Remarks: 系统用户信息表
+ * Database Table Remarks: 系统用户日志记录表
  * </p>
  *
  * @author jerry
- * @since 2018年5月11日 上午10:41:47
+ * @since 2018年5月14日 下午10:33:55
  */
-@RequestMapping("/user")
+@RequestMapping("/userLog")
 @RestController
-public class UserController {
+public class UserLogController {
     @Autowired
-    private UserService userService;
+    private UserLogService userLogService;
 
     /**
      * 创建新的记录
@@ -55,9 +54,9 @@ public class UserController {
      * @return 主键id
      */
     @LogMethodAround
-    @PostMapping(value = "/create")
-    public <I> Result<I> create(@RequestBody User record) {
-        return userService.create(record);
+    // @PostMapping(value = "/create")
+    public <I> Result<I> create(@RequestBody UserLog record) {
+        return userLogService.create(record);
     }
 
     /**
@@ -67,9 +66,9 @@ public class UserController {
      * @return 是否操作成功
      */
     @LogMethodAround
-    @PostMapping(value = "/updateByPrimaryKey")
-    public Result<Boolean> updateByPrimaryKey(@RequestBody User record) {
-        return userService.updateByPrimaryKey(record);
+    // @PostMapping(value = "/updateByPrimaryKey")
+    public Result<Boolean> updateByPrimaryKey(@RequestBody UserLog record) {
+        return userLogService.updateByPrimaryKey(record);
     }
 
     /**
@@ -79,9 +78,9 @@ public class UserController {
      * @return 是否操作成功
      */
     @LogMethodAround
-    @PostMapping("/deleteByPrimaryKey")
-    public Result<Boolean> deleteByPrimaryKey(@RequestBody User condition) {
-        return userService.deleteByPrimaryKey(condition);
+    // @PostMapping("/deleteByPrimaryKey")
+    public Result<Boolean> deleteByPrimaryKey(@RequestBody UserLog condition) {
+        return userLogService.deleteByPrimaryKey(condition);
     }
 
     /**
@@ -90,9 +89,9 @@ public class UserController {
      * @param id 主键id
      * @return 对应的实体对象
      */
-    @RequestMapping(value = "/findByPrimaryKey")
-    public Result<User> findByPrimaryKey(@RequestParam("id") Serializable id) {
-        return userService.findByPrimaryKey(id);
+    // @RequestMapping(value = "/findByPrimaryKey")
+    public Result<UserLog> findByPrimaryKey(@RequestParam("id") Serializable id) {
+        return userLogService.findByPrimaryKey(id);
     }
 
     /**
@@ -101,9 +100,9 @@ public class UserController {
      * @param condition 主键id
      * @return 对应的实体对象
      */
-    @PostMapping(value = "/findByPrimaryKey")
-    public Result<User> findByPrimaryKey(@RequestBody User condition) {
-        return userService.findByPrimaryKey(condition);
+    // @PostMapping(value = "/findByPrimaryKey")
+    public Result<UserLog> findByPrimaryKey(@RequestBody UserLog condition) {
+        return userLogService.findByPrimaryKey(condition);
     }
 
     /**
@@ -112,9 +111,9 @@ public class UserController {
      * @param condition 匹配的条件
      * @return 匹配的实体对象
      */
-    @PostMapping(value = "/findList")
-    public Result<List<User>> findList(@RequestBody User condition) {
-        return userService.findList(condition);
+    // @PostMapping(value = "/findList")
+    public Result<List<UserLog>> findList(@RequestBody UserLog condition) {
+        return userLogService.findList(condition);
     }
 
     /**
@@ -123,9 +122,9 @@ public class UserController {
      * @param condition 匹配的条件和排序字段
      * @return 匹配的实体对象
      */
-    @PostMapping(value = "/findListWithSort")
-    public Result<List<User>> findListWithSort(@RequestBody Page<User> condition) {
-        return userService.findListWithSort(condition);
+    // @PostMapping(value = "/findListWithSort")
+    public Result<List<UserLog>> findListWithSort(@RequestBody Page<UserLog> condition) {
+        return userLogService.findListWithSort(condition);
     }
 
     /**
@@ -134,8 +133,8 @@ public class UserController {
      * @param condition 匹配的条件和排序字段
      * @return 匹配的实体对象
      */
-    @PostMapping("/findPage")
-    public Page<User> findPage(@RequestBody Page<User> condition) {
-        return userService.findPage(condition);
+    // @PostMapping("/findPage")
+    public Page<UserLog> findPage(@RequestBody Page<UserLog> condition) {
+        return userLogService.findPage(condition);
     }
 }

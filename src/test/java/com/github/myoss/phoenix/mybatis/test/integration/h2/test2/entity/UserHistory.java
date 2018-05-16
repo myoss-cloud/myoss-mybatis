@@ -15,47 +15,43 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.entity;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test2.entity;
 
-import java.io.Serializable;
 import java.util.Date;
 
 import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.ToString;
 import lombok.experimental.Accessors;
 
+import com.github.myoss.phoenix.mybatis.repository.entity.AuditIdEntity;
 import com.github.myoss.phoenix.mybatis.table.annotation.Column;
-import com.github.myoss.phoenix.mybatis.table.annotation.FillRule;
 import com.github.myoss.phoenix.mybatis.table.annotation.GenerationType;
+import com.github.myoss.phoenix.mybatis.table.annotation.SelectKey;
 import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator;
 import com.github.myoss.phoenix.mybatis.table.annotation.Table;
+import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator.Order;
 
 /**
- * This class corresponds to the database table t_sys_user
+ * This class corresponds to the database table t_sys_user_history
  * <p>
- * Database Table Remarks: 系统用户信息表
+ * Database Table Remarks: 系统用户信息历史备份表
  * </p>
  *
  * @author jerry
- * @since 2018年5月11日 上午10:41:47
+ * @since 2018年5月14日 下午3:39:43
  */
+@ToString(callSuper = true)
+@EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @Data
-@SequenceGenerator(strategy = GenerationType.USE_GENERATED_KEYS)
-@Table(name = "t_sys_user")
-public class User implements Serializable {
+@SequenceGenerator(strategy = GenerationType.SELECT_KEY, selectKey = @SelectKey(sql = "select ifnull(max(`id`) ,0) + 1 from t_sys_user_history", keyProperty = { "id" }, keyColumn = { "id" }, resultType = Long.class, order = Order.BEFORE))
+@Table(name = "t_sys_user_history")
+public class UserHistory extends AuditIdEntity<Long> {
     private static final long serialVersionUID = 1L;
 
     /**
-     * Database Column Name: t_sys_user.id
-     * <p>
-     * Database Column Remarks: 主键id
-     * </p>
-     */
-    @Column(name = "id", nullable = false, jdbcTypeName = "BIGINT", primaryKey = true)
-    private Long              id;
-
-    /**
-     * Database Column Name: t_sys_user.employee_number
+     * Database Column Name: t_sys_user_history.employee_number
      * <p>
      * Database Column Remarks: 员工编号
      * </p>
@@ -64,7 +60,7 @@ public class User implements Serializable {
     private String            employeeNumber;
 
     /**
-     * Database Column Name: t_sys_user.account
+     * Database Column Name: t_sys_user_history.account
      * <p>
      * Database Column Remarks: 登录账号
      * </p>
@@ -73,7 +69,7 @@ public class User implements Serializable {
     private String            account;
 
     /**
-     * Database Column Name: t_sys_user.password
+     * Database Column Name: t_sys_user_history.password
      * <p>
      * Database Column Remarks: 密码
      * </p>
@@ -82,7 +78,7 @@ public class User implements Serializable {
     private String            password;
 
     /**
-     * Database Column Name: t_sys_user.salt
+     * Database Column Name: t_sys_user_history.salt
      * <p>
      * Database Column Remarks: 密钥
      * </p>
@@ -91,7 +87,7 @@ public class User implements Serializable {
     private String            salt;
 
     /**
-     * Database Column Name: t_sys_user.name
+     * Database Column Name: t_sys_user_history.name
      * <p>
      * Database Column Remarks: 姓名
      * </p>
@@ -100,7 +96,7 @@ public class User implements Serializable {
     private String            name;
 
     /**
-     * Database Column Name: t_sys_user.gender
+     * Database Column Name: t_sys_user_history.gender
      * <p>
      * Database Column Remarks: 性别
      * </p>
@@ -109,7 +105,7 @@ public class User implements Serializable {
     private String            gender;
 
     /**
-     * Database Column Name: t_sys_user.birthday
+     * Database Column Name: t_sys_user_history.birthday
      * <p>
      * Database Column Remarks: 生日
      * </p>
@@ -118,7 +114,7 @@ public class User implements Serializable {
     private Date              birthday;
 
     /**
-     * Database Column Name: t_sys_user.email
+     * Database Column Name: t_sys_user_history.email
      * <p>
      * Database Column Remarks: 邮箱
      * </p>
@@ -127,7 +123,7 @@ public class User implements Serializable {
     private String            email;
 
     /**
-     * Database Column Name: t_sys_user.phone
+     * Database Column Name: t_sys_user_history.phone
      * <p>
      * Database Column Remarks: 联系电话
      * </p>
@@ -136,7 +132,7 @@ public class User implements Serializable {
     private String            phone;
 
     /**
-     * Database Column Name: t_sys_user.telephone
+     * Database Column Name: t_sys_user_history.telephone
      * <p>
      * Database Column Remarks: 工作电话
      * </p>
@@ -145,7 +141,7 @@ public class User implements Serializable {
     private String            telephone;
 
     /**
-     * Database Column Name: t_sys_user.company_id
+     * Database Column Name: t_sys_user_history.company_id
      * <p>
      * Database Column Remarks: 所属公司
      * </p>
@@ -154,7 +150,7 @@ public class User implements Serializable {
     private Long              companyId;
 
     /**
-     * Database Column Name: t_sys_user.dept_id
+     * Database Column Name: t_sys_user_history.dept_id
      * <p>
      * Database Column Remarks: 用户所属部门
      * </p>
@@ -163,7 +159,7 @@ public class User implements Serializable {
     private Long              deptId;
 
     /**
-     * Database Column Name: t_sys_user.position_id
+     * Database Column Name: t_sys_user_history.position_id
      * <p>
      * Database Column Remarks: 所在职位
      * </p>
@@ -172,7 +168,7 @@ public class User implements Serializable {
     private Long              positionId;
 
     /**
-     * Database Column Name: t_sys_user.parent_user_id
+     * Database Column Name: t_sys_user_history.parent_user_id
      * <p>
      * Database Column Remarks: 归属领导id
      * </p>
@@ -181,7 +177,7 @@ public class User implements Serializable {
     private Long              parentUserId;
 
     /**
-     * Database Column Name: t_sys_user.status
+     * Database Column Name: t_sys_user_history.status
      * <p>
      * Database Column Remarks: 状态（1: 启用; 2: 禁用）
      * </p>
@@ -190,7 +186,7 @@ public class User implements Serializable {
     private String            status;
 
     /**
-     * Database Column Name: t_sys_user.entry_date
+     * Database Column Name: t_sys_user_history.entry_date
      * <p>
      * Database Column Remarks: 入职时间
      * </p>
@@ -199,60 +195,12 @@ public class User implements Serializable {
     private Date              entryDate;
 
     /**
-     * Database Column Name: t_sys_user.leave_date
+     * Database Column Name: t_sys_user_history.leave_date
      * <p>
      * Database Column Remarks: 离职日期
      * </p>
      */
     @Column(name = "leave_date", jdbcTypeName = "DATE")
     private Date              leaveDate;
-
-    /**
-     * Database Column Name: t_sys_user.is_deleted
-     * <p>
-     * Database Column Remarks: 是否删除
-     * </p>
-     */
-    @Column(name = "is_deleted", nullable = false, jdbcTypeName = "CHAR", fillRule = { FillRule.INSERT, FillRule.UPDATE })
-    private String            isDeleted;
-
-    /**
-     * Database Column Name: t_sys_user.creator
-     * <p>
-     * Database Column Remarks: 创建者
-     * </p>
-     */
-    @Column(name = "creator", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT, FillRule.UPDATE })
-    private String            creator;
-
-    /**
-     * Database Column Name: t_sys_user.modifier
-     * <p>
-     * Database Column Remarks: 修改者
-     * </p>
-     */
-    @Column(name = "modifier", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT,
-            FillRule.UPDATE })
-    private String            modifier;
-
-    /**
-     * Database Column Name: t_sys_user.gmt_created
-     * <p>
-     * Database Column Remarks: 创建时间
-     * </p>
-     */
-    @Column(name = "gmt_created", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT,
-            FillRule.UPDATE })
-    private Date              gmtCreated;
-
-    /**
-     * Database Column Name: t_sys_user.gmt_modified
-     * <p>
-     * Database Column Remarks: 修改时间
-     * </p>
-     */
-    @Column(name = "gmt_modified", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT,
-            FillRule.UPDATE })
-    private Date              gmtModified;
 
 }

@@ -15,29 +15,26 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.service.impl;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test2.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.github.myoss.phoenix.core.lang.dto.Page;
 import com.github.myoss.phoenix.mybatis.repository.service.impl.BaseCrudServiceImpl;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.User;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.mapper.UserMapper;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.service.UserService;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test2.entity.UserHistory;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test2.mapper.UserHistoryMapper;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test2.service.UserHistoryService;
 
 /**
- * This service implement access the database table t_sys_user
+ * This service implement access the database table t_sys_user_history
  * <p>
- * Database Table Remarks: 系统用户信息表
+ * Database Table Remarks: 系统用户信息历史备份表
  * </p>
  *
  * @author jerry
- * @since 2018年5月11日 上午10:41:47
+ * @since 2018年5月14日 下午3:39:43
  */
 @Service
-public class UserServiceImpl extends BaseCrudServiceImpl<UserMapper, User> implements UserService {
-    @Override
-    protected boolean checkPageConditionIsAllNull(Page<User> condition, Page<User> result) {
-        return true;
-    }
+public class UserHistoryServiceImpl extends BaseCrudServiceImpl<UserHistoryMapper, UserHistory> implements
+        UserHistoryService {
+
 }

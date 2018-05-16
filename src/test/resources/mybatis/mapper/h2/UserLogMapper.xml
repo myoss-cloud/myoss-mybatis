@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
-<mapper namespace="com.github.myoss.phoenix.mybatis.test.integration.h2.mapper.UserLogMapper">
+<mapper namespace="com.github.myoss.phoenix.mybatis.test.integration.h2.test3.mapper.UserLogMapper">
 
     <!-- 通用查询映射结果 -->
-    <resultMap id="BaseResultMap" type="com.github.myoss.phoenix.mybatis.test.integration.h2.entity.UserLog">
+    <resultMap id="BaseResultMap" type="com.github.myoss.phoenix.mybatis.test.integration.h2.test3.entity.UserLog">
         <id column="id" jdbcType="BIGINT" property="id"/>
         <result column="is_deleted" jdbcType="CHAR" property="isDeleted"/>
         <result column="creator" jdbcType="VARCHAR" property="creator"/>

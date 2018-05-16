@@ -15,20 +15,20 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.service;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test1.service;
 
 import com.github.myoss.phoenix.mybatis.repository.service.CrudService;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.UserLog;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.entity.User;
 
 /**
- * This service interface access the database table t_sys_user_log
+ * This service interface access the database table t_sys_user
  * <p>
- * Database Table Remarks: 系统用户日志记录表
+ * Database Table Remarks: 系统用户信息表
  * </p>
  *
  * @author jerry
- * @since 2018年5月14日 下午10:33:55
+ * @since 2018年5月11日 上午10:41:47
  */
-public interface UserLogService extends CrudService<UserLog> {
+public interface UserService extends CrudService<User> {
 
 }

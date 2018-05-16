@@ -15,7 +15,7 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.entity;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test3.entity;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;

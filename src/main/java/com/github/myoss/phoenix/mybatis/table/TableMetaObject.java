@@ -88,6 +88,10 @@ public class TableMetaObject {
      * @param sequence 序列生成器实例对象
      */
     public static void addSequenceBean(String sequenceBeanName, Sequence sequence) {
+        if (SEQUENCE_BEAN_MAP.containsKey(sequenceBeanName)) {
+            throw new IllegalArgumentException("already contains value for " + sequenceBeanName + ", sequence: "
+                    + sequence);
+        }
         SEQUENCE_BEAN_MAP.putIfAbsent(sequenceBeanName, sequence);
     }
 

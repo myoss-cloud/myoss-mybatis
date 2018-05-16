@@ -15,20 +15,20 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.mapper;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test1.mapper;
 
 import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.UserHistory;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.entity.User;
 
 /**
- * This mapper interface access the database table t_sys_user_history
+ * This mapper interface access the database table t_sys_user
  * <p>
- * Database Table Remarks: 系统用户信息历史备份表
+ * Database Table Remarks: 系统用户信息表
  * </p>
  *
  * @author jerry
- * @since 2018年5月14日 下午3:39:43
+ * @since 2018年5月11日 上午10:41:47
  */
-public interface UserHistoryMapper extends CrudMapper<UserHistory> {
+public interface UserMapper extends CrudMapper<User> {
 
 }

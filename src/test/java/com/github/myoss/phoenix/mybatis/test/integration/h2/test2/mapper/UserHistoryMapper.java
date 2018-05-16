@@ -15,17 +15,13 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.service.impl;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test2.mapper;
 
-import org.springframework.stereotype.Service;
-
-import com.github.myoss.phoenix.mybatis.repository.service.impl.BaseCrudServiceImpl;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.UserHistory;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.mapper.UserHistoryMapper;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.service.UserHistoryService;
+import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test2.entity.UserHistory;
 
 /**
- * This service implement access the database table t_sys_user_history
+ * This mapper interface access the database table t_sys_user_history
  * <p>
  * Database Table Remarks: 系统用户信息历史备份表
  * </p>
@@ -33,8 +29,6 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.service.UserHistoryS
  * @author jerry
  * @since 2018年5月14日 下午3:39:43
  */
-@Service
-public class UserHistoryServiceImpl extends BaseCrudServiceImpl<UserHistoryMapper, UserHistory> implements
-        UserHistoryService {
+public interface UserHistoryMapper extends CrudMapper<UserHistory> {
 
 }

@@ -15,13 +15,17 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.mapper;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test3.service.impl;
 
-import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.UserLog;
+import org.springframework.stereotype.Service;
+
+import com.github.myoss.phoenix.mybatis.repository.service.impl.BaseCrudServiceImpl;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test3.entity.UserLog;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test3.mapper.UserLogMapper;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test3.service.UserLogService;
 
 /**
- * This mapper interface access the database table t_sys_user_log
+ * This service implement access the database table t_sys_user_log
  * <p>
  * Database Table Remarks: 系统用户日志记录表
  * </p>
@@ -29,6 +33,7 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.UserLog;
  * @author jerry
  * @since 2018年5月14日 下午10:33:55
  */
-public interface UserLogMapper extends CrudMapper<UserLog> {
+@Service
+public class UserLogServiceImpl extends BaseCrudServiceImpl<UserLogMapper, UserLog> implements UserLogService {
 
 }

@@ -15,10 +15,10 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.service;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test2.service;
 
 import com.github.myoss.phoenix.mybatis.repository.service.CrudService;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.UserHistory;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test2.entity.UserHistory;
 
 /**
  * This service interface access the database table t_sys_user_history

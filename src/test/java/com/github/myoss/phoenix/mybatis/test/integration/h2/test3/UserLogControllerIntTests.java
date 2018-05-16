@@ -15,7 +15,7 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.test;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test3;
 
 import java.util.Date;
 import java.util.List;
@@ -33,11 +33,14 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
+import com.alibaba.fastjson.JSON;
 import com.github.myoss.phoenix.core.constants.PhoenixConstants;
 import com.github.myoss.phoenix.core.lang.dto.Page;
 import com.github.myoss.phoenix.core.lang.dto.Result;
@@ -48,27 +51,29 @@ import com.github.myoss.phoenix.mybatis.repository.entity.AuditIdEntity;
 import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import com.github.myoss.phoenix.mybatis.spring.mapper.MapperFactoryBean;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConfig;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.UserHistory;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.service.UserHistoryService;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.web.UserHistoryController;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.H2DataBaseIntTest.SequenceCustomizer;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test3.entity.UserLog;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test3.service.UserLogService;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test3.web.UserLogController;
 
 /**
- * {@link UserHistoryController } 集成测试，使用H2内存数据库，测试 Mybatis 功能
+ * {@link UserLogController } 集成测试，使用H2内存数据库，测试 Mybatis 功能
  *
- * @author Jerry.Chen 2018年5月11日 上午10:45:16
+ * @author Jerry.Chen 2018年5月11日 下午10:33:55
  */
-@MapperScan(basePackageClasses = IntAutoConfig.class, factoryBean = MapperFactoryBean.class, markerInterface = CrudMapper.class)
-@ActiveProfiles({ "h2-userIntTest", "UserHistoryControllerIntTests" })
+@MapperScan(basePackageClasses = UserLogControllerIntTests.class, factoryBean = MapperFactoryBean.class, markerInterface = CrudMapper.class)
+@ActiveProfiles({ "h2-test3", "UserLogControllerIntTests" })
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { DataSourceAutoConfiguration.class, IntAutoConfig.class, MybatisAutoConfiguration.class })
-public class UserHistoryControllerIntTests {
+public class UserLogControllerIntTests {
     @Autowired
-    private UserHistoryController userHistoryController;
+    private UserLogController userLogController;
     @Autowired
-    private UserHistoryService    userHistoryService;
+    private UserLogService    userLogService;
 
-    @Profile("UserHistoryControllerIntTests")
+    @ComponentScan(basePackageClasses = UserLogControllerIntTests.class)
+    @Profile("UserLogControllerIntTests")
     @Configuration
     public static class MyConfig {
         @Bean
@@ -85,6 +90,19 @@ public class UserHistoryControllerIntTests {
                 }
             };
         }
+
+        @Bean
+        public SequenceCustomizer seqUserLog(JdbcTemplate jdbcTemplate) {
+            return new SequenceCustomizer() {
+                @Override
+                public Object nextValue(Object parameter) {
+                    Long nextId = jdbcTemplate.queryForObject("select ifnull(max(`id`) ,0) + 1 from t_sys_user_log",
+                            Long.class);
+                    log.info("nextId: {}, parameter: {}", nextId, JSON.toJSONString(parameter));
+                    return nextId;
+                }
+            };
+        }
     }
 
     /**
@@ -93,12 +111,12 @@ public class UserHistoryControllerIntTests {
     @Test
     public void crudTest1() {
         Long exceptedId = 1L;
-        UserHistory record = new UserHistory();
+        UserLog record = new UserLog();
         record.setEmployeeNumber("10000");
-        record.setName("Jerry");
+        record.setInfo("第一次记录");
 
         // 创建记录
-        Result<Long> createResult = userHistoryController.create(record);
+        Result<Long> createResult = userLogController.create(record);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(createResult).isNotNull();
             softly.assertThat(createResult.isSuccess()).isTrue();
@@ -108,7 +126,7 @@ public class UserHistoryControllerIntTests {
         });
 
         // 使用各种查询 API 查询数据库中的记录，和保存之后的记录进行比较
-        Result<UserHistory> idResult = userHistoryController.findByPrimaryKey(exceptedId);
+        Result<UserLog> idResult = userLogController.findByPrimaryKey(exceptedId);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(idResult).isNotNull();
             softly.assertThat(idResult.isSuccess()).isTrue();
@@ -117,7 +135,7 @@ public class UserHistoryControllerIntTests {
             softly.assertThat(idResult.getValue()).isNotNull().isEqualTo(record);
         });
 
-        Result<UserHistory> idResult2 = userHistoryController.findByPrimaryKey(record);
+        Result<UserLog> idResult2 = userLogController.findByPrimaryKey(record);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(idResult2).isNotNull();
             softly.assertThat(idResult2.isSuccess()).isTrue();
@@ -126,7 +144,7 @@ public class UserHistoryControllerIntTests {
             softly.assertThat(idResult2.getValue()).isNotNull().isEqualTo(record);
         });
 
-        Result<List<UserHistory>> listResult = userHistoryController.findList(record);
+        Result<List<UserLog>> listResult = userLogController.findList(record);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(listResult).isNotNull();
             softly.assertThat(listResult.isSuccess()).isTrue();
@@ -136,7 +154,7 @@ public class UserHistoryControllerIntTests {
             softly.assertThat(listResult.getValue().get(0)).isEqualTo(record);
         });
 
-        Result<UserHistory> oneResult = userHistoryService.findOne(record);
+        Result<UserLog> oneResult = userLogService.findOne(record);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(oneResult).isNotNull();
             softly.assertThat(oneResult.isSuccess()).isTrue();
@@ -145,10 +163,10 @@ public class UserHistoryControllerIntTests {
             softly.assertThat(oneResult.getValue()).isNotNull().isEqualTo(record);
         });
 
-        Page<UserHistory> pageCondition = new Page<>();
+        Page<UserLog> pageCondition = new Page<>();
         pageCondition.setParam(record);
         pageCondition.setSort(new Sort("id", "name"));
-        Result<List<UserHistory>> sortResult = userHistoryController.findListWithSort(pageCondition);
+        Result<List<UserLog>> sortResult = userLogController.findListWithSort(pageCondition);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(sortResult).isNotNull();
             softly.assertThat(sortResult.isSuccess()).isTrue();
@@ -158,7 +176,7 @@ public class UserHistoryControllerIntTests {
             softly.assertThat(sortResult.getValue().get(0)).isEqualTo(record);
         });
 
-        Page<UserHistory> pageResult = userHistoryController.findPage(pageCondition);
+        Page<UserLog> pageResult = userLogController.findPage(pageCondition);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(pageResult).isNotNull();
             softly.assertThat(pageResult.isSuccess()).isTrue();
@@ -172,11 +190,10 @@ public class UserHistoryControllerIntTests {
         });
 
         // 更新数据
-        UserHistory updateUser = new UserHistory();
+        UserLog updateUser = new UserLog();
         updateUser.setId(exceptedId);
-        updateUser.setAccount("10000");
-        updateUser.setName("LEO");
-        Result<Boolean> updateResult = userHistoryController.updateByPrimaryKey(updateUser);
+        updateUser.setInfo("第二次记录");
+        Result<Boolean> updateResult = userLogController.updateByPrimaryKey(updateUser);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(updateResult).isNotNull();
             softly.assertThat(updateResult.isSuccess()).isTrue();
@@ -185,7 +202,7 @@ public class UserHistoryControllerIntTests {
             softly.assertThat(updateResult.getValue()).isNotNull().isEqualTo(true);
         });
 
-        Result<UserHistory> idResult3 = userHistoryService.findByPrimaryKey(exceptedId);
+        Result<UserLog> idResult3 = userLogService.findByPrimaryKey(exceptedId);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(idResult3).isNotNull();
             softly.assertThat(idResult3.isSuccess()).isTrue();
@@ -193,18 +210,17 @@ public class UserHistoryControllerIntTests {
             softly.assertThat(idResult3.getErrorMsg()).isNull();
             softly.assertThat(idResult3.getValue()).isNotNull().isNotEqualTo(record);
 
-            UserHistory target = new UserHistory();
+            UserLog target = new UserLog();
             BeanUtils.copyProperties(record, target);
-            target.setAccount(updateUser.getAccount());
-            target.setName(updateUser.getName());
+            target.setInfo(updateUser.getInfo());
             softly.assertThat(idResult3.getValue()).isNotNull().isEqualTo(target);
         });
 
         // 删除数据
-        UserHistory deleteUser = new UserHistory();
+        UserLog deleteUser = new UserLog();
         deleteUser.setId(exceptedId);
-        deleteUser.setAccount("10000");
-        Result<Boolean> deleteResult = userHistoryController.deleteByPrimaryKey(deleteUser);
+        deleteUser.setInfo("10000");
+        Result<Boolean> deleteResult = userLogController.deleteByPrimaryKey(deleteUser);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(deleteResult).isNotNull();
             softly.assertThat(deleteResult.isSuccess()).isTrue();
@@ -213,7 +229,7 @@ public class UserHistoryControllerIntTests {
             softly.assertThat(deleteResult.getValue()).isNotNull().isEqualTo(true);
         });
 
-        Result<UserHistory> idResult4 = userHistoryService.findByPrimaryKey(exceptedId);
+        Result<UserLog> idResult4 = userLogService.findByPrimaryKey(exceptedId);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(idResult4).isNotNull();
             softly.assertThat(idResult4.isSuccess()).isTrue();
@@ -229,12 +245,12 @@ public class UserHistoryControllerIntTests {
     @Test
     public void crudTest2() {
         Long exceptedId = 1L;
-        UserHistory record = new UserHistory();
+        UserLog record = new UserLog();
         record.setEmployeeNumber("10001");
-        record.setName("Jerry");
+        record.setInfo("第一次记录日志信息");
 
         // 创建记录
-        Result<Long> createResult = userHistoryService.create(record);
+        Result<Long> createResult = userLogService.create(record);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(createResult).isNotNull();
             softly.assertThat(createResult.isSuccess()).isTrue();
@@ -244,7 +260,7 @@ public class UserHistoryControllerIntTests {
         });
 
         // 使用各种查询 API 查询数据库中的记录，和保存之后的记录进行比较
-        Result<Integer> countResult = userHistoryService.findCount(record);
+        Result<Integer> countResult = userLogService.findCount(record);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(countResult).isNotNull();
             softly.assertThat(countResult.isSuccess()).isTrue();
@@ -254,9 +270,9 @@ public class UserHistoryControllerIntTests {
         });
 
         // 删除数据
-        UserHistory deleteUser = new UserHistory();
+        UserLog deleteUser = new UserLog();
         deleteUser.setId(exceptedId);
-        Result<Boolean> deleteResult = userHistoryService.deleteByCondition(deleteUser);
+        Result<Boolean> deleteResult = userLogService.deleteByCondition(deleteUser);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(deleteResult).isNotNull();
             softly.assertThat(deleteResult.isSuccess()).isTrue();
@@ -265,7 +281,7 @@ public class UserHistoryControllerIntTests {
             softly.assertThat(deleteResult.getValue()).isNotNull().isEqualTo(true);
         });
 
-        Result<UserHistory> idResult4 = userHistoryService.findByPrimaryKey(exceptedId);
+        Result<UserLog> idResult4 = userLogService.findByPrimaryKey(exceptedId);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(idResult4).isNotNull();
             softly.assertThat(idResult4.isSuccess()).isTrue();

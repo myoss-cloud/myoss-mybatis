@@ -15,7 +15,7 @@
  *
  */
 
-package com.github.myoss.phoenix.mybatis.test.integration.h2.test;
+package com.github.myoss.phoenix.mybatis.test.integration.h2.test1;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -36,6 +36,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -51,17 +52,17 @@ import com.github.myoss.phoenix.mybatis.plugin.ParameterHandlerCustomizer;
 import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import com.github.myoss.phoenix.mybatis.spring.mapper.MapperFactoryBean;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConfig;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.entity.User;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.service.UserService;
-import com.github.myoss.phoenix.mybatis.test.integration.h2.web.UserController;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.entity.User;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.service.UserService;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.web.UserController;
 
 /**
  * {@link UserController } 集成测试，使用H2内存数据库，测试 Mybatis 功能
  *
  * @author Jerry.Chen 2018年5月11日 上午10:45:16
  */
-@MapperScan(basePackageClasses = IntAutoConfig.class, factoryBean = MapperFactoryBean.class, markerInterface = CrudMapper.class)
-@ActiveProfiles({ "h2-userIntTest", "UserControllerIntTests" })
+@MapperScan(basePackageClasses = UserControllerIntTests.class, factoryBean = MapperFactoryBean.class, markerInterface = CrudMapper.class)
+@ActiveProfiles({ "h2-test1", "UserControllerIntTests" })
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { DataSourceAutoConfiguration.class, IntAutoConfig.class, MybatisAutoConfiguration.class })
@@ -73,6 +74,7 @@ public class UserControllerIntTests {
     @Autowired
     private JdbcTemplate   jdbcTemplate;
 
+    @ComponentScan(basePackageClasses = UserControllerIntTests.class)
     @Profile("UserControllerIntTests")
     @Configuration
     public static class MyConfig {
