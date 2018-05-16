@@ -38,6 +38,7 @@ import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
@@ -69,6 +70,8 @@ public class UserControllerIntTests {
     private UserController userController;
     @Autowired
     private UserService    userService;
+    @Autowired
+    private JdbcTemplate   jdbcTemplate;
 
     @Profile("UserControllerIntTests")
     @Configuration
@@ -89,12 +92,17 @@ public class UserControllerIntTests {
         }
     }
 
+    public Long maxId() {
+        Long value = jdbcTemplate.queryForObject("select max(id) from t_sys_user", Long.class);
+        return value == null ? 0L : value;
+    }
+
     /**
      * 增删改查测试案例1
      */
     @Test
     public void crudTest1() {
-        Long exceptedId = 1L;
+        Long exceptedId = maxId() + 1;
         User record = new User();
         record.setEmployeeNumber("10000");
         record.setName("Jerry");
@@ -230,7 +238,7 @@ public class UserControllerIntTests {
      */
     @Test
     public void crudTest2() {
-        Long exceptedId = 2L;
+        Long exceptedId = maxId() + 2;
         User record = new User();
         record.setEmployeeNumber("10001");
         record.setName("Jerry");
@@ -304,7 +312,7 @@ public class UserControllerIntTests {
 
         Page<User> pageCondition2 = new Page<>();
         HashMap<String, Object> extraInfo = new HashMap<>();
-        extraInfo.put("nameLike", "err");
+        extraInfo.put("nameLike", "erry_");
         pageCondition2.setExtraInfo(extraInfo);
         pageCondition2.setPageNum(2);
         pageCondition2.setPageSize(exceptedList.size());
