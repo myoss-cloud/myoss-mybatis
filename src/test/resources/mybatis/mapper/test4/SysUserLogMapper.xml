@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.github.myoss.phoenix.mybatis.test.integration.h2.test4.mapper.SysUserLogMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="com.github.myoss.phoenix.mybatis.test.integration.h2.test4.entity.SysUserLog">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="is_deleted" jdbcType="CHAR" property="isDeleted"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="gmt_created" jdbcType="TIMESTAMP" property="gmtCreated"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="employee_number" jdbcType="VARCHAR" property="employeeNumber"/>
+        <result column="info" jdbcType="VARCHAR" property="info"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+     id, employee_number, info, is_deleted, creator, modifier, gmt_created, gmt_modified
+    </sql>
+
+    <!-- 自定义通用SQL查询条件 -->
+    <sql id="Where_Extra_Condition">
+    </sql>
+</mapper>
