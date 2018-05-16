@@ -507,9 +507,12 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         // 先校验完数据格式，再设置字段的值
         for (T record : records) {
             setValue4Create(record, null);
+            boolean flag = checkDBResult(crudMapper.insert(record));
+            if (!flag) {
+                return result.setSuccess(false).setErrorCode("insertDBFailed").setErrorMsg("插入失败，请检查。[" + record + "]");
+            }
         }
-        int count = crudMapper.insertBatch(records);
-        return result.setValue(count == records.size());
+        return result;
     }
 
     @Transactional(rollbackFor = Exception.class)
