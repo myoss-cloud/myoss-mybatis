@@ -23,7 +23,6 @@ import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
-import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.SqlSource;
@@ -132,18 +131,15 @@ public class SelectSortMapperTemplate extends AbstractMapperTemplate {
         List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
                 Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         metaObject.setValue("resultMaps", resultMaps);
-        Configuration configuration = ms.getConfiguration();
-        String extraConditionId = StringUtils.substringBeforeLast(ms.getId(), ".") + ".Where_Extra_Condition";
 
         // 生成 sql 语句
         StringBuilder builder = new StringBuilder(2048);
         builder.append("SELECT ").append(tableInfo.getSelectAllColumnsSql());
         builder.append(" FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWhereConditionWithParameterSql());
-        if (configuration.getSqlFragments().containsKey(extraConditionId)) {
-            String extraConditionSql = configuration.getSqlFragments().get(extraConditionId).getStringBody();
-            String customSql = "  <if test=\"extraCondition != null\">\n    " + extraConditionSql + "\n  </if>\n";
-            builder.insert(builder.length() - 8, customSql);
+        StringBuilder extraConditionSql = getWhereExtraCondition(ms);
+        if (extraConditionSql != null) {
+            builder.insert(builder.length() - 8, extraConditionSql);
         }
         builder.append("\n<if test=\"orders != null and orders.size > 0\">");
         builder.append("\n  order by");
@@ -154,6 +150,7 @@ public class SelectSortMapperTemplate extends AbstractMapperTemplate {
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
+        Configuration configuration = ms.getConfiguration();
         SqlSource sqlSource = xmlLanguageDriver
                 .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
         metaObject.setValue("sqlSource", sqlSource);

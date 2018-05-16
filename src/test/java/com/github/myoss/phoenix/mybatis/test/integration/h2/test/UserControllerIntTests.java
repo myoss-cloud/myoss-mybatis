@@ -17,7 +17,9 @@
 
 package com.github.myoss.phoenix.mybatis.test.integration.h2.test;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 
 import lombok.extern.slf4j.Slf4j;
@@ -272,6 +274,51 @@ public class UserControllerIntTests {
             softly.assertThat(idResult4.getErrorCode()).isNull();
             softly.assertThat(idResult4.getErrorMsg()).isNull();
             softly.assertThat(idResult4.getValue()).isNull();
+        });
+    }
+
+    /**
+     * "自定义通用SQL查询条件"测试案例1
+     */
+    @Test
+    public void createBatchAndWhereExtraConditionTest1() {
+        List<User> exceptedList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            User record = new User();
+            record.setEmployeeNumber("10000_" + 1);
+            record.setName("Jerry_" + i);
+            if (i >= 5) {
+                exceptedList.add(record);
+            }
+
+            // 创建记录
+            Result<Long> createResult = userService.create(record);
+            SoftAssertions.assertSoftly(softly -> {
+                softly.assertThat(createResult).isNotNull();
+                softly.assertThat(createResult.isSuccess()).isTrue();
+                softly.assertThat(createResult.getErrorCode()).isNull();
+                softly.assertThat(createResult.getErrorMsg()).isNull();
+                softly.assertThat(createResult.getValue()).isNotNull();
+            });
+        }
+
+        Page<User> pageCondition2 = new Page<>();
+        HashMap<String, Object> extraInfo = new HashMap<>();
+        extraInfo.put("nameLike", "err");
+        pageCondition2.setExtraInfo(extraInfo);
+        pageCondition2.setPageNum(2);
+        pageCondition2.setPageSize(exceptedList.size());
+        Page<User> pageResult2 = userController.findPage(pageCondition2);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(pageResult2).isNotNull();
+            softly.assertThat(pageResult2.isSuccess()).isTrue();
+            softly.assertThat(pageResult2.getErrorCode()).isNull();
+            softly.assertThat(pageResult2.getErrorMsg()).isNull();
+            softly.assertThat(pageResult2.getPageNum()).isEqualTo(2);
+            softly.assertThat(pageResult2.getPageSize()).isEqualTo(exceptedList.size());
+            softly.assertThat(pageResult2.getTotalCount()).isEqualTo(exceptedList.size() * 2);
+            softly.assertThat(pageResult2.getValue()).isNotEmpty().hasSize(exceptedList.size());
+            softly.assertThat(pageResult2.getValue()).isEqualTo(exceptedList);
         });
     }
 }

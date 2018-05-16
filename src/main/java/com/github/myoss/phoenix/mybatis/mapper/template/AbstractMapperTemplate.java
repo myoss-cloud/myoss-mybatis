@@ -17,8 +17,14 @@
 
 package com.github.myoss.phoenix.mybatis.mapper.template;
 
+import java.util.List;
+
+import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
+import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
+import org.apache.ibatis.session.Configuration;
 
 /**
  * 生成通用 insert/update/delete/select MappedStatement 模版基类
@@ -38,4 +44,27 @@ public abstract class AbstractMapperTemplate {
         return "dynamicSql";
     }
 
+    /**
+     * 获取"自定义通用SQL查询条件"
+     *
+     * @param ms sql语句节点信息
+     * @return 自定义通用SQL查询条件
+     */
+    public StringBuilder getWhereExtraCondition(MappedStatement ms) {
+        Configuration configuration = ms.getConfiguration();
+        String namespace = StringUtils.substringBeforeLast(ms.getId(), ".");
+        String sqlId = namespace + ".Where_Extra_Condition";
+        if (!configuration.getSqlFragments().containsKey(sqlId)) {
+            return null;
+        }
+
+        List<XNode> children = configuration.getSqlFragments().get(sqlId).getChildren();
+        StringBuilder sb = new StringBuilder();
+        sb.append("  <if test=\"extraCondition != null\">\n    ");
+        for (XNode child : children) {
+            sb.append(child.toString());
+        }
+        sb.append("\n  </if>\n");
+        return sb;
+    }
 }

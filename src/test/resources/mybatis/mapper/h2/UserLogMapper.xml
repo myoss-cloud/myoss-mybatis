@@ -19,4 +19,7 @@
      id, employee_number, info, is_deleted, creator, modifier, gmt_created, gmt_modified
     </sql>
 
+    <!-- 自定义通用SQL查询条件 -->
+    <sql id="Where_Extra_Condition">
+    </sql>
 </mapper>

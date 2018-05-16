@@ -34,4 +34,7 @@
      id, employee_number, account, `password`, salt, `name`, gender, birthday, email, phone, telephone, company_id, dept_id, position_id, parent_user_id, `status`, entry_date, leave_date, is_deleted, creator, modifier, gmt_created, gmt_modified
     </sql>
 
+    <!-- 自定义通用SQL查询条件 -->
+    <sql id="Where_Extra_Condition">
+    </sql>
 </mapper>

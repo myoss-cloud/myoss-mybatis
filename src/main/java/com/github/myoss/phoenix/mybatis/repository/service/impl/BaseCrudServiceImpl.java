@@ -178,9 +178,11 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      *
      * @param result 执行结果
      * @param condition 查询条件
+     * @param extraCondition 扩展查询条件，需要自定义
      * @return true: 校验成功; false: 校验失败
      */
-    protected boolean checkCommonQueryConditionIsAllNull(Result<?> result, T condition) {
+    protected boolean checkCommonQueryConditionIsAllNull(Result<?> result, T condition,
+                                                         Map<String, Object> extraCondition) {
         if (!result.isSuccess()) {
             return false;
         }
@@ -498,7 +500,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
                 return result;
             }
             boolean ifExist = checkRecordIfExist4Create(result, record);
-            if (!ifExist || !result.isSuccess()) {
+            if (ifExist || !result.isSuccess()) {
                 return result;
             }
         }
@@ -562,7 +564,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     public Result<Boolean> updateByCondition(T record, T condition) {
         Result<Boolean> result = new Result<>(false);
         validFieldValue(result, record, null);
-        checkCommonQueryConditionIsAllNull(result, condition);
+        checkCommonQueryConditionIsAllNull(result, condition, null);
         if (!result.isSuccess()) {
             return result;
         }
@@ -623,7 +625,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<Boolean> deleteByCondition(T condition) {
         Result<Boolean> result = new Result<>(false);
-        if (checkCommonQueryConditionIsAllNull(result, condition)) {
+        if (checkCommonQueryConditionIsAllNull(result, condition, null)) {
             boolean flag = checkDBResult(crudMapper.deleteByCondition(condition));
             if (!flag) {
                 result.setSuccess(false).setErrorCode("notMatchRecords").setErrorMsg("更新失败，未匹配到相应的记录");
@@ -657,7 +659,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<T> findOne(T condition) {
         Result<T> result = new Result<>();
-        if (checkCommonQueryConditionIsAllNull(result, condition)) {
+        if (checkCommonQueryConditionIsAllNull(result, condition, null)) {
             T one = crudMapper.selectOne(condition);
             result.setValue(one);
         }
@@ -667,7 +669,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<List<T>> findList(T condition) {
         Result<List<T>> result = new Result<>();
-        if (checkCommonQueryConditionIsAllNull(result, condition)) {
+        if (checkCommonQueryConditionIsAllNull(result, condition, null)) {
             List<T> list = crudMapper.selectList(condition);
             result.setValue(list);
         }
@@ -678,10 +680,11 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     public Result<List<T>> findListWithSort(Page<T> condition) {
         Result<List<T>> result = new Result<>();
         T param = condition.getParam();
-        if (checkCommonQueryConditionIsAllNull(result, param)) {
+        Map<String, Object> extraInfo = condition.getExtraInfo();
+        if (checkCommonQueryConditionIsAllNull(result, param, extraInfo)) {
             Sort sort = condition.getSort();
             List<Order> orders = convertToOrders(sort);
-            List<T> list = crudMapper.selectListWithSort2(param, condition.getExtraInfo(), orders);
+            List<T> list = crudMapper.selectListWithSort2(param, extraInfo, orders);
             result.setValue(list);
         }
         return result;
@@ -690,7 +693,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<Integer> findCount(T condition) {
         Result<Integer> result = new Result<>();
-        if (checkCommonQueryConditionIsAllNull(result, condition)) {
+        if (checkCommonQueryConditionIsAllNull(result, condition, null)) {
             int count = crudMapper.selectCount(condition);
             result.setValue(count);
         }
@@ -700,7 +703,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<Integer> findCount(T condition, Map<String, Object> extraCondition) {
         Result<Integer> result = new Result<>();
-        if (checkCommonQueryConditionIsAllNull(result, condition)) {
+        if (checkCommonQueryConditionIsAllNull(result, condition, extraCondition)) {
             int count = crudMapper.selectCount2(condition, extraCondition);
             result.setValue(count);
         }
@@ -723,7 +726,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         List<Order> orders = convertToOrders(sort);
         Map<String, Object> extraInfo = condition.getExtraInfo();
         List<T> details = crudMapper.selectPage2(param, extraInfo, pageStart, pageSize, orders);
-        int totalCount = crudMapper.selectCount(param);
+        int totalCount = crudMapper.selectCount2(param, extraInfo);
         // 设置额外字段
         addPageExtraInfo(condition, result);
 
