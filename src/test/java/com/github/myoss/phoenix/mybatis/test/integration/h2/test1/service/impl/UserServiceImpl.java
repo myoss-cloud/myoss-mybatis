@@ -19,7 +19,6 @@ package com.github.myoss.phoenix.mybatis.test.integration.h2.test1.service.impl;
 
 import org.springframework.stereotype.Service;
 
-import com.github.myoss.phoenix.core.lang.dto.Page;
 import com.github.myoss.phoenix.mybatis.repository.service.impl.BaseCrudServiceImpl;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.entity.User;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.mapper.UserMapper;
@@ -36,8 +35,4 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.service.UserSe
  */
 @Service
 public class UserServiceImpl extends BaseCrudServiceImpl<UserMapper, User> implements UserService {
-    @Override
-    protected boolean checkPageConditionIsAllNull(Page<User> condition, Page<User> result) {
-        return true;
-    }
 }

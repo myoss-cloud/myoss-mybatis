@@ -293,6 +293,7 @@ public class UserControllerIntTests {
     @Test
     public void createBatchAndWhereExtraConditionTest1() {
         List<User> exceptedList = new ArrayList<>();
+        List<User> allList = new ArrayList<>();
         for (int i = 0; i < 10; i++) {
             User record = new User();
             record.setEmployeeNumber("10000_" + 1);
@@ -300,17 +301,17 @@ public class UserControllerIntTests {
             if (i >= 5) {
                 exceptedList.add(record);
             }
-
-            // 创建记录
-            Result<Long> createResult = userService.create(record);
-            SoftAssertions.assertSoftly(softly -> {
-                softly.assertThat(createResult).isNotNull();
-                softly.assertThat(createResult.isSuccess()).isTrue();
-                softly.assertThat(createResult.getErrorCode()).isNull();
-                softly.assertThat(createResult.getErrorMsg()).isNull();
-                softly.assertThat(createResult.getValue()).isNotNull();
-            });
+            allList.add(record);
         }
+        // 创建记录
+        Result<Boolean> createResult = userService.createBatch(allList);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(createResult).isNotNull();
+            softly.assertThat(createResult.isSuccess()).isTrue();
+            softly.assertThat(createResult.getErrorCode()).isNull();
+            softly.assertThat(createResult.getErrorMsg()).isNull();
+            softly.assertThat(createResult.getValue()).isTrue();
+        });
 
         Page<User> pageCondition2 = new Page<>();
         HashMap<String, Object> extraInfo = new HashMap<>();

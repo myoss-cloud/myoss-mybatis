@@ -34,6 +34,7 @@ import java.util.stream.Collectors;
 import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.ibatis.mapping.SqlCommandType;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
@@ -110,11 +111,12 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     /**
      * 检查主键字段是否为空
      *
+     * @param sqlCommandType 执行的 SQL 命令类型
      * @param result 执行结果
      * @param id 主键值
      * @return true: 校验成功; false: 校验失败
      */
-    protected boolean checkPrimaryKeyIsNull(Result<?> result, Serializable id) {
+    protected boolean checkPrimaryKeyIsNull(SqlCommandType sqlCommandType, Result<?> result, Serializable id) {
         if (!result.isSuccess()) {
             return false;
         }
@@ -127,11 +129,12 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     /**
      * 检查实体和主键字段是否为空
      *
+     * @param sqlCommandType 执行的 SQL 命令类型
      * @param record 实体对象
      * @param checkAll 检查所有的主键字段值是否为空（false: 只要有一个主键字段为空，则校验失败）
      * @return true: 校验成功; false: 校验失败
      */
-    protected boolean checkPrimaryKeyIsNull(Object record, boolean checkAll) {
+    protected boolean checkPrimaryKeyIsNull(SqlCommandType sqlCommandType, Object record, boolean checkAll) {
         boolean isNull = record == null;
         if (!isNull) {
             int nullCount = 0;
@@ -158,15 +161,16 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     /**
      * 检查实体和主键字段是否为空
      *
+     * @param sqlCommandType 执行的 SQL 命令类型
      * @param result 执行结果
      * @param record 实体对象
      * @return true: 校验成功; false: 校验失败
      */
-    protected boolean checkPrimaryKeyIsNull(Result<?> result, Object record) {
+    protected boolean checkPrimaryKeyIsNull(SqlCommandType sqlCommandType, Result<?> result, Object record) {
         if (!result.isSuccess()) {
             return false;
         }
-        boolean isNull = checkPrimaryKeyIsNull(record, true);
+        boolean isNull = checkPrimaryKeyIsNull(sqlCommandType, record, true);
         if (isNull) {
             result.setSuccess(false).setErrorCode("valueIsBlank").setErrorMsg("主键字段不能为空");
         }
@@ -176,30 +180,29 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     /**
      * 检查通用查询条件字段是否为空，这里只检查主键id是否为空，防止全表扫描
      *
+     * @param sqlCommandType 执行的 SQL 命令类型
      * @param result 执行结果
      * @param condition 查询条件
      * @param extraCondition 扩展查询条件，需要自定义
      * @return true: 校验成功; false: 校验失败
      */
-    protected boolean checkCommonQueryConditionIsAllNull(Result<?> result, T condition,
+    protected boolean checkCommonQueryConditionIsAllNull(SqlCommandType sqlCommandType, Result<?> result, T condition,
                                                          Map<String, Object> extraCondition) {
         if (!result.isSuccess()) {
             return false;
         }
-        return checkPrimaryKeyIsNull(result, condition);
+        return checkPrimaryKeyIsNull(sqlCommandType, result, condition);
     }
 
     /**
-     * 校验分页查询条件字段是否有空值，默认校验了主键字段，防止全表扫描，子类去重写
+     * 校验分页查询条件字段是否有空值，默认不做任何校验，子类去重写
      *
      * @param condition 分页查询条件
      * @param result 分页查询返回结果
      * @return true: 校验成功; false: 校验失败
      */
     protected boolean checkPageConditionIsAllNull(Page<T> condition, Page<T> result) {
-        if (condition == null || condition.getParam() == null || checkPrimaryKeyIsNull(condition.getParam(), true)) {
-            result.setSuccess(false).setErrorCode("valueIsBlank").setErrorMsg("主键字段不能为空");
-        }
+        // 分页查询，默认不做任何校验
         return result.isSuccess();
     }
 
@@ -512,14 +515,14 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
                 return result.setSuccess(false).setErrorCode("insertDBFailed").setErrorMsg("插入失败，请检查。[" + record + "]");
             }
         }
-        return result;
+        return result.setValue(true);
     }
 
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Result<Boolean> updateByPrimaryKey(T record) {
         Result<Boolean> result = new Result<>(false);
-        checkPrimaryKeyIsNull(result, record);
+        checkPrimaryKeyIsNull(SqlCommandType.UPDATE, result, record);
         validFieldValue(result, record, null);
         if (!result.isSuccess()) {
             return result;
@@ -567,7 +570,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     public Result<Boolean> updateByCondition(T record, T condition) {
         Result<Boolean> result = new Result<>(false);
         validFieldValue(result, record, null);
-        checkCommonQueryConditionIsAllNull(result, condition, null);
+        checkCommonQueryConditionIsAllNull(SqlCommandType.UPDATE, result, condition, null);
         if (!result.isSuccess()) {
             return result;
         }
@@ -614,7 +617,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<Boolean> deleteByPrimaryKey(T condition) {
         Result<Boolean> result = new Result<>(false);
-        if (checkPrimaryKeyIsNull(result, condition)) {
+        if (checkPrimaryKeyIsNull(SqlCommandType.DELETE, result, condition)) {
             boolean flag = checkDBResult(crudMapper.deleteWithPrimaryKey(condition));
             if (!flag) {
                 result.setSuccess(false).setErrorCode("notMatchRecords").setErrorMsg("更新失败，未匹配到相应的记录");
@@ -628,7 +631,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<Boolean> deleteByCondition(T condition) {
         Result<Boolean> result = new Result<>(false);
-        if (checkCommonQueryConditionIsAllNull(result, condition, null)) {
+        if (checkCommonQueryConditionIsAllNull(SqlCommandType.DELETE, result, condition, null)) {
             boolean flag = checkDBResult(crudMapper.deleteByCondition(condition));
             if (!flag) {
                 result.setSuccess(false).setErrorCode("notMatchRecords").setErrorMsg("更新失败，未匹配到相应的记录");
@@ -642,7 +645,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<T> findByPrimaryKey(Serializable id) {
         Result<T> result = new Result<>();
-        if (checkPrimaryKeyIsNull(result, id)) {
+        if (checkPrimaryKeyIsNull(SqlCommandType.SELECT, result, id)) {
             T entity = crudMapper.selectByPrimaryKey(id);
             result.setValue(entity);
         }
@@ -652,7 +655,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<T> findByPrimaryKey(T condition) {
         Result<T> result = new Result<>();
-        if (checkPrimaryKeyIsNull(result, condition)) {
+        if (checkPrimaryKeyIsNull(SqlCommandType.SELECT, result, condition)) {
             T entity = crudMapper.selectWithPrimaryKey(condition);
             result.setValue(entity);
         }
@@ -662,7 +665,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<T> findOne(T condition) {
         Result<T> result = new Result<>();
-        if (checkCommonQueryConditionIsAllNull(result, condition, null)) {
+        if (checkCommonQueryConditionIsAllNull(SqlCommandType.SELECT, result, condition, null)) {
             T one = crudMapper.selectOne(condition);
             result.setValue(one);
         }
@@ -672,7 +675,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<List<T>> findList(T condition) {
         Result<List<T>> result = new Result<>();
-        if (checkCommonQueryConditionIsAllNull(result, condition, null)) {
+        if (checkCommonQueryConditionIsAllNull(SqlCommandType.SELECT, result, condition, null)) {
             List<T> list = crudMapper.selectList(condition);
             result.setValue(list);
         }
@@ -684,7 +687,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         Result<List<T>> result = new Result<>();
         T param = condition.getParam();
         Map<String, Object> extraInfo = condition.getExtraInfo();
-        if (checkCommonQueryConditionIsAllNull(result, param, extraInfo)) {
+        if (checkCommonQueryConditionIsAllNull(SqlCommandType.SELECT, result, param, extraInfo)) {
             Sort sort = condition.getSort();
             List<Order> orders = convertToOrders(sort);
             List<T> list = crudMapper.selectListWithSort2(param, extraInfo, orders);
@@ -696,7 +699,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<Integer> findCount(T condition) {
         Result<Integer> result = new Result<>();
-        if (checkCommonQueryConditionIsAllNull(result, condition, null)) {
+        if (checkCommonQueryConditionIsAllNull(SqlCommandType.SELECT, result, condition, null)) {
             int count = crudMapper.selectCount(condition);
             result.setValue(count);
         }
@@ -706,7 +709,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Override
     public Result<Integer> findCount(T condition, Map<String, Object> extraCondition) {
         Result<Integer> result = new Result<>();
-        if (checkCommonQueryConditionIsAllNull(result, condition, extraCondition)) {
+        if (checkCommonQueryConditionIsAllNull(SqlCommandType.SELECT, result, condition, extraCondition)) {
             int count = crudMapper.selectCount2(condition, extraCondition);
             result.setValue(count);
         }
