@@ -269,10 +269,9 @@ public class MybatisAutoConfiguration {
 
                 // 暂时不启用，自动注入： {@link MybatisAutoConfiguration#mapperInterfaceRegister()}
                 //                // 通用Mapper接口注册器
-                //                MybatisProperties mybatisProperties = new MybatisProperties();
-                //                PropertySourcesBinder propertySourcesBinder = new PropertySourcesBinder(
-                //                        (ConfigurableEnvironment) environment);
-                //                propertySourcesBinder.bindTo(MybatisProperties.MYBATIS_PREFIX, mybatisProperties);
+                //                Binder propertySourcesBinder = Binder.get(environment);
+                //                MybatisProperties mybatisProperties = propertySourcesBinder.bind(MybatisProperties.MYBATIS_PREFIX,
+                //                        MybatisProperties.class).get();
                 //                MapperInterfaceRegister mapperInterfaceRegister = new MapperInterfaceRegister(
                 //                        mybatisProperties.getTableConfig());
                 //                scanner.setMapperInterfaceRegister(mapperInterfaceRegister);
