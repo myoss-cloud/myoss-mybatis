@@ -19,6 +19,7 @@ package com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure;
 
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Map.Entry;
 import java.util.stream.Stream;
 
@@ -42,12 +43,12 @@ import org.springframework.beans.factory.BeanFactoryAware;
 import org.springframework.beans.factory.ObjectProvider;
 import org.springframework.beans.factory.support.BeanDefinitionRegistry;
 import org.springframework.boot.autoconfigure.AutoConfigurationPackages;
-import org.springframework.boot.autoconfigure.AutoConfigureAfter;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
-import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
+import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
@@ -67,7 +68,9 @@ import org.springframework.util.StringUtils;
 import com.github.myoss.phoenix.mybatis.mapper.register.MapperInterfaceRegister;
 import com.github.myoss.phoenix.mybatis.plugin.ParameterHandlerCustomizer;
 import com.github.myoss.phoenix.mybatis.plugin.ParameterHandlerInterceptor;
+import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisProperties.MapperScanner;
 import com.github.myoss.phoenix.mybatis.spring.mapper.ClassPathMapperScanner;
+import com.github.myoss.phoenix.mybatis.spring.mapper.MapperScannerConfigurer;
 import com.github.myoss.phoenix.mybatis.table.Sequence;
 import com.github.myoss.phoenix.mybatis.table.TableConfig;
 import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
@@ -79,7 +82,6 @@ import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
  */
 @Slf4j
 @EnableConfigurationProperties({ MybatisProperties.class })
-@AutoConfigureAfter(DataSourceAutoConfiguration.class)
 @ConditionalOnClass({ SqlSessionFactory.class, SqlSessionFactoryBean.class })
 @ConditionalOnBean(DataSource.class)
 @Configuration
@@ -282,6 +284,46 @@ public class MybatisAutoConfiguration {
             } catch (IllegalStateException ex) {
                 log.debug("Could not determine auto-configuration package, automatic mapper scanning disabled.", ex);
             }
+        }
+    }
+
+    /**
+     * 自动扫描 Mapper Interface
+     *
+     * @see MapperScannerConfigurer
+     */
+    @ConditionalOnExpression("#{'${" + MybatisProperties.MYBATIS_MAPPER_SCANNER_PREFIX
+            + ".base-package:}'.length() > 0}")
+    @Configuration
+    public static class AutoConfiguredMapperScannerRegistrar2 {
+        public AutoConfiguredMapperScannerRegistrar2() {
+            log.debug(MybatisProperties.MYBATIS_MAPPER_SCANNER_PREFIX + ".base-package} is config [{}].",
+                    AutoConfiguredMapperScannerRegistrar2.class.getName());
+        }
+
+        @ConditionalOnMissingBean
+        @Bean
+        public MapperScannerConfigurer mapperScannerConfigurer(Environment environment) {
+            Binder binder = Binder.get(environment);
+            MapperScanner scanner = binder.bind(MybatisProperties.MYBATIS_MAPPER_SCANNER_PREFIX, MapperScanner.class)
+                    .get();
+            String basePackage = scanner.getBasePackage();
+            Objects.requireNonNull(basePackage, "Property 'basePackage' is required");
+
+            MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
+            mapperScannerConfigurer.setBasePackage(org.apache.commons.lang3.StringUtils.defaultIfBlank(basePackage,
+                    null));
+            mapperScannerConfigurer.setSqlSessionFactoryBeanName(org.apache.commons.lang3.StringUtils.defaultIfBlank(
+                    scanner.getSqlSessionFactoryName(), "sqlSessionFactory"));
+            mapperScannerConfigurer.setSqlSessionTemplateBeanName(org.apache.commons.lang3.StringUtils.defaultIfBlank(
+                    scanner.getSqlSessionTemplateBeanName(), "sqlSessionTemplate"));
+            if (scanner.getAnnotationClass() != null) {
+                mapperScannerConfigurer.setAnnotationClass(scanner.getAnnotationClass());
+            }
+            if (scanner.getMarkerInterface() != null) {
+                mapperScannerConfigurer.setMarkerInterface(scanner.getMarkerInterface());
+            }
+            return mapperScannerConfigurer;
         }
     }
 }

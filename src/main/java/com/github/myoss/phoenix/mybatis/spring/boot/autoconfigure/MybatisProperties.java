@@ -18,6 +18,7 @@
 package com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure;
 
 import java.io.IOException;
+import java.lang.annotation.Annotation;
 import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Stream;
@@ -32,6 +33,7 @@ import org.springframework.core.io.Resource;
 import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
+import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration.AutoConfiguredMapperScannerRegistrar2;
 import com.github.myoss.phoenix.mybatis.table.TableConfig;
 
 /**
@@ -42,8 +44,9 @@ import com.github.myoss.phoenix.mybatis.table.TableConfig;
 @Data
 @ConfigurationProperties(prefix = MybatisProperties.MYBATIS_PREFIX)
 public class MybatisProperties {
-    public static final String                   MYBATIS_PREFIX      = "mybatis";
-    private static final ResourcePatternResolver RESOURCE_RESOLVER   = new PathMatchingResourcePatternResolver();
+    public static final String                   MYBATIS_PREFIX                = "mybatis";
+    public static final String                   MYBATIS_MAPPER_SCANNER_PREFIX = "mybatis.mapper-scanner";
+    private static final ResourcePatternResolver RESOURCE_RESOLVER             = new PathMatchingResourcePatternResolver();
 
     /**
      * Location of MyBatis xml config file.
@@ -51,7 +54,7 @@ public class MybatisProperties {
     private String                               configLocation;
 
     /**
-     * Locations of MyBatis mapper files.
+     * Locations of MyBatis xml mapper files.
      */
     private String[]                             mapperLocations;
 
@@ -68,7 +71,7 @@ public class MybatisProperties {
     /**
      * Indicates whether perform presence check of the MyBatis xml config file.
      */
-    private boolean                              checkConfigLocation = false;
+    private boolean                              checkConfigLocation           = false;
 
     /**
      * Execution mode for {@link org.mybatis.spring.SqlSessionTemplate}.
@@ -95,6 +98,38 @@ public class MybatisProperties {
      */
     @NestedConfigurationProperty
     private TableConfig                          tableConfig;
+
+    /**
+     * 自动扫描 Mapper Interface 配置
+     * <p>
+     * see as {@link AutoConfiguredMapperScannerRegistrar2}
+     */
+    private MapperScanner                        mapperScanner;
+
+    @Data
+    @ConfigurationProperties(prefix = MYBATIS_MAPPER_SCANNER_PREFIX)
+    public static class MapperScanner {
+        /**
+         * base package name
+         */
+        private String                      basePackage;
+        /**
+         * Bean name of the {@link org.apache.ibatis.session.SqlSessionFactory}
+         */
+        private String                      sqlSessionFactoryName;
+        /**
+         *
+         */
+        private String                      sqlSessionTemplateBeanName;
+        /**
+         * annotationClass annotation class
+         */
+        private Class<? extends Annotation> annotationClass;
+        /**
+         * superClass parent class
+         */
+        private Class<?>                    markerInterface;
+    }
 
     public Resource[] resolveMapperLocations() {
         return Stream.of(Optional.ofNullable(this.mapperLocations).orElse(new String[0]))
