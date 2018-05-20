@@ -21,7 +21,10 @@ import java.io.Serializable;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
+import com.alibaba.fastjson.annotation.JSONField;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.myoss.phoenix.mybatis.table.annotation.Column;
 
 /**
@@ -29,10 +32,12 @@ import com.github.myoss.phoenix.mybatis.table.annotation.Column;
  *
  * @author Jerry.Chen 2018年5月9日 下午2:15:14
  */
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class AuditIdEntity<I extends Serializable> extends AuditEntity implements PrimaryKeyEntity<I> {
-    private static final long serialVersionUID = -7391784386524900465L;
+    private static final long  serialVersionUID = -7391784386524900465L;
+    public static final String AUDIT_ID_ENTITY  = "AuditIdEntity";
 
     /**
      * Database Column Name: id
@@ -40,8 +45,10 @@ public class AuditIdEntity<I extends Serializable> extends AuditEntity implement
      * Database Column Remarks: 主键id
      */
     @Column(primaryKey = true)
-    protected I               id;
+    protected I                id;
 
+    @JsonIgnore
+    @JSONField(serialize = false, deserialize = false)
     @Override
     public I getPrimaryKey() {
         return id;
@@ -49,6 +56,16 @@ public class AuditIdEntity<I extends Serializable> extends AuditEntity implement
 
     @Override
     public void setPrimaryKey(I primaryKey) {
-        id = primaryKey;
+        this.id = primaryKey;
+    }
+
+    @JSONField(label = AUDIT_ID_ENTITY)
+    public I getId() {
+        return id;
+    }
+
+    public AuditIdEntity<I> setId(I id) {
+        this.id = id;
+        return this;
     }
 }

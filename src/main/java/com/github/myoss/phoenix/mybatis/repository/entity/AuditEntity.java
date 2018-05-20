@@ -21,7 +21,9 @@ import java.util.Date;
 
 import lombok.Data;
 import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.github.myoss.phoenix.mybatis.table.annotation.Column;
 import com.github.myoss.phoenix.mybatis.table.annotation.FillRule;
 
@@ -30,10 +32,12 @@ import com.github.myoss.phoenix.mybatis.table.annotation.FillRule;
  *
  * @author Jerry.Chen 2018年5月9日 下午2:10:02
  */
+@Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class AuditEntity extends LogicDeleteEntity {
-    private static final long serialVersionUID = -4818037441910790468L;
+    private static final long  serialVersionUID = -4818037441910790468L;
+    public static final String AUDIT_ENTITY     = "AuditEntity";
 
     /**
      * Database Column Name: creator
@@ -41,8 +45,9 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 创建者
      * </p>
      */
+    @JSONField(label = AUDIT_ENTITY)
     @Column(name = "creator", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT, FillRule.UPDATE })
-    private String            creator;
+    private String             creator;
 
     /**
      * Database Column Name: modifier
@@ -50,9 +55,10 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 修改者
      * </p>
      */
+    @JSONField(label = AUDIT_ENTITY)
     @Column(name = "modifier", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT,
             FillRule.UPDATE })
-    private String            modifier;
+    private String             modifier;
 
     /**
      * Database Column Name: gmt_created
@@ -60,9 +66,10 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 创建时间
      * </p>
      */
+    @JSONField(label = AUDIT_ENTITY)
     @Column(name = "gmt_created", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT,
             FillRule.UPDATE })
-    private Date              gmtCreated;
+    private Date               gmtCreated;
 
     /**
      * Database Column Name: gmt_modified
@@ -70,7 +77,8 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 修改时间
      * </p>
      */
+    @JSONField(label = AUDIT_ENTITY)
     @Column(name = "gmt_modified", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT,
             FillRule.UPDATE })
-    private Date              gmtModified;
+    private Date               gmtModified;
 }

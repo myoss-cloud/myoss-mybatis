@@ -18,7 +18,9 @@
 package com.github.myoss.phoenix.mybatis.repository.entity;
 
 import lombok.Data;
+import lombok.experimental.Accessors;
 
+import com.alibaba.fastjson.annotation.JSONField;
 import com.github.myoss.phoenix.core.constants.PhoenixConstants;
 import com.github.myoss.phoenix.mybatis.table.annotation.Column;
 
@@ -27,9 +29,11 @@ import com.github.myoss.phoenix.mybatis.table.annotation.Column;
  *
  * @author Jerry.Chen 2018年5月9日 下午2:20:26
  */
+@Accessors(chain = true)
 @Data
 public class LogicDeleteEntity implements BaseEntity {
-    private static final long serialVersionUID = 8520422267799966859L;
+    private static final long  serialVersionUID    = 8520422267799966859L;
+    public static final String LOGIC_DELETE_ENTITY = "LogicDeleteEntity";
 
     /**
      * Database Column Name: is_deleted
@@ -37,6 +41,7 @@ public class LogicDeleteEntity implements BaseEntity {
      * Database Column Remarks: 是否删除
      * </p>
      */
+    @JSONField(label = LOGIC_DELETE_ENTITY)
     @Column(name = "is_deleted", nullable = false, jdbcTypeName = "CHAR", logicDelete = true, logicDeleteValue = PhoenixConstants.Y, logicUnDeleteValue = PhoenixConstants.N)
-    private String            isDeleted;
+    private String             isDeleted;
 }
