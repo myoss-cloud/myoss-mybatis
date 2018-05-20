@@ -311,12 +311,9 @@ public class MybatisAutoConfiguration {
             Objects.requireNonNull(basePackage, "Property 'basePackage' is required");
 
             MapperScannerConfigurer mapperScannerConfigurer = new MapperScannerConfigurer();
-            mapperScannerConfigurer.setBasePackage(org.apache.commons.lang3.StringUtils.defaultIfBlank(basePackage,
-                    null));
-            mapperScannerConfigurer.setSqlSessionFactoryBeanName(org.apache.commons.lang3.StringUtils.defaultIfBlank(
-                    scanner.getSqlSessionFactoryName(), "sqlSessionFactory"));
-            mapperScannerConfigurer.setSqlSessionTemplateBeanName(org.apache.commons.lang3.StringUtils.defaultIfBlank(
-                    scanner.getSqlSessionTemplateBeanName(), "sqlSessionTemplate"));
+            mapperScannerConfigurer.setBasePackage(basePackage);
+            mapperScannerConfigurer.setSqlSessionFactoryBeanName(scanner.getSqlSessionFactoryName());
+            mapperScannerConfigurer.setSqlSessionTemplateBeanName(scanner.getSqlSessionTemplateBeanName());
             if (scanner.getAnnotationClass() != null) {
                 mapperScannerConfigurer.setAnnotationClass(scanner.getAnnotationClass());
             }
