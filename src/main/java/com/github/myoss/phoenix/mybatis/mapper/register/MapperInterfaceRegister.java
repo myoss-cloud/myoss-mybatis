@@ -92,7 +92,8 @@ public class MapperInterfaceRegister {
 
     public void executeRegister(Class<?> mapperInterface) {
         Class<?> entityClass = TableMetaObject.getEntityClassByMapperInterface(mapperInterface);
-        if (registerEntityClass.containsKey(entityClass)) {
+        if (entityClass == null || registerEntityClass.containsKey(entityClass)) {
+            // entityClass = null, 它没有实体类泛型，则不去扫描方法
             return;
         }
         TableInfo tableInfo = TableMetaObject
