@@ -35,37 +35,62 @@ import com.github.myoss.phoenix.mybatis.repository.entity.AuditIdEntity;
  * @author Jerry.Chen 2018年5月20日 下午4:49:45
  */
 public class DefaultParameterHandlerCustomizer implements ParameterHandlerCustomizer {
-    @Override
-    public void handlerInsert(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
+    /**
+     * 设置审计字段信息
+     *
+     * @param o 参数对象
+     * @param isInsert 是否为插入
+     */
+    public static void setAuditInfo(Object o, boolean isInsert) {
+        if (o instanceof AuditIdEntity) {
+            AuditIdEntity entity = (AuditIdEntity) o;
+            if (isInsert) {
+                if (StringUtils.isBlank(entity.getIsDeleted())) {
+                    entity.setIsDeleted(PhoenixConstants.N);
+                }
+                if (StringUtils.isBlank(entity.getCreator())) {
+                    entity.setCreator(PhoenixConstants.SYSTEM);
+                }
+                if (entity.getGmtCreated() == null) {
+                    entity.setGmtCreated(new Date());
+                }
+            }
+            if (StringUtils.isBlank(entity.getModifier())) {
+                entity.setModifier(PhoenixConstants.SYSTEM);
+            }
+            entity.setGmtModified(new Date());
+        }
+    }
+
+    /**
+     * 设置通用字段信息
+     *
+     * @param parameterObject 参数对象
+     * @param isInsert 是否为插入
+     */
+    public static void setCommonParameter(Object parameterObject, boolean isInsert) {
         if (parameterObject instanceof AuditIdEntity) {
             AuditIdEntity entity = (AuditIdEntity) parameterObject;
-            setAuditInfo(entity);
+            setAuditInfo(entity, isInsert);
         } else if (parameterObject instanceof Map) {
             Map map = (Map) parameterObject;
             Object collection = map.get("collection");
             if (collection instanceof Collection) {
                 Collection value = (Collection) collection;
                 for (Object entity : value) {
-                    setAuditInfo(entity);
+                    setAuditInfo(entity, isInsert);
                 }
             }
         }
     }
 
-    public static void setAuditInfo(Object o) {
-        if (o instanceof AuditIdEntity) {
-            AuditIdEntity entity = (AuditIdEntity) o;
-            entity.setIsDeleted(PhoenixConstants.N);
-            if (StringUtils.isBlank(entity.getCreator())) {
-                entity.setCreator(PhoenixConstants.SYSTEM);
-            }
-            if (StringUtils.isBlank(entity.getModifier())) {
-                entity.setModifier(PhoenixConstants.SYSTEM);
-            }
-            if (entity.getGmtCreated() == null) {
-                entity.setGmtCreated(new Date());
-            }
-            entity.setGmtModified(new Date());
-        }
+    @Override
+    public void handlerInsert(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
+        setCommonParameter(parameterObject, true);
+    }
+
+    @Override
+    public void handlerUpdate(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
+        setCommonParameter(parameterObject, false);
     }
 }

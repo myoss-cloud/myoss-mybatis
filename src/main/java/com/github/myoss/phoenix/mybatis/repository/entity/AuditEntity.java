@@ -46,7 +46,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * </p>
      */
     @JSONField(label = AUDIT_ENTITY)
-    @Column(name = "creator", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT, FillRule.UPDATE })
+    @Column(name = "creator", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT })
     private String             creator;
 
     /**
@@ -67,8 +67,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * </p>
      */
     @JSONField(label = AUDIT_ENTITY)
-    @Column(name = "gmt_created", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT,
-            FillRule.UPDATE })
+    @Column(name = "gmt_created", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT })
     private Date               gmtCreated;
 
     /**
