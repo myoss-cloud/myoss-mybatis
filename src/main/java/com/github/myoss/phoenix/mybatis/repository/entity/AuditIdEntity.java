@@ -45,7 +45,7 @@ public class AuditIdEntity<I extends Serializable> extends AuditEntity implement
      * Database Column Remarks: 主键id
      */
     @Column(primaryKey = true)
-    protected I                id;
+    private I                  id;
 
     @JsonIgnore
     @JSONField(serialize = false, deserialize = false)
