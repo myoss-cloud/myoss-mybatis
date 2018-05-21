@@ -52,8 +52,6 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
      *  AND is_deleted = 'N'
      * &lt;/where&gt;
      * </pre>
-     *
-     * </p>
      * <p>
      * update 语句示例如下：
      *
@@ -67,8 +65,6 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
      *   AND is_deleted = 'N'
      * &lt;/where&gt;
      * </pre>
-     *
-     * </p>
      *
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
@@ -121,8 +117,6 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
      *  AND is_deleted = 'N'
      * &lt;/where&gt;
      * </pre>
-     *
-     * </p>
      * <p>
      * update 语句示例如下：
      *
@@ -138,8 +132,6 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
      *   AND is_deleted = 'N'
      * &lt;/where&gt;
      * </pre>
-     *
-     * </p>
      *
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
@@ -210,8 +202,6 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
      *    &lt;/if&gt;
      * &lt;/where&gt;
      * </pre>
-     *
-     * </p>
      * <p>
      * update 语句示例如下：
      *
@@ -228,8 +218,6 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
      *    &lt;/if&gt;
      * &lt;/where&gt;
      * </pre>
-     *
-     * </p>
      *
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
