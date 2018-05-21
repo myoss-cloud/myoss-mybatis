@@ -17,7 +17,8 @@
 
 package com.github.myoss.phoenix.mybatis.test.integration.h2.test4;
 
-import java.util.Date;
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -26,9 +27,9 @@ import java.util.Map.Entry;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import org.apache.ibatis.mapping.BoundSql;
-import org.apache.ibatis.mapping.MappedStatement;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.Assert;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mybatis.spring.annotation.MapperScan;
@@ -36,6 +37,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -45,20 +47,21 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.alibaba.fastjson.JSON;
-import com.github.myoss.phoenix.core.constants.PhoenixConstants;
 import com.github.myoss.phoenix.core.lang.dto.Page;
 import com.github.myoss.phoenix.core.lang.dto.Result;
 import com.github.myoss.phoenix.core.lang.dto.Sort;
 import com.github.myoss.phoenix.mybatis.executor.keygen.SequenceKeyGenerator;
 import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
 import com.github.myoss.phoenix.mybatis.plugin.ParameterHandlerCustomizer;
-import com.github.myoss.phoenix.mybatis.repository.entity.AuditIdEntity;
+import com.github.myoss.phoenix.mybatis.plugin.impl.DefaultParameterHandlerCustomizer;
+import com.github.myoss.phoenix.mybatis.repository.utils.DbUtils;
 import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import com.github.myoss.phoenix.mybatis.spring.mapper.MapperFactoryBean;
 import com.github.myoss.phoenix.mybatis.table.Sequence;
 import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConfig;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test4.entity.SysUserLog;
+import com.github.myoss.phoenix.mybatis.test.integration.h2.test4.mapper.SysUserLogMapper;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test4.service.SysUserLogService;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test4.web.SysUserLogController;
 
@@ -77,6 +80,17 @@ public class SysUserLogControllerIntTests {
     private SysUserLogController userLogController;
     @Autowired
     private SysUserLogService    userLogService;
+    @Autowired
+    private SysUserLogMapper     userLogMapper;
+    @Rule
+    public OutputCapture         output = new OutputCapture();
+    @Autowired
+    private JdbcTemplate         jdbcTemplate;
+
+    public Long maxId() {
+        Long value = jdbcTemplate.queryForObject("select max(id) from t_sys_user_log", Long.class);
+        return value == null ? 0L : value;
+    }
 
     @ComponentScan(basePackageClasses = SysUserLogControllerIntTests.class)
     @Profile("SysUserLogControllerIntTests")
@@ -84,17 +98,7 @@ public class SysUserLogControllerIntTests {
     public static class MyConfig {
         @Bean
         public ParameterHandlerCustomizer persistenceParameterHandler() {
-            return new ParameterHandlerCustomizer() {
-                @Override
-                public void handlerInsert(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
-                    AuditIdEntity metaObject = (AuditIdEntity) parameterObject;
-                    metaObject.setIsDeleted(PhoenixConstants.N);
-                    metaObject.setCreator("system");
-                    metaObject.setModifier("system");
-                    metaObject.setGmtCreated(new Date());
-                    metaObject.setGmtModified(new Date());
-                }
-            };
+            return new DefaultParameterHandlerCustomizer();
         }
 
         @Bean
@@ -145,7 +149,7 @@ public class SysUserLogControllerIntTests {
      */
     @Test
     public void crudTest1() {
-        Long exceptedId = 1L;
+        Long exceptedId = maxId() + 1;
         SysUserLog record = new SysUserLog();
         record.setEmployeeNumber("10000");
         record.setInfo("第一次记录");
@@ -279,7 +283,7 @@ public class SysUserLogControllerIntTests {
      */
     @Test
     public void crudTest2() {
-        Long exceptedId = 1L;
+        Long exceptedId = maxId() + 1;
         SysUserLog record = new SysUserLog();
         record.setEmployeeNumber("10001");
         record.setInfo("第一次记录日志信息");
@@ -324,5 +328,105 @@ public class SysUserLogControllerIntTests {
             softly.assertThat(idResult4.getErrorMsg()).isNull();
             softly.assertThat(idResult4.getValue()).isNull();
         });
+
+        String printLog = this.output.toString();
+        assertThat(printLog).isNotBlank().doesNotContain(" delete ", " DELETE ").contains("INSERT", " UPDATE ");
+    }
+
+    /**
+     * 增删改查测试案例3
+     */
+    @Test
+    public void crudTest3() {
+        SysUserLog record = new SysUserLog();
+        record.setEmployeeNumber("10002");
+        record.setInfo("第一次记录日志信息");
+
+        // 创建记录
+        Result<Long> createResult = userLogService.create(record);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(createResult).isNotNull();
+            softly.assertThat(createResult.isSuccess()).isTrue();
+            softly.assertThat(createResult.getErrorCode()).isNull();
+            softly.assertThat(createResult.getErrorMsg()).isNull();
+            softly.assertThat(createResult.getValue()).isNotNull();
+        });
+        Long exceptedId = createResult.getValue();
+
+        // 使用各种查询 API 查询数据库中的记录，和保存之后的记录进行比较
+        Result<SysUserLog> countResult = userLogService.findByPrimaryKey(exceptedId);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(countResult).isNotNull();
+            softly.assertThat(countResult.isSuccess()).isTrue();
+            softly.assertThat(countResult.getErrorCode()).isNull();
+            softly.assertThat(countResult.getErrorMsg()).isNull();
+            softly.assertThat(countResult.getValue()).isNotNull().isEqualTo(record);
+        });
+
+        // 删除数据
+        boolean checkDBResult = DbUtils.checkDBResult(userLogMapper.deleteByPrimaryKey(exceptedId));
+        Assert.assertTrue(checkDBResult);
+
+        Result<SysUserLog> idResult4 = userLogService.findByPrimaryKey(exceptedId);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(idResult4).isNotNull();
+            softly.assertThat(idResult4.isSuccess()).isTrue();
+            softly.assertThat(idResult4.getErrorCode()).isNull();
+            softly.assertThat(idResult4.getErrorMsg()).isNull();
+            softly.assertThat(idResult4.getValue()).isNull();
+        });
+
+        String printLog = this.output.toString();
+        assertThat(printLog).isNotBlank().doesNotContain(" delete ", " DELETE ").contains("INSERT", " UPDATE ");
+    }
+
+    /**
+     * 增删改查测试案例4
+     */
+    @Test
+    public void crudTest4() {
+        SysUserLog record = new SysUserLog();
+        record.setEmployeeNumber("10003");
+        record.setInfo("第一次记录日志信息");
+
+        // 创建记录
+        Result<Long> createResult = userLogService.create(record);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(createResult).isNotNull();
+            softly.assertThat(createResult.isSuccess()).isTrue();
+            softly.assertThat(createResult.getErrorCode()).isNull();
+            softly.assertThat(createResult.getErrorMsg()).isNull();
+            softly.assertThat(createResult.getValue()).isNotNull();
+        });
+        Long exceptedId = createResult.getValue();
+
+        // 使用各种查询 API 查询数据库中的记录，和保存之后的记录进行比较
+        Result<SysUserLog> countResult = userLogService.findByPrimaryKey(exceptedId);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(countResult).isNotNull();
+            softly.assertThat(countResult.isSuccess()).isTrue();
+            softly.assertThat(countResult.getErrorCode()).isNull();
+            softly.assertThat(countResult.getErrorMsg()).isNull();
+            softly.assertThat(countResult.getValue()).isNotNull().isEqualTo(record);
+        });
+
+        // 删除数据
+        SysUserLog deleteCondition = new SysUserLog();
+        deleteCondition.setId(exceptedId);
+        deleteCondition.setInfo(record.getInfo());
+        boolean checkDBResult = DbUtils.checkDBResult(userLogMapper.deleteByPrimaryKey(deleteCondition));
+        Assert.assertTrue(checkDBResult);
+
+        Result<SysUserLog> idResult4 = userLogService.findByPrimaryKey(exceptedId);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(idResult4).isNotNull();
+            softly.assertThat(idResult4.isSuccess()).isTrue();
+            softly.assertThat(idResult4.getErrorCode()).isNull();
+            softly.assertThat(idResult4.getErrorMsg()).isNull();
+            softly.assertThat(idResult4.getValue()).isNull();
+        });
+
+        String printLog = this.output.toString();
+        assertThat(printLog).isNotBlank().doesNotContain(" delete ", " DELETE ").contains("INSERT", " UPDATE ");
     }
 }

@@ -32,7 +32,7 @@ import com.github.myoss.phoenix.mybatis.mapper.template.delete.impl.DeleteMapper
 @RegisterMapper
 public interface DeleteByPrimaryKeyMapper<T> {
     /**
-     * 根据主键id删除记录
+     * 根据主键id删除记录；如果数据库表支持"逻辑删除"，则会生成 update 语句。
      *
      * @param id 主键id
      * @return SQL执行成功之后，影响的行数
@@ -42,7 +42,7 @@ public interface DeleteByPrimaryKeyMapper<T> {
     int deleteByPrimaryKey(Serializable id);
 
     /**
-     * 根据主键id删除记录
+     * 根据主键id删除记录；如果数据库表支持"逻辑删除"，则会生成 update 语句。
      *
      * @param condition 主键id
      * @return SQL执行成功之后，影响的行数

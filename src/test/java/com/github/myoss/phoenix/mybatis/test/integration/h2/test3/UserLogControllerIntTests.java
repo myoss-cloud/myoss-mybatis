@@ -17,6 +17,8 @@
 
 package com.github.myoss.phoenix.mybatis.test.integration.h2.test3;
 
+import static org.assertj.core.api.Assertions.assertThat;
+
 import java.util.Date;
 import java.util.List;
 
@@ -25,6 +27,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.assertj.core.api.SoftAssertions;
+import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.mybatis.spring.annotation.MapperScan;
@@ -32,6 +35,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.boot.test.rule.OutputCapture;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -71,6 +75,15 @@ public class UserLogControllerIntTests {
     private UserLogController userLogController;
     @Autowired
     private UserLogService    userLogService;
+    @Rule
+    public OutputCapture      output = new OutputCapture();
+    @Autowired
+    private JdbcTemplate      jdbcTemplate;
+
+    public Long maxId() {
+        Long value = jdbcTemplate.queryForObject("select max(id) from t_sys_user_log", Long.class);
+        return value == null ? 0L : value;
+    }
 
     @ComponentScan(basePackageClasses = UserLogControllerIntTests.class)
     @Profile("UserLogControllerIntTests")
@@ -86,6 +99,13 @@ public class UserLogControllerIntTests {
                     metaObject.setCreator("system");
                     metaObject.setModifier("system");
                     metaObject.setGmtCreated(new Date());
+                    metaObject.setGmtModified(new Date());
+                }
+
+                @Override
+                public void handlerUpdate(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
+                    AuditIdEntity metaObject = (AuditIdEntity) parameterObject;
+                    metaObject.setModifier("system");
                     metaObject.setGmtModified(new Date());
                 }
             };
@@ -110,7 +130,7 @@ public class UserLogControllerIntTests {
      */
     @Test
     public void crudTest1() {
-        Long exceptedId = 1L;
+        Long exceptedId = maxId() + 1;
         UserLog record = new UserLog();
         record.setEmployeeNumber("10000");
         record.setInfo("第一次记录");
@@ -244,7 +264,7 @@ public class UserLogControllerIntTests {
      */
     @Test
     public void crudTest2() {
-        Long exceptedId = 1L;
+        Long exceptedId = maxId() + 1;
         UserLog record = new UserLog();
         record.setEmployeeNumber("10001");
         record.setInfo("第一次记录日志信息");
@@ -289,5 +309,8 @@ public class UserLogControllerIntTests {
             softly.assertThat(idResult4.getErrorMsg()).isNull();
             softly.assertThat(idResult4.getValue()).isNull();
         });
+
+        String printLog = this.output.toString();
+        assertThat(printLog).isNotBlank().doesNotContain(" delete ", " DELETE ").contains("INSERT", " UPDATE ");
     }
 }

@@ -74,6 +74,11 @@ public class UserControllerIntTests {
     @Autowired
     private JdbcTemplate   jdbcTemplate;
 
+    public Long maxId() {
+        Long value = jdbcTemplate.queryForObject("select max(id) from t_sys_user", Long.class);
+        return value == null ? 0L : value;
+    }
+
     @ComponentScan(basePackageClasses = UserControllerIntTests.class)
     @Profile("UserControllerIntTests")
     @Configuration
@@ -92,11 +97,6 @@ public class UserControllerIntTests {
                 }
             };
         }
-    }
-
-    public Long maxId() {
-        Long value = jdbcTemplate.queryForObject("select max(id) from t_sys_user", Long.class);
-        return value == null ? 0L : value;
     }
 
     /**
