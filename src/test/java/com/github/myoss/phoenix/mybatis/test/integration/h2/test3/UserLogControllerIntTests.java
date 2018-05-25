@@ -220,7 +220,11 @@ public class UserLogControllerIntTests {
             softly.assertThat(updateResult.getErrorCode()).isNull();
             softly.assertThat(updateResult.getErrorMsg()).isNull();
             softly.assertThat(updateResult.getValue()).isNotNull().isEqualTo(true);
+            softly.assertThat(updateUser.getModifier()).isNotNull();
+            softly.assertThat(updateUser.getGmtModified()).isNotNull();
         });
+        record.setModifier(updateUser.getModifier());
+        record.setGmtModified(updateUser.getGmtModified());
 
         Result<UserLog> idResult3 = userLogService.findByPrimaryKey(exceptedId);
         SoftAssertions.assertSoftly(softly -> {

@@ -30,6 +30,7 @@ import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateByPrimaryKe
 import com.github.myoss.phoenix.mybatis.table.TableColumnInfo;
 import com.github.myoss.phoenix.mybatis.table.TableInfo;
 import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
+import com.github.myoss.phoenix.mybatis.table.annotation.FillRule;
 
 /**
  * 生成通用 update MappedStatement 模版类
@@ -72,14 +73,19 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
             if (!columnInfo.isUpdatable() || columnInfo.isPrimaryKey() || columnInfo.isLogicDelete()) {
                 continue;
             }
-            builder.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
+            boolean fillUpdate = columnInfo.haveFillRule(FillRule.UPDATE);
+            if (!fillUpdate) {
+                builder.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
+            }
             builder.append("    ").append(columnInfo.getActualColumn()).append(" = #{")
                     .append(columnInfo.getProperty());
             if (columnInfo.getJdbcType() != null) {
                 builder.append(",jdbcType=BIGINT");
             }
             builder.append("},\n");
-            builder.append("  </if>\n");
+            if (!fillUpdate) {
+                builder.append("  </if>\n");
+            }
         }
         builder.append("</set>\n");
         builder.append(tableInfo.getWherePrimaryKeySql());
@@ -179,14 +185,19 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
             if (!columnInfo.isUpdatable() || columnInfo.isPrimaryKey() || columnInfo.isLogicDelete()) {
                 continue;
             }
-            builder.append("  <if test=\"record.").append(columnInfo.getProperty()).append(" != null\">\n");
+            boolean fillUpdate = columnInfo.haveFillRule(FillRule.UPDATE);
+            if (!fillUpdate) {
+                builder.append("  <if test=\"record.").append(columnInfo.getProperty()).append(" != null\">\n");
+            }
             builder.append("    ").append(columnInfo.getActualColumn()).append(" = #{record.")
                     .append(columnInfo.getProperty());
             if (columnInfo.getJdbcType() != null) {
                 builder.append(",jdbcType=BIGINT");
             }
             builder.append("},\n");
-            builder.append("</if>\n");
+            if (!fillUpdate) {
+                builder.append("</if>\n");
+            }
         }
         builder.append("</set>\n");
         builder.append(tableInfo.getWhereConditionWithParameterSql());
