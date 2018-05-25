@@ -18,6 +18,8 @@
 package com.github.myoss.phoenix.mybatis.executor.keygen;
 
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.binding.BindingException;
@@ -27,6 +29,7 @@ import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.session.Configuration;
+import org.springframework.util.CollectionUtils;
 
 import com.github.myoss.phoenix.mybatis.table.Sequence;
 import com.github.myoss.phoenix.mybatis.table.TableInfo;
@@ -93,13 +96,32 @@ public class SequenceKeyGenerator implements KeyGenerator {
     private void processGeneratedKeys(MappedStatement ms, Object parameter) {
         try {
             if (parameter != null && keyProperties != null && keyProperties.length > 0) {
+                if (keyColumns != null && keyColumns.length != keyProperties.length) {
+                    throw new ExecutorException(
+                            "If SelectKey has key columns, the number must match the number of key properties.");
+                }
                 final Configuration configuration = ms.getConfiguration();
                 final MetaObject metaParam = configuration.newMetaObject(parameter);
+                List<String> keys = new ArrayList<>(keyProperties.length);
+                List<String> columns = new ArrayList<>(keyProperties.length);
+                for (int i = 0; i < keyProperties.length; i++) {
+                    String keyProperty = keyProperties[i];
+                    if (!(metaParam.hasGetter(keyProperty) && checkValueIsNotNull(metaParam, keyProperty))) {
+                        keys.add(keyProperty);
+                        if (keyColumns != null) {
+                            columns.add(keyColumns[i]);
+                        }
+                    }
+                }
+                if (keys.size() == 0) {
+                    // 主键字段已经有值，不生成
+                    return;
+                }
 
                 Object value = sequence.nextValue(parameter);
                 MetaObject metaResult = configuration.newMetaObject(value);
-                if (keyProperties.length == 1) {
-                    String keyProperty = keyProperties[0];
+                if (keys.size() == 1) {
+                    String keyProperty = keys.get(0);
                     if (metaResult.hasGetter(keyProperty)) {
                         setValue(metaParam, keyProperty, metaResult.getValue(keyProperty));
                     } else {
@@ -108,7 +130,7 @@ public class SequenceKeyGenerator implements KeyGenerator {
                         setValue(metaParam, keyProperty, value);
                     }
                 } else {
-                    handleMultipleProperties(keyProperties, metaParam, metaResult);
+                    handleMultipleProperties(keys, columns, metaParam, metaResult);
                 }
             }
         } catch (ExecutorException e) {
@@ -118,19 +140,20 @@ public class SequenceKeyGenerator implements KeyGenerator {
         }
     }
 
-    private void handleMultipleProperties(String[] keyProperties, MetaObject metaParam, MetaObject metaResult) {
-        if (keyColumns == null || keyColumns.length == 0) {
+    private void handleMultipleProperties(List<String> keyProperties, List<String> columns, MetaObject metaParam,
+                                          MetaObject metaResult) {
+        if (CollectionUtils.isEmpty(columns)) {
             // no key columns specified, just use the property names
             for (String keyProperty : keyProperties) {
                 setValue(metaParam, keyProperty, metaResult.getValue(keyProperty));
             }
         } else {
-            if (keyColumns.length != keyProperties.length) {
+            if (keyProperties.size() != columns.size()) {
                 throw new ExecutorException(
                         "If SelectKey has key columns, the number must match the number of key properties.");
             }
-            for (int i = 0; i < keyProperties.length; i++) {
-                setValue(metaParam, keyProperties[i], metaResult.getValue(keyColumns[i]));
+            for (int i = 0; i < keyProperties.size(); i++) {
+                setValue(metaParam, keyProperties.get(i), metaResult.getValue(columns.get(i)));
             }
         }
     }
@@ -142,5 +165,13 @@ public class SequenceKeyGenerator implements KeyGenerator {
             throw new ExecutorException("No setter found for the keyProperty '" + property + "' in "
                     + metaParam.getOriginalObject().getClass().getName() + ".");
         }
+    }
+
+    private boolean checkValueIsNotNull(MetaObject metaParam, String keyProperty) {
+        Object value = metaParam.getValue(keyProperty);
+        if (value instanceof CharSequence && StringUtils.isBlank((CharSequence) value)) {
+            return true;
+        }
+        return value != null;
     }
 }

@@ -188,6 +188,11 @@ public class UserControllerIntTests {
         updateUser.setId(exceptedId);
         updateUser.setAccount("10000");
         updateUser.setName("Leo");
+        updateUser.setIsDeleted(PhoenixConstants.N);
+        updateUser.setCreator(PhoenixConstants.SYSTEM);
+        updateUser.setModifier("jerry");
+        updateUser.setGmtCreated(record.getGmtCreated());
+        updateUser.setGmtModified(new Date());
         Result<Boolean> updateResult = userController.updateByPrimaryKey(updateUser);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(updateResult).isNotNull();
@@ -196,6 +201,8 @@ public class UserControllerIntTests {
             softly.assertThat(updateResult.getErrorMsg()).isNull();
             softly.assertThat(updateResult.getValue()).isNotNull().isEqualTo(true);
         });
+        record.setModifier(updateUser.getModifier());
+        record.setGmtModified(updateUser.getGmtModified());
 
         Result<User> idResult3 = userService.findByPrimaryKey(exceptedId);
         SoftAssertions.assertSoftly(softly -> {
@@ -240,7 +247,6 @@ public class UserControllerIntTests {
      */
     @Test
     public void crudTest2() {
-        Long exceptedId = maxId() + 2;
         User record = new User();
         record.setEmployeeNumber("10001");
         record.setName("Jerry");
@@ -252,7 +258,7 @@ public class UserControllerIntTests {
             softly.assertThat(createResult.isSuccess()).isTrue();
             softly.assertThat(createResult.getErrorCode()).isNull();
             softly.assertThat(createResult.getErrorMsg()).isNull();
-            softly.assertThat(createResult.getValue()).isNotNull().isEqualTo(exceptedId);
+            softly.assertThat(createResult.getValue()).isNotNull();
         });
 
         // 使用各种查询 API 查询数据库中的记录，和保存之后的记录进行比较
@@ -267,7 +273,7 @@ public class UserControllerIntTests {
 
         // 删除数据
         User deleteUser = new User();
-        deleteUser.setId(exceptedId);
+        deleteUser.setId(record.getId());
         Result<Boolean> deleteResult = userService.deleteByCondition(deleteUser);
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(deleteResult).isNotNull();
@@ -277,7 +283,7 @@ public class UserControllerIntTests {
             softly.assertThat(deleteResult.getValue()).isNotNull().isEqualTo(true);
         });
 
-        Result<User> idResult4 = userService.findByPrimaryKey(exceptedId);
+        Result<User> idResult4 = userService.findByPrimaryKey(record.getId());
         SoftAssertions.assertSoftly(softly -> {
             softly.assertThat(idResult4).isNotNull();
             softly.assertThat(idResult4.isSuccess()).isTrue();
