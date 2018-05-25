@@ -19,13 +19,17 @@ package com.github.myoss.phoenix.mybatis.plugin.impl;
 
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
+import org.apache.ibatis.session.defaults.DefaultSqlSession;
 
 import com.github.myoss.phoenix.core.constants.PhoenixConstants;
+import com.github.myoss.phoenix.mybatis.mapper.template.insert.InsertBatchMapper;
+import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateByConditionMapper;
 import com.github.myoss.phoenix.mybatis.plugin.ParameterHandlerCustomizer;
 import com.github.myoss.phoenix.mybatis.repository.entity.AuditIdEntity;
 
@@ -35,6 +39,18 @@ import com.github.myoss.phoenix.mybatis.repository.entity.AuditIdEntity;
  * @author Jerry.Chen 2018年5月20日 下午4:49:45
  */
 public class DefaultParameterHandlerCustomizer implements ParameterHandlerCustomizer {
+    /**
+     * 执行 {@link InsertBatchMapper#insertBatch(List)} 的时候，在
+     * {@link DefaultSqlSession#update(java.lang.String, java.lang.Object)}
+     * 对参数使用了 {@link Map} 进行了包装
+     */
+    public static final String COLLECTION = "collection";
+    /**
+     * 执行 {@link UpdateByConditionMapper#updateByCondition(Object, Object)}
+     * 的时候，处理 {@code @Param("record") T record} 参数
+     */
+    public static final String RECORD     = "record";
+
     /**
      * 设置审计字段信息
      *
@@ -74,12 +90,17 @@ public class DefaultParameterHandlerCustomizer implements ParameterHandlerCustom
             setAuditInfo(entity, isInsert);
         } else if (parameterObject instanceof Map) {
             Map map = (Map) parameterObject;
-            Object collection = map.get("collection");
-            if (collection instanceof Collection) {
-                Collection value = (Collection) collection;
-                for (Object entity : value) {
-                    setAuditInfo(entity, isInsert);
+            if (map.containsKey(COLLECTION)) {
+                Object collection = map.get(COLLECTION);
+                if (collection instanceof Collection) {
+                    Collection value = (Collection) collection;
+                    for (Object entity : value) {
+                        setAuditInfo(entity, isInsert);
+                    }
                 }
+            } else if (map.containsKey(RECORD)) {
+                Object record = map.get(RECORD);
+                setAuditInfo(record, isInsert);
             }
         }
     }

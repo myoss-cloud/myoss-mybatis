@@ -259,6 +259,34 @@ public class SysUserLogControllerIntTests {
             softly.assertThat(idResult3.getValue()).isNotNull().isEqualTo(target);
         });
 
+        // 更新数据
+        SysUserLog updateUser2 = new SysUserLog();
+        updateUser2.setInfo("测试 updateByCondition 更新");
+        updateUser2.setEmployeeNumber("123456");
+        int count = userLogMapper.updateByCondition(updateUser2, updateUser);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(count).isEqualTo(1);
+            softly.assertThat(updateUser2.getModifier()).isNotNull();
+            softly.assertThat(updateUser2.getGmtModified()).isNotNull();
+        });
+        record.setModifier(updateUser2.getModifier());
+        record.setGmtModified(updateUser2.getGmtModified());
+
+        Result<SysUserLog> idResult4 = userLogService.findByPrimaryKey(exceptedId);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(idResult4).isNotNull();
+            softly.assertThat(idResult4.isSuccess()).isTrue();
+            softly.assertThat(idResult4.getErrorCode()).isNull();
+            softly.assertThat(idResult4.getErrorMsg()).isNull();
+            softly.assertThat(idResult4.getValue()).isNotNull().isNotEqualTo(record);
+
+            SysUserLog target = new SysUserLog();
+            BeanUtils.copyProperties(record, target);
+            target.setInfo(updateUser2.getInfo());
+            target.setEmployeeNumber(updateUser2.getEmployeeNumber());
+            softly.assertThat(idResult4.getValue()).isNotNull().isEqualTo(target);
+        });
+
         // 删除数据
         SysUserLog deleteUser = new SysUserLog();
         deleteUser.setId(exceptedId);
@@ -272,13 +300,13 @@ public class SysUserLogControllerIntTests {
             softly.assertThat(deleteResult.getValue()).isNotNull().isEqualTo(true);
         });
 
-        Result<SysUserLog> idResult4 = userLogService.findByPrimaryKey(exceptedId);
+        Result<SysUserLog> idResult5 = userLogService.findByPrimaryKey(exceptedId);
         SoftAssertions.assertSoftly(softly -> {
-            softly.assertThat(idResult4).isNotNull();
-            softly.assertThat(idResult4.isSuccess()).isTrue();
-            softly.assertThat(idResult4.getErrorCode()).isNull();
-            softly.assertThat(idResult4.getErrorMsg()).isNull();
-            softly.assertThat(idResult4.getValue()).isNull();
+            softly.assertThat(idResult5).isNotNull();
+            softly.assertThat(idResult5.isSuccess()).isTrue();
+            softly.assertThat(idResult5.getErrorCode()).isNull();
+            softly.assertThat(idResult5.getErrorMsg()).isNull();
+            softly.assertThat(idResult5.getValue()).isNull();
         });
     }
 
