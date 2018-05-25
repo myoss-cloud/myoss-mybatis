@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>phoenix-mybatis</artifactId>
-    <version>1.0.11-SNAPSHOT</version>
+    <version>1.0.11</version>
     <packaging>jar</packaging>
 
     <name>phoenix-mybatis</name>
@@ -45,25 +45,31 @@
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <maven.compiler.source>${java.version}</maven.compiler.source>
         <maven.compiler.target>${java.version}</maven.compiler.target>
+
+        <phoenix-core.version>1.0.7</phoenix-core.version>
+        <!-- third party -->
+        <mybatis.version>3.4.6</mybatis.version>
+        <mybatis-spring.version>1.3.2</mybatis-spring.version>
+        <!-- third party -->
     </properties>
 
     <dependencies>
         <dependency>
             <groupId>com.github.myoss</groupId>
             <artifactId>phoenix-core</artifactId>
-            <version>1.0.7</version>
+            <version>${phoenix-core.version}</version>
         </dependency>
 
         <!-- mybatis start -->
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis</artifactId>
-            <version>3.4.6</version>
+            <version>${mybatis.version}</version>
         </dependency>
         <dependency>
             <groupId>org.mybatis</groupId>
             <artifactId>mybatis-spring</artifactId>
-            <version>1.3.2</version>
+            <version>${mybatis-spring.version}</version>
         </dependency>
         <dependency>
             <groupId>org.springframework</groupId>
