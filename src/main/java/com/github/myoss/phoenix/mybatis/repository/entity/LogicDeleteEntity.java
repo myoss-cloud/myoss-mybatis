@@ -17,17 +17,18 @@
 
 package com.github.myoss.phoenix.mybatis.repository.entity;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.github.myoss.phoenix.core.constants.PhoenixConstants;
 import com.github.myoss.phoenix.mybatis.table.annotation.Column;
 
+import lombok.Data;
+import lombok.experimental.Accessors;
+
 /**
  * 逻辑删除实体基类
  *
- * @author Jerry.Chen 2018年5月9日 下午2:20:26
+ * @author Jerry.Chen
+ * @since 2018年5月9日 下午2:20:26
  */
 @Accessors(chain = true)
 @Data

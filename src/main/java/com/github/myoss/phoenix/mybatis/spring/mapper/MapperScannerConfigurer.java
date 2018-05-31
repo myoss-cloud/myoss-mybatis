@@ -22,8 +22,6 @@ import static org.springframework.util.Assert.notNull;
 import java.lang.annotation.Annotation;
 import java.util.Map;
 
-import lombok.Data;
-
 import org.springframework.beans.PropertyValue;
 import org.springframework.beans.PropertyValues;
 import org.springframework.beans.factory.BeanNameAware;
@@ -43,12 +41,15 @@ import org.springframework.util.StringUtils;
 
 import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration.AutoConfiguredMapperScannerRegistrar2;
 
+import lombok.Data;
+
 /**
  * 配置扫描Class Path目录Mapper Interface，实现
  * {@link org.mybatis.spring.mapper.MapperScannerConfigurer} 类似的功能，但是用的是自己的
  * {@link ClassPathMapperScanner}
  *
- * @author Jerry.Chen 2018年5月20日 下午12:47:18
+ * @author Jerry.Chen
+ * @since 2018年5月20日 下午12:47:18
  * @see ClassPathMapperScanner
  * @see MapperFactoryBean
  * @see AutoConfiguredMapperScannerRegistrar2

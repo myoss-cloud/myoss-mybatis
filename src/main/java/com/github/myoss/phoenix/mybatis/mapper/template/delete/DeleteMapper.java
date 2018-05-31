@@ -22,7 +22,8 @@ import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
 /**
  * 删除（Delete）操作，通用 Mapper 接口
  *
- * @author Jerry.Chen 2018年5月1日 下午6:01:49
+ * @author Jerry.Chen
+ * @since 2018年5月1日 下午6:01:49
  */
 @RegisterMapper
 public interface DeleteMapper<T> extends DeleteByPrimaryKeyMapper<T>, DeleteByConditionMapper<T> {

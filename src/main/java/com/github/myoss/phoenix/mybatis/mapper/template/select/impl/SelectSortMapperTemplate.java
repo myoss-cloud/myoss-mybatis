@@ -38,7 +38,8 @@ import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
 /**
  * 生成 select order by MappedStatement 模版类
  *
- * @author Jerry.Chen 2018年5月10日 上午1:09:17
+ * @author Jerry.Chen
+ * @since 2018年5月10日 上午1:09:17
  */
 public class SelectSortMapperTemplate extends AbstractMapperTemplate {
 

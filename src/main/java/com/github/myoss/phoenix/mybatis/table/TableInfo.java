@@ -19,15 +19,16 @@ package com.github.myoss.phoenix.mybatis.table;
 
 import java.util.Set;
 
-import lombok.Data;
-
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.session.Configuration;
+
+import lombok.Data;
 
 /**
  * 数据库表结构信息，包含数据库字段信息、实体类class等信息
  *
- * @author Jerry.Chen 2018年4月26日 上午11:02:15
+ * @author Jerry.Chen
+ * @since 2018年4月26日 上午11:02:15
  */
 @Data
 public class TableInfo {

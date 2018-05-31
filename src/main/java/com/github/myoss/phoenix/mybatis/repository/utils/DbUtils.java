@@ -20,7 +20,8 @@ package com.github.myoss.phoenix.mybatis.repository.utils;
 /**
  * 数据库常用操作方法工具类
  *
- * @author Jerry.Chen 2018年5月10日 上午1:19:14
+ * @author Jerry.Chen
+ * @since 2018年5月10日 上午1:19:14
  */
 public class DbUtils {
     /**

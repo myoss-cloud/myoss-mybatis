@@ -22,7 +22,8 @@ import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
 /**
  * 读取（Retrieve）操作，通用 Mapper 接口
  *
- * @author Jerry.Chen 2018年4月29日 下午5:14:41
+ * @author Jerry.Chen
+ * @since 2018年4月29日 下午5:14:41
  */
 @RegisterMapper
 public interface RetrieveMapper<T> extends SelectOneMapper<T>, SelectListMapper<T>, SelectCountMapper<T>,

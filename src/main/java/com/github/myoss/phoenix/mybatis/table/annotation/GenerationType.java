@@ -17,18 +17,19 @@
 
 package com.github.myoss.phoenix.mybatis.table.annotation;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-
 import org.apache.ibatis.executor.keygen.SelectKeyGenerator;
 
 import com.github.myoss.phoenix.mybatis.executor.keygen.SequenceKeyGenerator;
 import com.github.myoss.phoenix.mybatis.table.Sequence;
 
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+
 /**
  * 生成主键id策略类型
  *
- * @author Jerry.Chen 2018年4月30日 下午10:49:06
+ * @author Jerry.Chen
+ * @since 2018年4月30日 下午10:49:06
  */
 @Getter
 @AllArgsConstructor

@@ -26,7 +26,8 @@ import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateMapper;
 /**
  * 创建（Create）、更新（Update）、读取（Retrieve）和删除（Delete）操作，通用 Mapper 接口
  *
- * @author Jerry.Chen 2018年4月29日 下午4:58:48
+ * @author Jerry.Chen
+ * @since 2018年4月29日 下午4:58:48
  */
 @RegisterMapper
 public interface CrudMapper<T> extends CreateMapper<T>, RetrieveMapper<T>, UpdateMapper<T>, DeleteMapper<T> {

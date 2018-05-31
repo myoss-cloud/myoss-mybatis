@@ -22,8 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.reflection.MetaObject;
@@ -56,10 +54,13 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.entity.User;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.service.UserService;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.web.UserController;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * {@link UserController } 集成测试，使用H2内存数据库，测试 Mybatis 功能
  *
- * @author Jerry.Chen 2018年5月11日 上午10:45:16
+ * @author Jerry.Chen
+ * @since 2018年5月11日 上午10:45:16
  */
 @MapperScan(basePackageClasses = UserControllerIntTests.class, factoryBean = MapperFactoryBean.class, markerInterface = CrudMapper.class)
 @ActiveProfiles({ "h2-test1", "UserControllerIntTests" })

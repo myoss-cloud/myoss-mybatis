@@ -23,8 +23,6 @@ import java.util.Optional;
 import java.util.Properties;
 import java.util.stream.Stream;
 
-import lombok.Data;
-
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.session.ExecutorType;
 import org.springframework.boot.context.properties.ConfigurationProperties;
@@ -36,10 +34,13 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration.AutoConfiguredMapperScannerRegistrar2;
 import com.github.myoss.phoenix.mybatis.table.TableConfig;
 
+import lombok.Data;
+
 /**
  * MyBatis Spring Boot项目配置属性
  *
- * @author Jerry.Chen 2018年4月24日 下午3:28:31
+ * @author Jerry.Chen
+ * @since 2018年4月24日 下午3:28:31
  */
 @Data
 @ConfigurationProperties(prefix = MybatisProperties.MYBATIS_PREFIX)

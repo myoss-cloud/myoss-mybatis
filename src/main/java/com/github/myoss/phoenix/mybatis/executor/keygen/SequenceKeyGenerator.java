@@ -42,7 +42,8 @@ import com.github.myoss.phoenix.mybatis.table.annotation.SequenceKey;
  * 用于 {@link GenerationType#SEQUENCE_KEY} 策略，触发 {@link Sequence}
  * 接口实现类来生成序列值，并更新到实体对象中
  *
- * @author Jerry.Chen 2018年4月30日 下午5:12:53
+ * @author Jerry.Chen
+ * @since 2018年4月30日 下午5:12:53
  * @see SequenceKey
  * @see Sequence
  */

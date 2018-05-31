@@ -19,18 +19,19 @@ package com.github.myoss.phoenix.mybatis.repository.entity;
 
 import java.io.Serializable;
 
-import lombok.Data;
-import lombok.EqualsAndHashCode;
-import lombok.experimental.Accessors;
-
 import com.alibaba.fastjson.annotation.JSONField;
 import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.github.myoss.phoenix.mybatis.table.annotation.Column;
 
+import lombok.Data;
+import lombok.EqualsAndHashCode;
+import lombok.experimental.Accessors;
+
 /**
  * 审计实体基类，包含审计的字段，增加了主键id字段
  *
- * @author Jerry.Chen 2018年5月9日 下午2:15:14
+ * @author Jerry.Chen
+ * @since 2018年5月9日 下午2:15:14
  */
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)

@@ -17,14 +17,15 @@
 
 package com.github.myoss.phoenix.mybatis.table;
 
-import lombok.Data;
-
 import com.github.myoss.phoenix.core.utils.NameStyle;
+
+import lombok.Data;
 
 /**
  * MyBatis Table 全局配置；实体类映射数据库表的全局配置
  *
- * @author Jerry.Chen 2018年4月27日 上午12:24:07
+ * @author Jerry.Chen
+ * @since 2018年4月27日 上午12:24:07
  */
 @Data
 public class TableConfig {

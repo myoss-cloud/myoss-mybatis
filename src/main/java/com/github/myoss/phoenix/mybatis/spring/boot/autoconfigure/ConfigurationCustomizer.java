@@ -25,14 +25,15 @@ import org.apache.ibatis.session.Configuration;
  *
  * @author Kazuki Shimizu
  * @since 1.2.1
- * @author Jerry.Chen 2018年4月23日 上午11:07:07
+ * @author Jerry.Chen
+ * @since 2018年4月23日 上午11:07:07
  */
 @FunctionalInterface
 public interface ConfigurationCustomizer {
 
     /**
      * Customize the given a {@link Configuration} object.
-     * 
+     *
      * @param configuration the configuration object to customize
      */
     void customize(Configuration configuration);

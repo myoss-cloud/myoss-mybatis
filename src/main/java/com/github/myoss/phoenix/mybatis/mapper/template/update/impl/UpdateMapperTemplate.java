@@ -35,7 +35,8 @@ import com.github.myoss.phoenix.mybatis.table.annotation.FillRule;
 /**
  * 生成通用 update MappedStatement 模版类
  *
- * @author Jerry.Chen 2018年5月1日 下午9:15:39
+ * @author Jerry.Chen
+ * @since 2018年5月1日 下午9:15:39
  */
 public class UpdateMapperTemplate extends AbstractMapperTemplate {
     /**

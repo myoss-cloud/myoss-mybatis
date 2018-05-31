@@ -20,8 +20,6 @@ package com.github.myoss.phoenix.mybatis.plugin;
 import java.sql.PreparedStatement;
 import java.util.Properties;
 
-import lombok.Getter;
-
 import org.apache.ibatis.executor.parameter.ParameterHandler;
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
@@ -35,10 +33,13 @@ import org.apache.ibatis.reflection.MetaObject;
 import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.scripting.defaults.DefaultParameterHandler;
 
+import lombok.Getter;
+
 /**
  * ParameterHandler 拦截器，通用 SQL SELECT statements 处理 Parameter 逻辑
  *
- * @author Jerry.Chen 2018年4月30日 下午12:55:35
+ * @author Jerry.Chen
+ * @since 2018年4月30日 下午12:55:35
  * @see ParameterHandlerCustomizer
  */
 @Intercepts({ @Signature(type = ParameterHandler.class, method = "setParameters", args = { PreparedStatement.class }) })

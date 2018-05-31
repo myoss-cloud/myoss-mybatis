@@ -41,7 +41,8 @@ import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator.Order
  * &lt;/selectKey&gt;
  * </pre>
  *
- * @author Jerry.Chen 2018年4月30日 下午10:44:30
+ * @author Jerry.Chen
+ * @since 2018年4月30日 下午10:44:30
  * @see SelectKeyGenerator
  */
 @Target({ FIELD })

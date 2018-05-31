@@ -34,12 +34,13 @@ import com.github.myoss.phoenix.core.utils.NameStyle;
  *
  * <pre>
  *    Example:
- * 
+ *
  *    &#064;Table(name="CUST", schema="RECORDS")
  *    public class Customer { ... }
  * </pre>
  *
- * @author Jerry.Chen 2018年4月26日 上午11:55:45
+ * @author Jerry.Chen
+ * @since 2018年4月26日 上午11:55:45
  */
 @Target(TYPE)
 @Retention(RUNTIME)

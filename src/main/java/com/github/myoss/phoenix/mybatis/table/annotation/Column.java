@@ -39,11 +39,11 @@ import com.github.myoss.phoenix.mybatis.type.UnsupportedTypeHandler;
  * Example 1:
  * &#064;Column(name="DESC", nullable=false)
  * private String description;
- * 
+ *
  * Example 2:
  * &#064;Column(name="id", primaryKey=true)
  * public String getId() { return id; }
- * 
+ *
  * Example 3:
  * &#064;Column(name="ORDER_COST", insertable=false, updatable=false)
  * private String cost;
@@ -52,7 +52,8 @@ import com.github.myoss.phoenix.mybatis.type.UnsupportedTypeHandler;
  *
  * </blockquote>
  *
- * @author Jerry.Chen 2018年4月26日 上午11:57:24
+ * @author Jerry.Chen
+ * @since 2018年4月26日 上午11:57:24
  */
 @Target({ METHOD, FIELD })
 @Retention(RUNTIME)

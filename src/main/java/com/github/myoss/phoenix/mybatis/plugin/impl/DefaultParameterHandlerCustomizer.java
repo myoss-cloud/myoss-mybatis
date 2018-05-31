@@ -36,7 +36,8 @@ import com.github.myoss.phoenix.mybatis.repository.entity.AuditIdEntity;
 /**
  * 默认的 Mybatis 参数处理自动配置
  *
- * @author Jerry.Chen 2018年5月20日 下午4:49:45
+ * @author Jerry.Chen
+ * @since 2018年5月20日 下午4:49:45
  */
 public class DefaultParameterHandlerCustomizer implements ParameterHandlerCustomizer {
     /**

@@ -62,7 +62,8 @@ import com.github.myoss.phoenix.mybatis.type.UnsupportedTypeHandler;
 /**
  * 数据库表结构信息工具类
  *
- * @author Jerry.Chen 2018年4月26日 上午10:46:25
+ * @author Jerry.Chen
+ * @since 2018年4月26日 上午10:46:25
  */
 public class TableMetaObject {
     /**
@@ -83,7 +84,7 @@ public class TableMetaObject {
 
     /**
      * 将"序列生成器实例对象"添加到缓存中
-     * 
+     *
      * @param sequenceBeanName 序列的 Spring Bean 实例名称
      * @param sequence 序列生成器实例对象
      */
@@ -417,7 +418,7 @@ public class TableMetaObject {
                 Field field = declaredFields[i];
                 String name = field.getName();
                 if (Modifier.isStatic(field.getModifiers()) || Modifier.isTransient(field.getModifiers())) {
-                    // 过滤字段: static, transient 
+                    // 过滤字段: static, transient
                     continue;
                 }
                 if (isSupper && allFiledName.containsKey(name)) {

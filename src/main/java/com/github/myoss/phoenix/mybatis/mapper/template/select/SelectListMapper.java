@@ -31,7 +31,8 @@ import com.github.myoss.phoenix.mybatis.mapper.template.select.impl.SelectSortMa
 /**
  * 查询记录通用 Mapper 接口
  *
- * @author Jerry.Chen 2018年5月10日 上午12:37:53
+ * @author Jerry.Chen
+ * @since 2018年5月10日 上午12:37:53
  */
 @RegisterMapper
 public interface SelectListMapper<T> {

@@ -23,7 +23,8 @@ import com.github.myoss.phoenix.mybatis.table.annotation.SequenceKey;
 /**
  * 序列生成器接口
  *
- * @author Jerry.Chen 2018年4月29日 下午12:59:19
+ * @author Jerry.Chen
+ * @since 2018年4月29日 下午12:59:19
  * @see SequenceKey
  * @see SequenceKeyGenerator
  */

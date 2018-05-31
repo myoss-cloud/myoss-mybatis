@@ -37,7 +37,8 @@ import com.github.myoss.phoenix.mybatis.table.annotation.FillRule;
 /**
  * 生成通用 delete MappedStatement 模版类
  *
- * @author Jerry.Chen 2018年5月1日 下午6:04:12
+ * @author Jerry.Chen
+ * @since 2018年5月1日 下午6:04:12
  */
 public class DeleteMapperTemplate extends AbstractMapperTemplate {
     /**

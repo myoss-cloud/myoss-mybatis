@@ -20,18 +20,19 @@ package com.github.myoss.phoenix.mybatis.table;
 import java.beans.PropertyDescriptor;
 import java.util.Map;
 
-import lombok.Data;
-import lombok.ToString;
-
 import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
 import com.github.myoss.phoenix.mybatis.table.annotation.FillRule;
 
+import lombok.Data;
+import lombok.ToString;
+
 /**
  * 数据库表结构字段信息
  *
- * @author Jerry.Chen 2018年4月26日 上午11:05:13
+ * @author Jerry.Chen
+ * @since 2018年4月26日 上午11:05:13
  */
 @ToString(exclude = "tableInfo")
 @Data

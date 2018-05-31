@@ -31,8 +31,6 @@ import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.mapping.SqlCommandType;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,10 +52,13 @@ import com.github.myoss.phoenix.mybatis.table.TableColumnInfo;
 import com.github.myoss.phoenix.mybatis.table.TableInfo;
 import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 实现数据库表增、删、改、查常用操作的基类
  *
- * @author Jerry.Chen 2018年5月9日 下午2:09:18
+ * @author Jerry.Chen
+ * @since 2018年5月9日 下午2:09:18
  */
 @Slf4j
 public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudService<T> {

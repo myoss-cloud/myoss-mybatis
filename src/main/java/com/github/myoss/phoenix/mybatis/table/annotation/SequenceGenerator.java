@@ -31,7 +31,8 @@ import com.github.myoss.phoenix.mybatis.table.Sequence;
 /**
  * 序列生成器规则
  *
- * @author Jerry.Chen 2018年4月29日 上午11:21:53
+ * @author Jerry.Chen
+ * @since 2018年4月29日 上午11:21:53
  */
 @Target({ TYPE, FIELD, METHOD })
 @Retention(RUNTIME)

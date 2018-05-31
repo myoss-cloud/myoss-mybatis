@@ -23,7 +23,8 @@ import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
 /**
  * 实现数据库表增、删、改、查常用操作的基类，使用了缓存锁进行创建、删除、更新
  *
- * @author Jerry.Chen 2018年5月10日 上午12:20:12
+ * @author Jerry.Chen
+ * @since 2018年5月10日 上午12:20:12
  */
 public class LockCrudServiceImpl<M extends CrudMapper<T>, T> extends BaseCrudServiceImpl<M, T> {
     protected LockService lockService;

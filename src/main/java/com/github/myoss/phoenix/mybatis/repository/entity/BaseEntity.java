@@ -22,7 +22,8 @@ import java.io.Serializable;
 /**
  * 实体基类，实现了序列化接口
  *
- * @author Jerry.Chen 2018年5月9日 下午2:12:20
+ * @author Jerry.Chen
+ * @since 2018年5月9日 下午2:12:20
  */
 public interface BaseEntity extends Serializable {
 }

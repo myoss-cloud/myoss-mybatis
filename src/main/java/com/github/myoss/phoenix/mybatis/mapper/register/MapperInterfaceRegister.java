@@ -23,16 +23,13 @@ import java.lang.reflect.Method;
 import java.util.HashSet;
 import java.util.LinkedHashMap;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
-import java.util.Map.Entry;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Future;
 import java.util.concurrent.FutureTask;
-
-import lombok.Getter;
-import lombok.Setter;
 
 import org.apache.ibatis.annotations.DeleteProvider;
 import org.apache.ibatis.annotations.InsertProvider;
@@ -49,10 +46,14 @@ import com.github.myoss.phoenix.mybatis.table.TableConfig;
 import com.github.myoss.phoenix.mybatis.table.TableInfo;
 import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
 
+import lombok.Getter;
+import lombok.Setter;
+
 /**
  * 通用 Mapper 接口注册器，扫描接口是否有 {@link RegisterMapper} 注解，并自动注册接口方法，生成 sql 语句
  *
- * @author Jerry.Chen 2018年4月25日 上午10:37:33
+ * @author Jerry.Chen
+ * @since 2018年4月25日 上午10:37:33
  * @see RegisterMapper
  * @see AbstractMapperTemplate
  */

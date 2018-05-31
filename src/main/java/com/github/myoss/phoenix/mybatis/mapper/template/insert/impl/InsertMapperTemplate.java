@@ -53,7 +53,8 @@ import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator.Order
 /**
  * 生成通用 insert MappedStatement 模版类
  *
- * @author Jerry.Chen 2018年4月29日 下午4:46:05
+ * @author Jerry.Chen
+ * @since 2018年4月29日 下午4:46:05
  */
 public class InsertMapperTemplate extends AbstractMapperTemplate {
     /**

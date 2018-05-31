@@ -29,7 +29,8 @@ import com.github.myoss.phoenix.mybatis.mapper.register.MapperInterfaceRegister;
  * 标记接口支持定义SQL注册， {@link MapperInterfaceRegister} 中会去扫描 Mapper Interface
  * 它的父类中是否有 <code>@RegisterMapper</code>
  *
- * @author Jerry.Chen 2018年4月27日 下午5:17:33
+ * @author Jerry.Chen
+ * @since 2018年4月27日 下午5:17:33
  */
 @Target({ ElementType.TYPE })
 @Retention(RetentionPolicy.RUNTIME)

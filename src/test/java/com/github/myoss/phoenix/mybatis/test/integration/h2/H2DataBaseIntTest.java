@@ -17,8 +17,6 @@
 
 package com.github.myoss.phoenix.mybatis.test.integration.h2;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.springframework.boot.autoconfigure.EnableAutoConfiguration;
 import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
@@ -26,10 +24,13 @@ import org.springframework.context.annotation.Configuration;
 
 import com.github.myoss.phoenix.mybatis.table.Sequence;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 集成测试基础配置，使用H2内存数据库
  *
- * @author Jerry.Chen 2018年5月11日 上午11:02:05
+ * @author Jerry.Chen
+ * @since 2018年5月11日 上午11:02:05
  */
 @Slf4j
 public class H2DataBaseIntTest {

@@ -35,7 +35,8 @@ import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator.Order
  * 用于 {@link GenerationType#SEQUENCE_KEY} 策略，使用 {@link Sequence} 接口实现类来生成，由
  * {@link SequenceKeyGenerator} 触发调用
  *
- * @author Jerry.Chen 2018年4月30日 下午10:47:11
+ * @author Jerry.Chen
+ * @since 2018年4月30日 下午10:47:11
  * @see Sequence
  * @see SequenceKeyGenerator
  */

@@ -27,7 +27,8 @@ import com.github.myoss.phoenix.core.lang.dto.Result;
 /**
  * 封装数据库表增、删、改、查常用操作
  *
- * @author Jerry.Chen 2018年5月9日 下午2:09:05
+ * @author Jerry.Chen
+ * @since 2018年5月9日 下午2:09:05
  */
 public interface CrudService<T> {
     /**

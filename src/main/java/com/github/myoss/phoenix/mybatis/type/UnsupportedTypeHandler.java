@@ -29,7 +29,8 @@ import com.github.myoss.phoenix.mybatis.table.annotation.Column;
 /**
  * nothing to do, just for {@link Column#typeHandler()} set default value
  *
- * @author Jerry.Chen 2018年4月29日 下午4:01:14
+ * @author Jerry.Chen
+ * @since 2018年4月29日 下午4:01:14
  */
 public class UnsupportedTypeHandler implements TypeHandler<Object> {
     @Override

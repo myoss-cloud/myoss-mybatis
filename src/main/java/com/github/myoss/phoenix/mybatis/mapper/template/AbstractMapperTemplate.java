@@ -29,7 +29,8 @@ import org.apache.ibatis.session.Configuration;
 /**
  * 生成通用 insert/update/delete/select MappedStatement 模版基类
  *
- * @author Jerry.Chen 2018年4月25日 下午6:50:36
+ * @author Jerry.Chen
+ * @since 2018年4月25日 下午6:50:36
  */
 public abstract class AbstractMapperTemplate {
     protected XMLLanguageDriver xmlLanguageDriver = new XMLLanguageDriver();

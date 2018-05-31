@@ -22,8 +22,6 @@ import static org.assertj.core.api.Assertions.assertThat;
 import java.util.Date;
 import java.util.List;
 
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.assertj.core.api.SoftAssertions;
@@ -58,10 +56,13 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.test2.entity.UserHis
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test2.service.UserHistoryService;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test2.web.UserHistoryController;
 
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * {@link UserHistoryController } 集成测试，使用H2内存数据库，测试 Mybatis 功能
  *
- * @author Jerry.Chen 2018年5月11日 上午10:45:16
+ * @author Jerry.Chen
+ * @since 2018年5月11日 上午10:45:16
  */
 @MapperScan(basePackageClasses = UserHistoryControllerIntTests.class, factoryBean = MapperFactoryBean.class, markerInterface = CrudMapper.class)
 @ActiveProfiles({ "h2-test2", "UserHistoryControllerIntTests" })

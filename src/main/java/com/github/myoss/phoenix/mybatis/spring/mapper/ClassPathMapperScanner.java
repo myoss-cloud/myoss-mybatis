@@ -21,9 +21,6 @@ import java.lang.annotation.Annotation;
 import java.util.Arrays;
 import java.util.Set;
 
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.ibatis.session.SqlSessionFactory;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.AnnotatedBeanDefinition;
@@ -40,10 +37,14 @@ import org.springframework.util.StringUtils;
 
 import com.github.myoss.phoenix.mybatis.mapper.register.MapperInterfaceRegister;
 
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * 扫描Class Path目录Mapper Interface
  *
- * @author Jerry.Chen 2018年4月24日 下午6:18:05
+ * @author Jerry.Chen
+ * @since 2018年4月24日 下午6:18:05
  */
 @Slf4j
 @Setter

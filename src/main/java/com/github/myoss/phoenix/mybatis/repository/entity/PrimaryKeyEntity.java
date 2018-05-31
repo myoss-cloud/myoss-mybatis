@@ -22,7 +22,8 @@ import java.io.Serializable;
 /**
  * 主键实体基类
  *
- * @author Jerry.Chen 2018年5月9日 下午6:23:17
+ * @author Jerry.Chen
+ * @since 2018年5月9日 下午6:23:17
  */
 public interface PrimaryKeyEntity<I extends Serializable> {
     /**

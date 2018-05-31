@@ -43,7 +43,8 @@ import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
 /**
  * 生成 select MappedStatement 模版类
  *
- * @author Jerry.Chen 2018年4月25日 下午6:53:03
+ * @author Jerry.Chen
+ * @since 2018年4月25日 下午6:53:03
  */
 public class SelectMapperTemplate extends AbstractMapperTemplate {
 

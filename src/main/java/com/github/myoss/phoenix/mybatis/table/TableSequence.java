@@ -17,8 +17,6 @@
 
 package com.github.myoss.phoenix.mybatis.table;
 
-import lombok.Data;
-
 import org.apache.ibatis.executor.keygen.KeyGenerator;
 import org.apache.ibatis.mapping.StatementType;
 
@@ -27,10 +25,13 @@ import com.github.myoss.phoenix.mybatis.table.annotation.GenerationType;
 import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator;
 import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator.Order;
 
+import lombok.Data;
+
 /**
  * 数据库表"序列生成器"属性配置
  *
- * @author Jerry.Chen 2018年4月30日 上午12:23:18
+ * @author Jerry.Chen
+ * @since 2018年4月30日 上午12:23:18
  */
 @Data
 public class TableSequence {

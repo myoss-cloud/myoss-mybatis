@@ -22,7 +22,8 @@ import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
 /**
  * 更新（update）操作，通用 Mapper 接口
  *
- * @author Jerry.Chen 2018年5月1日 下午9:12:14
+ * @author Jerry.Chen
+ * @since 2018年5月1日 下午9:12:14
  */
 @RegisterMapper
 public interface UpdateMapper<T> extends UpdateByPrimaryKeyMapper<T>, UpdateByPrimaryKeyAllColumnMapper<T>,

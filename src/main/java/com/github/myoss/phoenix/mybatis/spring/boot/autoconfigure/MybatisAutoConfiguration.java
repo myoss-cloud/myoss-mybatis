@@ -19,15 +19,12 @@ package com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure;
 
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Map.Entry;
+import java.util.Objects;
 import java.util.stream.Stream;
 
 import javax.annotation.PostConstruct;
 import javax.sql.DataSource;
-
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.ibatis.annotations.Mapper;
@@ -75,10 +72,14 @@ import com.github.myoss.phoenix.mybatis.table.Sequence;
 import com.github.myoss.phoenix.mybatis.table.TableConfig;
 import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
 
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
+
 /**
  * MyBatis Spring Boot项目自动配置
  *
- * @author Jerry.Chen 2018年4月23日 上午11:07:07
+ * @author Jerry.Chen
+ * @since 2018年4月23日 上午11:07:07
  */
 @Slf4j
 @EnableConfigurationProperties({ MybatisProperties.class })

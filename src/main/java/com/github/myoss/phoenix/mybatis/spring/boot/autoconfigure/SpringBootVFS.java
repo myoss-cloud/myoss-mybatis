@@ -33,7 +33,8 @@ import org.springframework.core.io.support.ResourcePatternResolver;
  * @author Hans Westerbeek
  * @author Eddú Meléndez
  * @author Kazuki Shimizu
- * @author Jerry.Chen 2018年4月11日 上午11:07:07
+ * @author Jerry.Chen
+ * @since 2018年4月11日 上午11:07:07
  */
 public class SpringBootVFS extends VFS {
     private final ResourcePatternResolver resourceResolver;

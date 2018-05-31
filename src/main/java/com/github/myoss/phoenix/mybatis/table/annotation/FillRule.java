@@ -19,10 +19,10 @@ package com.github.myoss.phoenix.mybatis.table.annotation;
 
 import java.util.Objects;
 
+import org.apache.commons.lang3.StringUtils;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
-
-import org.apache.commons.lang3.StringUtils;
 
 /**
  * 用于 SQL 语句在 INSERT/UPDATE 的时候，字段是否需要进行填充，因为生成 Mybatis SQL 语句的时候默认会使用 &lt;if
@@ -30,7 +30,8 @@ import org.apache.commons.lang3.StringUtils;
  * {@link com.github.myoss.phoenix.mybatis.plugin.ParameterHandlerCustomizer}
  * 进行设置值。
  *
- * @author Jerry.Chen 2018年5月11日 下午5:21:26
+ * @author Jerry.Chen
+ * @since 2018年5月11日 下午5:21:26
  */
 @Getter
 @AllArgsConstructor

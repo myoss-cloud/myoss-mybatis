@@ -19,16 +19,16 @@ package com.github.myoss.phoenix.mybatis.spring.mapper;
 
 import static org.springframework.util.Assert.notNull;
 
-import lombok.Getter;
-import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
-
 import org.apache.ibatis.session.Configuration;
 import org.mybatis.spring.SqlSessionTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.myoss.phoenix.mybatis.mapper.register.MapperInterfaceRegister;
 import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
+
+import lombok.Getter;
+import lombok.Setter;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * BeanFactory that enables injection of MyBatis mapper interfaces. It can be
@@ -41,11 +41,11 @@ import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisAutoCon
  *   <bean id="baseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean" abstract="true" lazy-init="true">
  *     <property name="sqlSessionFactory" ref="sqlSessionFactory" />
  *   </bean>
- * 
+ *
  *   <bean id="oneMapper" parent="baseMapper">
  *     <property name="mapperInterface" value="my.package.MyMapperInterface" />
  *   </bean>
- * 
+ *
  *   <bean id="anotherMapper" parent="baseMapper">
  *     <property name="mapperInterface" value="my.package.MyAnotherMapperInterface" />
  *   </bean>
@@ -56,7 +56,8 @@ import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisAutoCon
  * classes.
  *
  * @see SqlSessionTemplate
- * @author Jerry.Chen 2018年4月24日 下午6:18:05
+ * @author Jerry.Chen
+ * @since 2018年4月24日 下午6:18:05
  */
 @Slf4j
 @Setter

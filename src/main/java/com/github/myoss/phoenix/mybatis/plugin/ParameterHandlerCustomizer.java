@@ -23,7 +23,8 @@ import org.apache.ibatis.mapping.MappedStatement;
 /**
  * 通用 SQL SELECT statements 处理 Parameter 逻辑
  *
- * @author Jerry.Chen 2018年5月1日 上午1:32:51
+ * @author Jerry.Chen
+ * @since 2018年5月1日 上午1:32:51
  * @see ParameterHandlerInterceptor
  */
 public interface ParameterHandlerCustomizer {
