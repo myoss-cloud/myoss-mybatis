@@ -232,7 +232,9 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @return true: 校验成功; false: 校验失败
      */
     protected boolean createValidate(Result<?> result, T record, Object optionParam) {
-        checkNull4Create(result, record, optionParam);
+        if (!checkNull4Create(result, record, optionParam)) {
+            return false;
+        }
         return validFieldValue(result, record, optionParam);
     }
 
