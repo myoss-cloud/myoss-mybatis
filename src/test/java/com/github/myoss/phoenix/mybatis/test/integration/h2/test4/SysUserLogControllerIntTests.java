@@ -45,6 +45,7 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
 import com.alibaba.fastjson.JSON;
+import com.github.myoss.phoenix.core.constants.PhoenixConstants;
 import com.github.myoss.phoenix.core.lang.dto.Page;
 import com.github.myoss.phoenix.core.lang.dto.Result;
 import com.github.myoss.phoenix.core.lang.dto.Sort;
@@ -408,6 +409,17 @@ public class SysUserLogControllerIntTests {
             softly.assertThat(idResult4.getErrorCode()).isNull();
             softly.assertThat(idResult4.getErrorMsg()).isNull();
             softly.assertThat(idResult4.getValue()).isNull();
+        });
+
+        // 查询逻辑删除的数据
+        SysUserLog condition1 = new SysUserLog();
+        condition1.setId(exceptedId);
+        List<SysUserLog> conditionResult1 = userLogMapper.selectListIncludeLogicDelete(condition1);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(conditionResult1).isNotNull();
+            softly.assertThat(conditionResult1.size()).isEqualTo(1);
+            softly.assertThat(conditionResult1.get(0)).isNotNull();
+            softly.assertThat(conditionResult1.get(0).getIsDeleted()).isEqualTo(PhoenixConstants.Y);
         });
 
         String printLog = this.output.toString();

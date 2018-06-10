@@ -18,6 +18,8 @@
 package com.github.myoss.phoenix.mybatis.test.integration.h2.test4.mapper;
 
 import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
+import com.github.myoss.phoenix.mybatis.mapper.template.select.SelectListIncludeLogicDeleteMapper;
+import com.github.myoss.phoenix.mybatis.mapper.template.select.SelectPageIncludeLogicDeleteMapper;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test4.entity.SysUserLog;
 
 /**
@@ -29,6 +31,7 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.test4.entity.SysUser
  * @author jerry
  * @since 2018年5月14日 下午10:33:55
  */
-public interface SysUserLogMapper extends CrudMapper<SysUserLog> {
+public interface SysUserLogMapper extends CrudMapper<SysUserLog>, SelectListIncludeLogicDeleteMapper<SysUserLog>,
+        SelectPageIncludeLogicDeleteMapper<SysUserLog> {
 
 }

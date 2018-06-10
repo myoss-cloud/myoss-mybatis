@@ -27,7 +27,6 @@ import com.github.myoss.phoenix.core.lang.dto.Order;
 import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.select.impl.SelectIncludeLogicDeleteMapperTemplate;
 import com.github.myoss.phoenix.mybatis.mapper.template.select.impl.SelectSortIncludeLogicDeleteMapperTemplate;
-import com.github.myoss.phoenix.mybatis.mapper.template.select.impl.SelectSortMapperTemplate;
 import com.github.myoss.phoenix.mybatis.table.annotation.Column;
 
 /**
@@ -57,7 +56,7 @@ public interface SelectListIncludeLogicDeleteMapper<T> {
      * @return 匹配的实体对象
      * @see SelectSortIncludeLogicDeleteMapperTemplate#selectListWithSortIncludeLogicDelete
      */
-    @SelectProvider(type = SelectSortMapperTemplate.class, method = "dynamicSql")
+    @SelectProvider(type = SelectSortIncludeLogicDeleteMapperTemplate.class, method = "dynamicSql")
     List<T> selectListWithSortIncludeLogicDelete(@Param("condition") T condition, @Param("orders") List<Order> orders);
 
     /**
