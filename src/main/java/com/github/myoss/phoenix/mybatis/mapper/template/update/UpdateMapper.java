@@ -27,5 +27,5 @@ import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
  */
 @RegisterMapper
 public interface UpdateMapper<T> extends UpdateByPrimaryKeyMapper<T>, UpdateByPrimaryKeyAllColumnMapper<T>,
-        UpdateByConditionMapper<T> {
+        UpdateByConditionMapper<T>, UpdateUseMapByConditionMapper<T> {
 }

@@ -19,6 +19,7 @@ package com.github.myoss.phoenix.mybatis.test.integration.h2.test4;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -461,5 +462,61 @@ public class SysUserLogControllerIntTests {
 
         String printLog = this.output.toString();
         assertThat(printLog).isNotBlank().doesNotContain(" delete ", " DELETE ").contains("INSERT", " UPDATE ");
+    }
+
+    /**
+     * 增删改查测试案例5
+     */
+    @Test
+    public void crudTest5() {
+        SysUserLog record = new SysUserLog();
+        record.setEmployeeNumber("10004");
+        record.setInfo("第一次记录日志信息");
+
+        // 创建记录
+        Result<Long> createResult = userLogService.create(record);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(createResult).isNotNull();
+            softly.assertThat(createResult.isSuccess()).isTrue();
+            softly.assertThat(createResult.getErrorCode()).isNull();
+            softly.assertThat(createResult.getErrorMsg()).isNull();
+            softly.assertThat(createResult.getValue()).isNotNull();
+        });
+        Long exceptedId = createResult.getValue();
+
+        // 使用各种查询 API 查询数据库中的记录，和保存之后的记录进行比较
+        Result<SysUserLog> countResult = userLogService.findByPrimaryKey(exceptedId);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(countResult).isNotNull();
+            softly.assertThat(countResult.isSuccess()).isTrue();
+            softly.assertThat(countResult.getErrorCode()).isNull();
+            softly.assertThat(countResult.getErrorMsg()).isNull();
+            softly.assertThat(countResult.getValue()).isNotNull().isEqualTo(record);
+        });
+
+        // 更新数据
+        Map<String, Object> updateUseMap = new HashMap<>();
+        updateUseMap.put("employeeNumber", null);
+        updateUseMap.put("info", "我是更新记录日志信息");
+        SysUserLog updateCondition = new SysUserLog();
+        updateCondition.setId(exceptedId);
+        updateCondition.setInfo(record.getInfo());
+        boolean checkDBResult = userLogService.updateUseMapByCondition(updateUseMap, updateCondition).getValue();
+        Assert.assertTrue(checkDBResult);
+
+        Result<SysUserLog> idResult4 = userLogService.findByPrimaryKey(exceptedId);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(idResult4).isNotNull();
+            softly.assertThat(idResult4.isSuccess()).isTrue();
+            softly.assertThat(idResult4.getErrorCode()).isNull();
+            softly.assertThat(idResult4.getErrorMsg()).isNull();
+            softly.assertThat(idResult4.getValue()).isNotNull().isNotEqualTo(record);
+
+            SysUserLog target = new SysUserLog();
+            BeanUtils.copyProperties(record, target);
+            target.setInfo((String) updateUseMap.get("info"));
+            target.setEmployeeNumber((String) updateUseMap.get("employeeNumber"));
+            softly.assertThat(idResult4.getValue()).isNotNull().isEqualTo(target);
+        });
     }
 }

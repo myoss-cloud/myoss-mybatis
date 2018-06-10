@@ -17,6 +17,8 @@
 
 package com.github.myoss.phoenix.mybatis.mapper.template.update.impl;
 
+import java.util.Map;
+
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.mapping.SqlSource;
 import org.apache.ibatis.reflection.MetaObject;
@@ -27,6 +29,7 @@ import com.github.myoss.phoenix.mybatis.mapper.template.AbstractMapperTemplate;
 import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateByConditionMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateByPrimaryKeyAllColumnMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateByPrimaryKeyMapper;
+import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateUseMapByConditionMapper;
 import com.github.myoss.phoenix.mybatis.table.TableColumnInfo;
 import com.github.myoss.phoenix.mybatis.table.TableInfo;
 import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
@@ -200,6 +203,53 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
                 builder.append("</if>\n");
             }
         }
+        builder.append("</set>\n");
+        builder.append(tableInfo.getWhereConditionWithParameterSql());
+        String sql = builder.toString();
+
+        // 替换 sqlSource 对象
+        SqlSource sqlSource = xmlLanguageDriver
+                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        metaObject.setValue("sqlSource", sqlSource);
+        return sql;
+    }
+
+    /**
+     * 更新记录，生成 update 语句。
+     * <p>
+     * 示例如下：
+     *
+     * <pre>
+     * UPDATE table_name
+     * &lt;set&gt;
+     *   &lt;foreach collection=&quot;record.keys&quot; item=&quot;k&quot; separator=&quot;,&quot;&gt;
+     *     ${k} = #{record[${k}]}
+     *   &lt;/foreach&gt;
+     * &lt;/set&gt;
+     * &lt;where&gt;
+     *  &lt;if test=&quot;condition.id != null&quot;&gt;
+     *    and id = #{condition.id}
+     *  &lt;/if&gt;
+     *  AND is_deleted = 'N'
+     * &lt;/where&gt;
+     * </pre>
+     *
+     * @param tableInfo 数据库表结构信息
+     * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
+     * @return 生成的sql语句
+     * @see UpdateUseMapByConditionMapper#updateUseMapByCondition(Map, Object)
+     */
+    public String updateUseMapByCondition(TableInfo tableInfo, MappedStatement ms) {
+        MetaObject metaObject = SystemMetaObject.forObject(ms);
+        Configuration configuration = ms.getConfiguration();
+
+        // 生成 sql 语句
+        StringBuilder builder = new StringBuilder(2048);
+        builder.append("UPDATE ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
+        builder.append("<set>\n");
+        builder.append("  <foreach collection=\"record.keys\" item=\"k\" separator=\",\">\n");
+        builder.append("    ${k}").append(" = #{record[${k}]}\n");
+        builder.append("  </foreach>\n");
         builder.append("</set>\n");
         builder.append(tableInfo.getWhereConditionWithParameterSql());
         String sql = builder.toString();

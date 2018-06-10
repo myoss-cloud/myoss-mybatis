@@ -66,6 +66,15 @@ public interface CrudService<T> {
     Result<Boolean> updateByCondition(T record, T condition);
 
     /**
+     * 根据条件更新记录
+     *
+     * @param record 待更新的实体对象，key：是数据库列名，value：是数据库列的值
+     * @param condition 匹配的条件
+     * @return 更新结果
+     */
+    Result<Boolean> updateUseMapByCondition(Map<String, Object> record, T condition);
+
+    /**
      * 根据主键删除记录，如果是逻辑删除的实体，使用逻辑删除，而不是物理删除
      *
      * @param condition 匹配的条件，主键有值的实体对象

@@ -24,9 +24,11 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -226,6 +228,24 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     }
 
     /**
+     * 检查待保存的记录的字段是否符合预期的格式
+     *
+     * @param result 执行结果
+     * @param record 实体对象
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @return true: 校验成功; false: 校验失败
+     */
+    protected boolean validFieldValue(Result<?> result, Map<String, Object> record, Object optionParam) {
+        if (!result.isSuccess()) {
+            return false;
+        }
+        if (record == null) {
+            result.setSuccess(false).setErrorCode("valueIsBlank").setErrorMsg("实体对象不能为空");
+        }
+        return result.isSuccess();
+    }
+
+    /**
      * @param result 执行结果
      * @param record 实体对象
      * @param optionParam 可选参数，默认为 {@code null }
@@ -236,6 +256,27 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             return false;
         }
         return validFieldValue(result, record, optionParam);
+    }
+
+    /**
+     * 将 {@code Map} 中的 {@code key} 转换成数据库字段名，会校验数据库字段名，防止SQL注入
+     *
+     * @param record 待更新的实体对象，key：是数据库列名，value：是数据库列的值
+     * @return 数据库字段列表
+     */
+    protected Map<String, Object> convertToUpdateUseMap(Map<String, Object> record) {
+        Map<String, Object> updateMap = new HashMap<>(record.size());
+        for (Entry<String, Object> entry : record.entrySet()) {
+            String key = entry.getKey();
+            String columnName = fieldColumns.get(key);
+            if (columnName != null) {
+                // 校验字段名，防止SQL注入
+                updateMap.put(columnName, entry.getValue());
+            } else {
+                log.error("[{}] ignored invalid filed: {}", this.getClass(), key);
+            }
+        }
+        return updateMap;
     }
 
     /**
@@ -377,6 +418,18 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     }
 
     /**
+     * 检查待更新的实体对象是否已经有存在相同的记录（幂等校验）。默认未实现逻辑，请子类中重写。
+     *
+     * @param result 执行结果
+     * @param record 实体对象
+     * @return true: 存在相同记录, false: 不存在相同记录
+     * @see #findExistRecord4CheckRecord(Result, Object)
+     */
+    protected boolean checkRecordIfExist4Update(Result<?> result, Map<String, Object> record) {
+        return false;
+    }
+
+    /**
      * 保存新记录的时候，设置通用字段的值
      *
      * @param record 待保存的实体对象
@@ -393,6 +446,16 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @param optionParam 可选参数，默认为 {@code null }
      */
     protected void setValue4Update(T record, Object optionParam) {
+
+    }
+
+    /**
+     * 更新记录的时候，设置通用字段的值
+     *
+     * @param record 待更新的实体对象
+     * @param optionParam 可选参数，默认为 {@code null }
+     */
+    protected void setValue4Update(Map<String, Object> record, Object optionParam) {
 
     }
 
@@ -608,6 +671,59 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         if (!ifExist && result.isSuccess()) {
             setValue4Update(record, null);
             boolean flag = checkDBResult(crudMapper.updateByCondition(record, condition));
+            if (!flag) {
+                result.setSuccess(false).setErrorCode("notMatchRecords").setErrorMsg("更新失败，未匹配到相应的记录");
+            } else {
+                result.setValue(true);
+            }
+        }
+        return result;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Result<Boolean> updateUseMapByCondition(Map<String, Object> record, T condition) {
+        Result<Boolean> result = new Result<>(false);
+        if (!validFieldValue(result, record, null)) {
+            return result;
+        }
+        checkCommonQueryConditionIsAllNull(SqlCommandType.UPDATE, result, condition, null);
+        if (!result.isSuccess()) {
+            return result;
+        }
+        return updateUseMapByConditionCallable(result, record, condition,
+                () -> updateUseMapByCondition(result, record, condition));
+    }
+
+    /**
+     * 用于重写更新的方法，比如加锁更新
+     *
+     * @param result 更新的结果
+     * @param record 待更新的实体对象，key：是数据库列名，value：是数据库列的值
+     * @param condition 匹配的条件
+     * @param updateCallFunc 更新方法回调类，参考：
+     *            {@link #updateByCondition(Result, Object, Object)}
+     * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
+     */
+    protected Result<Boolean> updateUseMapByConditionCallable(Result<Boolean> result, Map<String, Object> record,
+                                                              T condition, CallableFunc<Result<Boolean>> updateCallFunc) {
+        return updateCallFunc.call();
+    }
+
+    /**
+     * 更新记录，{@link #updateByCondition(Object, Object)} 方法的最后一步调用
+     *
+     * @param result 更新的结果
+     * @param record 待更新的实体对象，key：是数据库列名，value：是数据库列的值
+     * @param condition 匹配的条件
+     * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
+     */
+    protected Result<Boolean> updateUseMapByCondition(Result<Boolean> result, Map<String, Object> record, T condition) {
+        boolean ifExist = checkRecordIfExist4Update(result, record);
+        if (!ifExist && result.isSuccess()) {
+            setValue4Update(record, null);
+            Map<String, Object> updateMap = convertToUpdateUseMap(record);
+            boolean flag = checkDBResult(crudMapper.updateUseMapByCondition(updateMap, condition));
             if (!flag) {
                 result.setSuccess(false).setErrorCode("notMatchRecords").setErrorMsg("更新失败，未匹配到相应的记录");
             } else {
