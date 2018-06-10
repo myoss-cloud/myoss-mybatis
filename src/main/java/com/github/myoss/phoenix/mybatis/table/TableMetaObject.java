@@ -293,11 +293,16 @@ public class TableMetaObject {
         // 生成 select 查询所有列sql语句
         tableInfo.setSelectAllColumnsSql(builderSelectAllColumns(tableInfo));
         // 生成 where 主键条件sql语句
-        tableInfo.setWherePrimaryKeySql(builderWherePrimaryKeySql(tableInfo));
+        tableInfo.setWherePrimaryKeySql(builderWherePrimaryKeySql(tableInfo, false));
+        tableInfo.setWherePrimaryKeyIncludeLogicDeleteSql(builderWherePrimaryKeySql(tableInfo, true));
         // 生成 where 所有条件sql语句
-        tableInfo.setWhereConditionSql(builderWhereConditionSql(tableInfo));
+        tableInfo.setWhereConditionSql(builderWhereConditionSql(tableInfo, false));
+        tableInfo.setWhereConditionIncludeLogicDeleteSql(builderWhereConditionSql(tableInfo, true));
         // 生成 where 所有条件sql语句，带有参数前缀
-        tableInfo.setWhereConditionWithParameterSql(builderWhereConditionWithParameterSql(tableInfo, "condition"));
+        tableInfo
+                .setWhereConditionWithParameterSql(builderWhereConditionWithParameterSql(tableInfo, false, "condition"));
+        tableInfo.setWhereConditionWithParameterIncludeLogicDeleteSql(builderWhereConditionWithParameterSql(tableInfo,
+                true, "condition"));
         ENTITY_TABLE_MAP.put(entityClass, tableInfo);
         return tableInfo;
     }
@@ -524,7 +529,8 @@ public class TableMetaObject {
     }
 
     /**
-     * 生成 where 所有条件sql语句（如果表是逻辑删除，会添加逻辑删除的字段），示例如下：
+     * 生成 where 所有条件sql语句（{@code includeLogicDelete = false}
+     * ，如果表是逻辑删除，会添加逻辑删除的字段），示例如下：
      *
      * <pre>
      * &lt;where&gt;
@@ -536,13 +542,14 @@ public class TableMetaObject {
      * </pre>
      *
      * @param tableInfo 数据库表结构信息
+     * @param includeLogicDelete 是否不过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
      * @return sql语句
      */
-    public static StringBuilder builderWhereConditionSql(TableInfo tableInfo) {
+    public static StringBuilder builderWhereConditionSql(TableInfo tableInfo, boolean includeLogicDelete) {
         StringBuilder sql = new StringBuilder(1024);
         sql.append("<where>\n");
         for (TableColumnInfo item : tableInfo.getColumns()) {
-            if (item.isLogicDelete()) {
+            if (!includeLogicDelete && item.isLogicDelete()) {
                 continue;
             }
             sql.append("  <if test=\"").append(item.getProperty()).append(" != null\">\n");
@@ -555,7 +562,7 @@ public class TableMetaObject {
 
             sql.append("  </if>\n");
         }
-        if (tableInfo.isLogicDelete()) {
+        if (!includeLogicDelete && tableInfo.isLogicDelete()) {
             for (TableColumnInfo item : tableInfo.getLogicDeleteColumns()) {
                 sql.append("  and ").append(item.getActualColumn()).append(" = ");
                 if (CharSequence.class.isAssignableFrom(item.getJavaType())) {
@@ -571,7 +578,8 @@ public class TableMetaObject {
     }
 
     /**
-     * 生成 where 所有条件sql语句（如果表是逻辑删除，会添加逻辑删除的字段），带有参数前缀，示例如下：
+     * 生成 where 所有条件sql语句（{@code includeLogicDelete = false}
+     * ，如果表是逻辑删除，会添加逻辑删除的字段），带有参数前缀，示例如下：
      *
      * <pre>
      * &lt;where&gt;
@@ -583,16 +591,18 @@ public class TableMetaObject {
      * </pre>
      *
      * @param tableInfo 数据库表结构信息
+     * @param includeLogicDelete 是否不过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
      * @param conditionPrefix 参数前缀
      * @return sql语句
      */
-    public static StringBuilder builderWhereConditionWithParameterSql(TableInfo tableInfo, String conditionPrefix) {
+    public static StringBuilder builderWhereConditionWithParameterSql(TableInfo tableInfo, boolean includeLogicDelete,
+                                                                      String conditionPrefix) {
         String prefix = conditionPrefix + ".";
         StringBuilder sql = new StringBuilder(2048);
         sql.append("<where>\n");
         sql.append("  <if test=\"").append(conditionPrefix).append(" != null\">\n");
         for (TableColumnInfo item : tableInfo.getColumns()) {
-            if (item.isLogicDelete()) {
+            if (!includeLogicDelete && item.isLogicDelete()) {
                 continue;
             }
             sql.append("    <if test=\"").append(prefix).append(item.getProperty()).append(" != null\">\n");
@@ -607,7 +617,7 @@ public class TableMetaObject {
             sql.append("    </if>\n");
         }
         sql.append("  </if>\n");
-        if (tableInfo.isLogicDelete()) {
+        if (!includeLogicDelete && tableInfo.isLogicDelete()) {
             for (TableColumnInfo item : tableInfo.getLogicDeleteColumns()) {
                 sql.append("  and ").append(item.getActualColumn()).append(" = ");
                 if (CharSequence.class.isAssignableFrom(item.getJavaType())) {
@@ -623,7 +633,8 @@ public class TableMetaObject {
     }
 
     /**
-     * 生成 where 主键条件sql语句（如果表是逻辑删除，会添加逻辑删除的字段），示例如下：
+     * 生成 where 主键条件sql语句（{@code includeLogicDelete = false}
+     * ，如果表是逻辑删除，会添加逻辑删除的字段），示例如下：
      *
      * <pre>
      * &lt;where&gt;
@@ -633,9 +644,10 @@ public class TableMetaObject {
      * </pre>
      *
      * @param tableInfo 数据库表结构信息
+     * @param includeLogicDelete 是否不过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
      * @return sql语句
      */
-    public static StringBuilder builderWherePrimaryKeySql(TableInfo tableInfo) {
+    public static StringBuilder builderWherePrimaryKeySql(TableInfo tableInfo, boolean includeLogicDelete) {
         StringBuilder sql = new StringBuilder(128);
         sql.append("<where>\n");
         for (TableColumnInfo columnInfo : tableInfo.getPrimaryKeyColumns()) {
@@ -646,7 +658,7 @@ public class TableMetaObject {
             }
             sql.append("}\n");
         }
-        if (tableInfo.isLogicDelete()) {
+        if (!includeLogicDelete && tableInfo.isLogicDelete()) {
             for (TableColumnInfo item : tableInfo.getLogicDeleteColumns()) {
                 sql.append("  AND ").append(item.getActualColumn()).append(" = ");
                 if (CharSequence.class.isAssignableFrom(item.getJavaType())) {

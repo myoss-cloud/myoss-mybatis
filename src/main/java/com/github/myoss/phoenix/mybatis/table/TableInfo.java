@@ -22,6 +22,8 @@ import java.util.Set;
 import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.session.Configuration;
 
+import com.github.myoss.phoenix.mybatis.table.annotation.Column;
+
 import lombok.Data;
 
 /**
@@ -104,22 +106,41 @@ public class TableInfo {
     /**
      * 生成 where 主键条件sql语句
      *
-     * @see TableMetaObject#builderWherePrimaryKeySql(TableInfo)
+     * @see TableMetaObject#builderWherePrimaryKeySql(TableInfo, boolean)
      */
     private StringBuilder        wherePrimaryKeySql;
     /**
+     * 生成 where 主键条件sql语句，不会过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
+     *
+     * @see TableMetaObject#builderWherePrimaryKeySql(TableInfo, boolean)
+     */
+    private StringBuilder        wherePrimaryKeyIncludeLogicDeleteSql;
+    /**
      * 生成 where 所有条件sql语句
      *
-     * @see TableMetaObject#builderWhereConditionSql(TableInfo)
+     * @see TableMetaObject#builderWhereConditionSql(TableInfo, boolean)
      */
     private StringBuilder        whereConditionSql;
+    /**
+     * 生成 where 所有条件sql语句，不会过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
+     *
+     * @see TableMetaObject#builderWhereConditionSql(TableInfo, boolean)
+     */
+    private StringBuilder        whereConditionIncludeLogicDeleteSql;
     /**
      * 生成 where 所有条件sql语句，带有参数前缀
      *
      * @see TableMetaObject#builderWhereConditionWithParameterSql(TableInfo,
-     *      String)
+     *      boolean, String)
      */
     private StringBuilder        whereConditionWithParameterSql;
+    /**
+     * 生成 where 所有条件sql语句，带有参数前缀，不会过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
+     *
+     * @see TableMetaObject#builderWhereConditionWithParameterSql(TableInfo,
+     *      boolean, String)
+     */
+    private StringBuilder        whereConditionWithParameterIncludeLogicDeleteSql;
 
     /**
      * 获取表名称，优先取 {@link #escapedTableName}，如果没有则取 {@link #tableName}
