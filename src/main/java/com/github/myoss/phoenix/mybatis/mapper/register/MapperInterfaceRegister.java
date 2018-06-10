@@ -169,7 +169,8 @@ public class MapperInterfaceRegister {
                     Method method = templateClass.getMethod(methodName, TableInfo.class, MappedStatement.class);
                     method.invoke(templateInstance, tableInfo, mappedStatement);
                 } catch (NoSuchMethodException e) {
-                    throw new BindingException("not found method \"" + methodName + "\" in " + templateClass, e);
+                    throw new BindingException(canonicalName + " not found method \"" + methodName + "\" in "
+                            + templateClass, e);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new BindingException(e);
                 }
