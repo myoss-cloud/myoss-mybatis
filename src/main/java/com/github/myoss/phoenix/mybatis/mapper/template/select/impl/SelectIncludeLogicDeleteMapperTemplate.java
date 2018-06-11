@@ -17,6 +17,7 @@
 
 package com.github.myoss.phoenix.mybatis.mapper.template.select.impl;
 
+import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -31,7 +32,10 @@ import org.apache.ibatis.reflection.SystemMetaObject;
 import org.apache.ibatis.session.Configuration;
 
 import com.github.myoss.phoenix.mybatis.mapper.template.AbstractMapperTemplate;
+import com.github.myoss.phoenix.mybatis.mapper.template.select.SelectByPrimaryKeyIncludeLogicDeleteMapper;
+import com.github.myoss.phoenix.mybatis.mapper.template.select.SelectCountIncludeLogicDeleteMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.select.SelectListIncludeLogicDeleteMapper;
+import com.github.myoss.phoenix.mybatis.mapper.template.select.SelectOneIncludeLogicDeleteMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.select.SelectPageIncludeLogicDeleteMapper;
 import com.github.myoss.phoenix.mybatis.table.TableInfo;
 import com.github.myoss.phoenix.mybatis.table.TableMetaObject;
@@ -62,6 +66,7 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
+     * @see SelectOneIncludeLogicDeleteMapper#selectOneIncludeLogicDelete(Object)
      */
     public String selectOneIncludeLogicDelete(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
@@ -125,6 +130,7 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
+     * @see SelectCountIncludeLogicDeleteMapper#selectCountIncludeLogicDelete(Object)
      */
     public String selectCountIncludeLogicDelete(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
@@ -165,6 +171,8 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
+     * @see SelectCountIncludeLogicDeleteMapper#selectCountIncludeLogicDelete2(Object,
+     *      Map)
      */
     public String selectCountIncludeLogicDelete2(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
@@ -322,6 +330,7 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
+     * @see SelectByPrimaryKeyIncludeLogicDeleteMapper#selectByPrimaryKeyIncludeLogicDelete(Serializable)
      */
     public String selectByPrimaryKeyIncludeLogicDelete(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
@@ -360,6 +369,7 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
      * @param tableInfo 数据库表结构信息
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
+     * @see SelectByPrimaryKeyIncludeLogicDeleteMapper#selectWithPrimaryKeyIncludeLogicDelete(Object)
      */
     public String selectWithPrimaryKeyIncludeLogicDelete(TableInfo tableInfo, MappedStatement ms) {
         return selectByPrimaryKeyIncludeLogicDelete(tableInfo, ms);

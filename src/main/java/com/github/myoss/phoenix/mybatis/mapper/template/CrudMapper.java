@@ -20,6 +20,7 @@ package com.github.myoss.phoenix.mybatis.mapper.template;
 import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.delete.DeleteMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.insert.CreateMapper;
+import com.github.myoss.phoenix.mybatis.mapper.template.select.RetrieveIncludeLogicDeleteMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.select.RetrieveMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateMapper;
 
@@ -30,5 +31,6 @@ import com.github.myoss.phoenix.mybatis.mapper.template.update.UpdateMapper;
  * @since 2018年4月29日 下午4:58:48
  */
 @RegisterMapper
-public interface CrudMapper<T> extends CreateMapper<T>, RetrieveMapper<T>, UpdateMapper<T>, DeleteMapper<T> {
+public interface CrudMapper<T> extends CreateMapper<T>, RetrieveMapper<T>, RetrieveIncludeLogicDeleteMapper<T>,
+        UpdateMapper<T>, DeleteMapper<T> {
 }
