@@ -68,7 +68,7 @@ public interface CrudService<T> {
     /**
      * 根据条件更新记录
      *
-     * @param record 待更新的实体对象，key：是数据库列名，value：是数据库列的值
+     * @param record 待更新的实体对象，key：是实体类的属性名，value：是属性的值
      * @param condition 匹配的条件
      * @return 更新结果
      */
