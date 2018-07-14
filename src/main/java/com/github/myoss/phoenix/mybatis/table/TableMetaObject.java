@@ -419,8 +419,8 @@ public class TableMetaObject {
         boolean isSupper = false;
         while (currentClass != null) {
             Field[] declaredFields = currentClass.getDeclaredFields();
-            for (int i = 0; i < declaredFields.length; i++) {
-                Field field = declaredFields[i];
+            int idx = 0;
+            for (Field field : declaredFields) {
                 String name = field.getName();
                 if (Modifier.isStatic(field.getModifiers()) || Modifier.isTransient(field.getModifiers())) {
                     // 过滤字段: static, transient
@@ -432,7 +432,7 @@ public class TableMetaObject {
                 }
                 allFiledName.put(name, true);
                 if (isSupper) {
-                    allFields.add(i, field);
+                    allFields.add(idx++, field);
                 } else {
                     allFields.add(field);
                 }
