@@ -17,7 +17,14 @@
 
 package com.github.myoss.phoenix.mybatis.mapper.template;
 
-import java.util.List;
+import java.io.StringWriter;
+
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerException;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.apache.commons.lang3.StringUtils;
 import org.apache.ibatis.builder.annotation.ProviderSqlSource;
@@ -25,6 +32,10 @@ import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.parsing.XNode;
 import org.apache.ibatis.scripting.xmltags.XMLLanguageDriver;
 import org.apache.ibatis.session.Configuration;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
+import com.github.myoss.phoenix.core.exception.BizRuntimeException;
 
 /**
  * 生成通用 insert/update/delete/select MappedStatement 模版基类
@@ -59,13 +70,37 @@ public abstract class AbstractMapperTemplate {
             return null;
         }
 
-        List<XNode> children = configuration.getSqlFragments().get(sqlId).getChildren();
+        XNode node = configuration.getSqlFragments().get(sqlId);
         StringBuilder sb = new StringBuilder();
         sb.append("  <if test=\"extraCondition != null\">\n    ");
-        for (XNode child : children) {
-            sb.append(child.toString());
+        try {
+            StringWriter nodeContent = getNodeContent(node.getNode());
+            sb.append(nodeContent.toString());
+        } catch (TransformerException e) {
+            throw new BizRuntimeException("get sqlFragments content failed, sqlId: " + sqlId, e);
         }
         sb.append("\n  </if>\n");
         return sb;
+    }
+
+    /**
+     * 获取 XML Node 节点的内容，转换为普通文本内容
+     *
+     * @param node XML Node 节点
+     * @return XML Node 节点的内容
+     * @throws TransformerException 转换异常信息
+     */
+    public static StringWriter getNodeContent(Node node) throws TransformerException {
+        StringWriter writer = new StringWriter();
+        StreamResult streamResult = new StreamResult(writer);
+        Transformer transformer = TransformerFactory.newInstance().newTransformer();
+        transformer.setOutputProperty(OutputKeys.OMIT_XML_DECLARATION, "yes");
+        NodeList childNodes = node.getChildNodes();
+        for (int i = 0; i < childNodes.getLength(); i++) {
+            Node item = childNodes.item(i);
+            DOMSource domSource = new DOMSource(item);
+            transformer.transform(domSource, streamResult);
+        }
+        return writer;
     }
 }
