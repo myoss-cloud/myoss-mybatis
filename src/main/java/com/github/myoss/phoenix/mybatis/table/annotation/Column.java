@@ -160,4 +160,11 @@ public @interface Column {
      * @return Java类型处理器
      */
     Class<? extends TypeHandler<?>> typeHandler() default UnsupportedTypeHandler.class;
+
+    /**
+     * 标记字段为普通字段，不是数据库字段
+     *
+     * @return true: 普通字段; false: 数据库字段
+     */
+    boolean isTransient() default false;
 }

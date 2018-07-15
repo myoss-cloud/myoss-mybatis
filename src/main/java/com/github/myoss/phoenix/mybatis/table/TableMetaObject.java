@@ -225,7 +225,6 @@ public class TableMetaObject {
         for (Field field : fields) {
             String name = field.getName();
             TableColumnInfo columnInfo = new TableColumnInfo();
-            columns.add(columnInfo);
             columnInfo.setTableInfo(tableInfo);
             columnInfo.setProperty(name);
             PropertyDescriptor propertyDescriptor = propertyDescriptorMap.get(name);
@@ -233,6 +232,10 @@ public class TableMetaObject {
             columnInfo.setPropertyDescriptor(propertyDescriptor);
             Column column = field.getAnnotation(Column.class);
             if (column != null) {
+                if (column.isTransient()) {
+                    // 忽略非数据库字段
+                    continue;
+                }
                 if (StringUtils.isNotBlank(column.name())) {
                     columnInfo.setColumn(column.name());
                 }
@@ -273,6 +276,7 @@ public class TableMetaObject {
                 resultTypes[indexOf] = columnInfo.getJavaType();
             }
             initTableSequence(field.getAnnotation(SequenceGenerator.class), tableInfo, columnInfo);
+            columns.add(columnInfo);
         }
         tableInfo.setColumns(columns);
         tableInfo.setPrimaryKeyColumns(pkColumns);
