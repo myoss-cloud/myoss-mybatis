@@ -21,14 +21,12 @@ import static org.springframework.util.Assert.notNull;
 
 import org.apache.ibatis.session.Configuration;
 import org.mybatis.spring.SqlSessionTemplate;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.github.myoss.phoenix.mybatis.mapper.register.MapperInterfaceRegister;
 import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 
 import lombok.Getter;
 import lombok.Setter;
-import lombok.extern.slf4j.Slf4j;
 
 /**
  * BeanFactory that enables injection of MyBatis mapper interfaces. It can be
@@ -59,7 +57,6 @@ import lombok.extern.slf4j.Slf4j;
  * @author Jerry.Chen
  * @since 2018年4月24日 下午6:18:05
  */
-@Slf4j
 @Setter
 @Getter
 public class MapperFactoryBean<T> extends org.mybatis.spring.mapper.MapperFactoryBean<T> {
@@ -73,7 +70,6 @@ public class MapperFactoryBean<T> extends org.mybatis.spring.mapper.MapperFactor
      * 和
      * {@link ClassPathMapperScanner#setMapperInterfaceRegisterBeanName(String)}
      */
-    @Autowired
     private MapperInterfaceRegister mapperInterfaceRegister;
 
     public MapperFactoryBean() {

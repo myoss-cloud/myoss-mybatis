@@ -39,6 +39,7 @@ import org.springframework.context.ApplicationContextAware;
 import org.springframework.context.ConfigurableApplicationContext;
 import org.springframework.util.StringUtils;
 
+import com.github.myoss.phoenix.mybatis.mapper.register.MapperInterfaceRegister;
 import com.github.myoss.phoenix.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration.AutoConfiguredMapperScannerRegistrar2;
 
 import lombok.Data;
@@ -122,6 +123,19 @@ public class MapperScannerConfigurer implements BeanDefinitionRegistryPostProces
      */
     private Class<?>                    markerInterface;
 
+    /**
+     * BeanFactory that enables injection of MyBatis mapper interfaces
+     */
+    private MapperFactoryBean<?>        mapperFactoryBean;
+    /**
+     * 通用 Mapper 接口注册器
+     */
+    private MapperInterfaceRegister     mapperInterfaceRegister;
+    /**
+     * Bean name of the {@code MapperInterfaceRegister}
+     */
+    private String                      mapperInterfaceRegisterBeanName;
+
     private ApplicationContext          applicationContext;
 
     private String                      beanName;
@@ -134,43 +148,26 @@ public class MapperScannerConfigurer implements BeanDefinitionRegistryPostProces
      */
     private BeanNameGenerator           nameGenerator;
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setApplicationContext(ApplicationContext applicationContext) {
         this.applicationContext = applicationContext;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void setBeanName(String name) {
         this.beanName = name;
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void afterPropertiesSet() throws Exception {
         notNull(this.basePackage, "Property 'basePackage' is required");
     }
 
-    /**
-     * {@inheritDoc}
-     */
     @Override
     public void postProcessBeanFactory(ConfigurableListableBeanFactory beanFactory) {
         // left intentionally blank
     }
 
-    /**
-     * {@inheritDoc}
-     *
-     * @since 1.0.2
-     */
     @Override
     public void postProcessBeanDefinitionRegistry(BeanDefinitionRegistry registry) {
         if (this.processPropertyPlaceHolders) {
@@ -183,6 +180,15 @@ public class MapperScannerConfigurer implements BeanDefinitionRegistryPostProces
         scanner.setMarkerInterface(this.markerInterface);
         scanner.setSqlSessionFactoryBeanName(this.sqlSessionFactoryBeanName);
         scanner.setSqlSessionTemplateBeanName(this.sqlSessionTemplateBeanName);
+        if (this.mapperFactoryBean != null) {
+            scanner.setMapperFactoryBean(this.mapperFactoryBean);
+        }
+        if (this.mapperInterfaceRegister != null) {
+            scanner.setMapperInterfaceRegister(this.mapperInterfaceRegister);
+        }
+        if (!StringUtils.isEmpty(this.mapperInterfaceRegisterBeanName)) {
+            scanner.setMapperInterfaceRegisterBeanName(this.mapperInterfaceRegisterBeanName);
+        }
         scanner.setResourceLoader(this.applicationContext);
         scanner.setBeanNameGenerator(this.nameGenerator);
         scanner.registerFilters();

@@ -56,8 +56,17 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
     private String                      sqlSessionFactoryBeanName;
     private Class<? extends Annotation> annotationClass;
     private Class<?>                    markerInterface;
+    /**
+     * BeanFactory that enables injection of MyBatis mapper interfaces
+     */
     private MapperFactoryBean<?>        mapperFactoryBean = new MapperFactoryBean<>();
+    /**
+     * 通用 Mapper 接口注册器
+     */
     private MapperInterfaceRegister     mapperInterfaceRegister;
+    /**
+     * Bean name of the {@code MapperInterfaceRegister}
+     */
     private String                      mapperInterfaceRegisterBeanName;
 
     public ClassPathMapperScanner(BeanDefinitionRegistry registry) {
@@ -182,6 +191,10 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
                 } else {
                     definition.getPropertyValues().add("mapperInterfaceRegister", this.mapperInterfaceRegister);
                 }
+            }
+            if (this.mapperInterfaceRegister == null && StringUtils.isEmpty(this.mapperInterfaceRegisterBeanName)) {
+                definition.getPropertyValues().add("mapperInterfaceRegister",
+                        new RuntimeBeanReference("mapperInterfaceRegister"));
             }
         }
     }
