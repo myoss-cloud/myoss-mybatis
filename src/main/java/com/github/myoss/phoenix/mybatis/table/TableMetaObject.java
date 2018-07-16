@@ -307,6 +307,8 @@ public class TableMetaObject {
                 .setWhereConditionWithParameterSql(builderWhereConditionWithParameterSql(tableInfo, false, "condition"));
         tableInfo.setWhereConditionWithParameterIncludeLogicDeleteSql(builderWhereConditionWithParameterSql(tableInfo,
                 true, "condition"));
+        tableInfo.setTableConfig(config);
+        tableInfo.setConfiguration(configuration);
         ENTITY_TABLE_MAP.put(entityClass, tableInfo);
         return tableInfo;
     }

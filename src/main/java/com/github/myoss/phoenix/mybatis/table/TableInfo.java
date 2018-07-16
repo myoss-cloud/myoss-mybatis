@@ -25,6 +25,7 @@ import org.apache.ibatis.session.Configuration;
 import com.github.myoss.phoenix.mybatis.table.annotation.Column;
 
 import lombok.Data;
+import lombok.ToString;
 
 /**
  * 数据库表结构信息，包含数据库字段信息、实体类class等信息
@@ -32,6 +33,7 @@ import lombok.Data;
  * @author Jerry.Chen
  * @since 2018年4月26日 上午11:02:15
  */
+@ToString(exclude = "configuration")
 @Data
 public class TableInfo {
     /**
@@ -141,6 +143,15 @@ public class TableInfo {
      *      boolean, String)
      */
     private StringBuilder        whereConditionWithParameterIncludeLogicDeleteSql;
+
+    /**
+     * Table全局配置
+     */
+    private TableConfig          tableConfig;
+    /**
+     * MyBatis 全局配置
+     */
+    private Configuration        configuration;
 
     /**
      * 获取表名称，优先取 {@link #escapedTableName}，如果没有则取 {@link #tableName}
