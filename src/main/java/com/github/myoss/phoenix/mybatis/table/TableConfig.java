@@ -17,6 +17,8 @@
 
 package com.github.myoss.phoenix.mybatis.table;
 
+import java.util.Map;
+
 import com.github.myoss.phoenix.core.utils.NameStyle;
 
 import lombok.Data;
@@ -36,7 +38,7 @@ public class TableConfig {
      * <p>
      * Defaults to the default catalog.
      */
-    private String    catalog         = "";
+    private String              catalog         = "";
     /**
      * 数据库中的schema，如果设置了此属性，将在表名前面加上schema指定的值
      * <p>
@@ -44,15 +46,15 @@ public class TableConfig {
      * <p>
      * Defaults to the default schema for user.
      */
-    private String    schema          = "";
+    private String              schema          = "";
     /**
      * 数据库表名字前缀
      */
-    private String    tableNamePrefix = "";
+    private String              tableNamePrefix = "";
     /**
      * 数据库表名字后缀
      */
-    private String    tableNameSuffix = "";
+    private String              tableNameSuffix = "";
     /**
      * 数据库表名命名风格
      * <p>
@@ -60,7 +62,7 @@ public class TableConfig {
      * <p>
      * Defaults to snake_case.
      */
-    private NameStyle tableNameStyle  = NameStyle.SNAKE_CASE;
+    private NameStyle           tableNameStyle  = NameStyle.SNAKE_CASE;
     /**
      * 数据库表字段名命名风格
      * <p>
@@ -68,22 +70,27 @@ public class TableConfig {
      * <p>
      * Defaults to snake_case.
      */
-    private NameStyle columnNameStyle = NameStyle.SNAKE_CASE;
+    private NameStyle           columnNameStyle = NameStyle.SNAKE_CASE;
 
     /**
      * 逻辑删除数据，软删除，用字段标记数据被删除了，不做物理删除
      */
-    private boolean   logicDelete     = false;
+    private boolean             logicDelete     = false;
     /**
      * 数据库表中默认的"逻辑删除"字段名，如果数据库表中有匹配的字段名，则可以不用在每个实体类中设置
      */
-    private String    logicDeleteColumnName;
+    private String              logicDeleteColumnName;
     /**
      * 数据标记为"逻辑删除"的值
      */
-    private String    logicDeleteValue;
+    private String              logicDeleteValue;
     /**
      * 数据标记为"逻辑未删除"的值
      */
-    private String    logicUnDeleteValue;
+    private String              logicUnDeleteValue;
+
+    /**
+     * 用户自定义配置
+     */
+    private Map<Object, Object> customizeConfig;
 }
