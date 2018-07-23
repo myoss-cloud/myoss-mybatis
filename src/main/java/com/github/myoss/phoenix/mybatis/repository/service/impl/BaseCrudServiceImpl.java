@@ -46,6 +46,7 @@ import com.github.myoss.phoenix.core.lang.dto.Order;
 import com.github.myoss.phoenix.core.lang.dto.Page;
 import com.github.myoss.phoenix.core.lang.dto.Result;
 import com.github.myoss.phoenix.core.lang.dto.Sort;
+import com.github.myoss.phoenix.mybatis.constants.MybatisConstants;
 import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
 import com.github.myoss.phoenix.mybatis.repository.entity.LogicDeleteEntity;
 import com.github.myoss.phoenix.mybatis.repository.entity.PrimaryKeyEntity;
@@ -116,7 +117,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             return false;
         }
         if (record == null) {
-            result.setSuccess(false).setErrorCode("valueIsBlank").setErrorMsg("实体对象不能为空");
+            result.setSuccess(false).setErrorCode(MybatisConstants.VALUE_IS_BLANK).setErrorMsg("实体对象不能为空");
         }
         return result.isSuccess();
     }
@@ -134,7 +135,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             return false;
         }
         if (id == null) {
-            result.setSuccess(false).setErrorCode("valueIsBlank").setErrorMsg("主键字段不能为空");
+            result.setSuccess(false).setErrorCode(MybatisConstants.VALUE_IS_BLANK).setErrorMsg("主键字段不能为空");
         }
         return result.isSuccess();
     }
@@ -185,7 +186,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         }
         boolean isNull = checkPrimaryKeyIsNull(sqlCommandType, record, true);
         if (isNull) {
-            result.setSuccess(false).setErrorCode("valueIsBlank").setErrorMsg("主键字段不能为空");
+            result.setSuccess(false).setErrorCode(MybatisConstants.VALUE_IS_BLANK).setErrorMsg("主键字段不能为空");
         }
         return result.isSuccess();
     }
@@ -232,7 +233,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             return false;
         }
         if (record == null) {
-            result.setSuccess(false).setErrorCode("valueIsBlank").setErrorMsg("实体对象不能为空");
+            result.setSuccess(false).setErrorCode(MybatisConstants.VALUE_IS_BLANK).setErrorMsg("实体对象不能为空");
         }
         return result.isSuccess();
     }
@@ -250,7 +251,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             return false;
         }
         if (record == null) {
-            result.setSuccess(false).setErrorCode("valueIsBlank").setErrorMsg("实体对象不能为空");
+            result.setSuccess(false).setErrorCode(MybatisConstants.VALUE_IS_BLANK).setErrorMsg("实体对象不能为空");
         }
         return result.isSuccess();
     }
@@ -341,7 +342,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         if (CollectionUtils.isEmpty(exists)) {
             return false;
         }
-        result.setSuccess(false).setErrorCode("moreRecords");
+        result.setSuccess(false).setErrorCode(MybatisConstants.MORE_RECORDS);
         T item = exists.get(0);
         StringBuilder errorMsg = new StringBuilder();
         Iterator<TableColumnInfo> iterator = tableInfo.getPrimaryKeyColumns().iterator();
@@ -388,7 +389,8 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             for (T item : exists) {
                 Serializable id1 = ((PrimaryKeyEntity) item).getPrimaryKey();
                 if (!id1.equals(id)) {
-                    result.setSuccess(false).setErrorCode("moreRecords").setErrorMsg("已经存在相同的记录，主键id=" + id1);
+                    result.setSuccess(false).setErrorCode(MybatisConstants.MORE_RECORDS).setErrorMsg(
+                            "已经存在相同的记录，主键id=" + id1);
                     return true;
                 }
             }
@@ -539,7 +541,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
                 }
                 result.setValue((I) value);
             } else {
-                result.setSuccess(false).setErrorCode("insertDBFailed").setErrorMsg("插入失败，请检查");
+                result.setSuccess(false).setErrorCode(MybatisConstants.INSERT_DB_FAILED).setErrorMsg("插入失败，请检查");
             }
         }
         return result;
@@ -590,7 +592,8 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             setValue4Create(record, null);
             boolean flag = checkDBResult(crudMapper.insert(record));
             if (!flag) {
-                return result.setSuccess(false).setErrorCode("insertDBFailed").setErrorMsg("插入失败，请检查。[" + record + "]");
+                return result.setSuccess(false).setErrorCode(MybatisConstants.INSERT_DB_FAILED).setErrorMsg(
+                        "插入失败，请检查。[" + record + "]");
             }
         }
         return result.setValue(true);
@@ -635,7 +638,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             setValue4Update(record, null);
             boolean flag = checkDBResult(crudMapper.updateByPrimaryKey(record));
             if (!flag) {
-                result.setSuccess(false).setErrorCode("notMatchRecords").setErrorMsg("更新失败，未匹配到相应的记录");
+                result.setSuccess(false).setErrorCode(MybatisConstants.NOT_MATCH_RECORDS).setErrorMsg("更新失败，未匹配到相应的记录");
             } else {
                 result.setValue(true);
             }
@@ -684,7 +687,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             setValue4Update(record, null);
             boolean flag = checkDBResult(crudMapper.updateByCondition(record, condition));
             if (!flag) {
-                result.setSuccess(false).setErrorCode("notMatchRecords").setErrorMsg("更新失败，未匹配到相应的记录");
+                result.setSuccess(false).setErrorCode(MybatisConstants.NOT_MATCH_RECORDS).setErrorMsg("更新失败，未匹配到相应的记录");
             } else {
                 result.setValue(true);
             }
@@ -738,7 +741,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             Map<String, Object> updateMap = convertToUpdateUseMap(record);
             boolean flag = checkDBResult(crudMapper.updateUseMapByCondition(updateMap, condition));
             if (!flag) {
-                result.setSuccess(false).setErrorCode("notMatchRecords").setErrorMsg("更新失败，未匹配到相应的记录");
+                result.setSuccess(false).setErrorCode(MybatisConstants.NOT_MATCH_RECORDS).setErrorMsg("更新失败，未匹配到相应的记录");
             } else {
                 result.setValue(true);
             }
@@ -752,7 +755,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         if (checkPrimaryKeyIsNull(SqlCommandType.DELETE, result, condition)) {
             boolean flag = checkDBResult(crudMapper.deleteWithPrimaryKey(condition));
             if (!flag) {
-                result.setSuccess(false).setErrorCode("notMatchRecords").setErrorMsg("更新失败，未匹配到相应的记录");
+                result.setSuccess(false).setErrorCode(MybatisConstants.NOT_MATCH_RECORDS).setErrorMsg("更新失败，未匹配到相应的记录");
             } else {
                 result.setValue(true);
             }
@@ -766,7 +769,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         if (checkCommonQueryConditionIsAllNull(SqlCommandType.DELETE, result, condition, null)) {
             boolean flag = checkDBResult(crudMapper.deleteByCondition(condition));
             if (!flag) {
-                result.setSuccess(false).setErrorCode("notMatchRecords").setErrorMsg("更新失败，未匹配到相应的记录");
+                result.setSuccess(false).setErrorCode(MybatisConstants.NOT_MATCH_RECORDS).setErrorMsg("更新失败，未匹配到相应的记录");
             } else {
                 result.setValue(true);
             }
