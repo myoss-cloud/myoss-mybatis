@@ -47,7 +47,6 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Binder;
 import org.springframework.context.ApplicationContext;
-import org.springframework.context.EnvironmentAware;
 import org.springframework.context.ResourceLoaderAware;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -94,6 +93,16 @@ public class MybatisAutoConfiguration {
     private final List<ConfigurationCustomizer> configurationCustomizers;
     private final ApplicationContext            applicationContext;
 
+    /**
+     * 初始化 MyBatis Spring Boot 项目自动配置
+     *
+     * @param properties MyBatis Spring Boot项目配置属性
+     * @param interceptorsProvider Mybatis Interceptor Spring Bean【可选】
+     * @param resourceLoader resource loader
+     * @param databaseIdProvider database id provider Spring Bean【可选】
+     * @param configurationCustomizersProvider 自定义配置 Spring Bean【可选】
+     * @param applicationContext Spring Application Context
+     */
     public MybatisAutoConfiguration(MybatisProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider,
                                     ResourceLoader resourceLoader,
                                     ObjectProvider<DatabaseIdProvider> databaseIdProvider,
@@ -111,6 +120,9 @@ public class MybatisAutoConfiguration {
         this.applicationContext = applicationContext;
     }
 
+    /**
+     * 检查配置文件是否存在。当前对象被 Spring 创建之后，会调用此方法。
+     */
     @PostConstruct
     public void checkConfigFileExists() {
         if (this.properties.isCheckConfigLocation() && StringUtils.hasText(this.properties.getConfigLocation())) {
@@ -128,6 +140,13 @@ public class MybatisAutoConfiguration {
         }
     }
 
+    /**
+     * 初始化 SqlSessionFactory
+     *
+     * @param dataSource 数据源
+     * @return SqlSessionFactory 实例对象
+     * @throws Exception 异常信息
+     */
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
@@ -203,6 +222,12 @@ public class MybatisAutoConfiguration {
         factory.setConfiguration(configuration);
     }
 
+    /**
+     * 初始化 SqlSessionTemplate
+     *
+     * @param sqlSessionFactory SqlSessionFactory 实例对象
+     * @return SqlSessionTemplate 实例对象
+     */
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
@@ -214,6 +239,11 @@ public class MybatisAutoConfiguration {
         }
     }
 
+    /**
+     * 初始化通用 Mapper 接口注册器
+     *
+     * @return MapperInterfaceRegister 实例对象
+     */
     @Bean
     @ConditionalOnMissingBean
     public MapperInterfaceRegister mapperInterfaceRegister() {
@@ -233,6 +263,9 @@ public class MybatisAutoConfiguration {
     @Configuration
     public static class MapperScannerRegistrarNotFoundConfiguration {
 
+        /**
+         * 属性配置
+         */
         @PostConstruct
         public void afterPropertiesSet() {
             log.debug("No {} found.", MapperFactoryBean.class.getName());
@@ -247,17 +280,16 @@ public class MybatisAutoConfiguration {
      * mappers working correctly, out-of-the-box, similar to using Spring Data
      * JPA repositories.
      */
-    public static class AutoConfiguredMapperScannerRegistrar implements BeanFactoryAware,
-            ImportBeanDefinitionRegistrar, ResourceLoaderAware, EnvironmentAware {
+    public static class AutoConfiguredMapperScannerRegistrar
+            implements BeanFactoryAware, ImportBeanDefinitionRegistrar, ResourceLoaderAware {
         @Setter
         private BeanFactory    beanFactory;
         @Setter
         private ResourceLoader resourceLoader;
-        @Setter
-        private Environment    environment;
 
         @Override
-        public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata, BeanDefinitionRegistry registry) {
+        public void registerBeanDefinitions(AnnotationMetadata importingClassMetadata,
+                                            BeanDefinitionRegistry registry) {
             log.debug("Searching for mappers annotated with @Mapper");
             ClassPathMapperScanner scanner = new ClassPathMapperScanner(registry);
             try {
@@ -297,11 +329,20 @@ public class MybatisAutoConfiguration {
             + ".base-package:}'.length() > 0}")
     @Configuration
     public static class AutoConfiguredMapperScannerRegistrar2 {
+        /**
+         * 初始化自动扫描 Mapper Interface
+         */
         public AutoConfiguredMapperScannerRegistrar2() {
             log.debug(MybatisProperties.MYBATIS_MAPPER_SCANNER_PREFIX + ".base-package} is config [{}].",
                     AutoConfiguredMapperScannerRegistrar2.class.getName());
         }
 
+        /**
+         * 初始化 MapperScannerConfigurer
+         *
+         * @param environment Spring environment
+         * @return MapperScannerConfigurer 实例对象
+         */
         @ConditionalOnMissingBean
         @Bean
         public MapperScannerConfigurer mapperScannerConfigurer(Environment environment) {

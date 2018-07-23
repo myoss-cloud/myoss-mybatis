@@ -35,24 +35,23 @@ import lombok.Setter;
  * Sample configuration:
  *
  * <pre class="code">
- * {@code
- *   <bean id="baseMapper" class="org.mybatis.spring.mapper.MapperFactoryBean" abstract="true" lazy-init="true">
- *     <property name="sqlSessionFactory" ref="sqlSessionFactory" />
- *   </bean>
+ *   &lt;bean id=&quot;baseMapper&quot; class=&quot;org.mybatis.spring.mapper.MapperFactoryBean&quot; abstract=&quot;true&quot; lazy-init=&quot;true&quot;&gt;
+ *     &lt;property name=&quot;sqlSessionFactory&quot; ref=&quot;sqlSessionFactory&quot; /&gt;
+ *   &lt;/bean&gt;
  *
- *   <bean id="oneMapper" parent="baseMapper">
- *     <property name="mapperInterface" value="my.package.MyMapperInterface" />
- *   </bean>
+ *   &lt;bean id=&quot;oneMapper&quot; parent=&quot;baseMapper&quot;&gt;
+ *     &lt;property name=&quot;mapperInterface&quot; value=&quot;my.package.MyMapperInterface&quot; /&gt;
+ *   &lt;/bean&gt;
  *
- *   <bean id="anotherMapper" parent="baseMapper">
- *     <property name="mapperInterface" value="my.package.MyAnotherMapperInterface" />
- *   </bean>
- * }
+ *   &lt;bean id=&quot;anotherMapper&quot; parent=&quot;baseMapper&quot;&gt;
+ *     &lt;property name=&quot;mapperInterface&quot; value=&quot;my.package.MyAnotherMapperInterface&quot; /&gt;
+ *   &lt;/bean&gt;
  * </pre>
  * <p>
  * Note that this factory can only inject <em>interfaces</em>, not concrete
  * classes.
  *
+ * @param <T> 实体类
  * @see SqlSessionTemplate
  * @author Jerry.Chen
  * @since 2018年4月24日 下午6:18:05
@@ -72,10 +71,18 @@ public class MapperFactoryBean<T> extends org.mybatis.spring.mapper.MapperFactor
      */
     private MapperInterfaceRegister mapperInterfaceRegister;
 
+    /**
+     * 初始化 MapperFactoryBean
+     */
     public MapperFactoryBean() {
         super();
     }
 
+    /**
+     * 初始化 MapperFactoryBean
+     *
+     * @param mapperInterface mapper interface class
+     */
     public MapperFactoryBean(Class<T> mapperInterface) {
         super(mapperInterface);
     }

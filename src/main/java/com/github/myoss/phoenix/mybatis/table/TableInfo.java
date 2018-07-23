@@ -159,6 +159,6 @@ public class TableInfo {
      * @return 表名称
      */
     public String getActualTableName() {
-        return escapedTableName != null ? escapedTableName : tableName;
+        return (escapedTableName != null ? escapedTableName : tableName);
     }
 }

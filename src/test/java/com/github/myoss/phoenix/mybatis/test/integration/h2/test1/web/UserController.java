@@ -55,7 +55,7 @@ public class UserController {
      * @return 主键id
      */
     @LogMethodAround
-    @PostMapping(value = "/create")
+    @PostMapping("/create")
     public <I> Result<I> create(@RequestBody User record) {
         return userService.create(record);
     }
@@ -67,7 +67,7 @@ public class UserController {
      * @return 是否操作成功
      */
     @LogMethodAround
-    @PostMapping(value = "/updateByPrimaryKey")
+    @PostMapping("/updateByPrimaryKey")
     public Result<Boolean> updateByPrimaryKey(@RequestBody User record) {
         return userService.updateByPrimaryKey(record);
     }
@@ -90,7 +90,7 @@ public class UserController {
      * @param id 主键id
      * @return 对应的实体对象
      */
-    @RequestMapping(value = "/findByPrimaryKey")
+    @RequestMapping("/findByPrimaryKey")
     public Result<User> findByPrimaryKey(@RequestParam("id") Serializable id) {
         return userService.findByPrimaryKey(id);
     }
@@ -101,7 +101,7 @@ public class UserController {
      * @param condition 主键id
      * @return 对应的实体对象
      */
-    @PostMapping(value = "/findByPrimaryKey")
+    @PostMapping("/findByPrimaryKey")
     public Result<User> findByPrimaryKey(@RequestBody User condition) {
         return userService.findByPrimaryKey(condition);
     }
@@ -112,7 +112,7 @@ public class UserController {
      * @param condition 匹配的条件
      * @return 匹配的实体对象
      */
-    @PostMapping(value = "/findList")
+    @PostMapping("/findList")
     public Result<List<User>> findList(@RequestBody User condition) {
         return userService.findList(condition);
     }
@@ -123,7 +123,7 @@ public class UserController {
      * @param condition 匹配的条件和排序字段
      * @return 匹配的实体对象
      */
-    @PostMapping(value = "/findListWithSort")
+    @PostMapping("/findListWithSort")
     public Result<List<User>> findListWithSort(@RequestBody Page<User> condition) {
         return userService.findListWithSort(condition);
     }

@@ -20,14 +20,14 @@ package com.github.myoss.phoenix.mybatis.test.integration.h2.test1.entity;
 import java.io.Serializable;
 import java.util.Date;
 
-import lombok.Data;
-import lombok.experimental.Accessors;
-
 import com.github.myoss.phoenix.mybatis.table.annotation.Column;
 import com.github.myoss.phoenix.mybatis.table.annotation.FillRule;
 import com.github.myoss.phoenix.mybatis.table.annotation.GenerationType;
 import com.github.myoss.phoenix.mybatis.table.annotation.SequenceGenerator;
 import com.github.myoss.phoenix.mybatis.table.annotation.Table;
+
+import lombok.Data;
+import lombok.experimental.Accessors;
 
 /**
  * This class corresponds to the database table t_sys_user
@@ -213,7 +213,8 @@ public class User implements Serializable {
      * Database Column Remarks: 是否删除
      * </p>
      */
-    @Column(name = "is_deleted", nullable = false, jdbcTypeName = "CHAR", fillRule = { FillRule.INSERT, FillRule.UPDATE })
+    @Column(name = "is_deleted", nullable = false, jdbcTypeName = "CHAR", fillRule = { FillRule.INSERT,
+            FillRule.UPDATE })
     private String            isDeleted;
 
     /**
@@ -222,7 +223,8 @@ public class User implements Serializable {
      * Database Column Remarks: 创建者
      * </p>
      */
-    @Column(name = "creator", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT, FillRule.UPDATE })
+    @Column(name = "creator", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT,
+            FillRule.UPDATE })
     private String            creator;
 
     /**

@@ -57,8 +57,8 @@ import lombok.Data;
  * @see org.mybatis.spring.mapper.MapperScannerConfigurer
  */
 @Data
-public class MapperScannerConfigurer implements BeanDefinitionRegistryPostProcessor, InitializingBean,
-        ApplicationContextAware, BeanNameAware {
+public class MapperScannerConfigurer
+        implements BeanDefinitionRegistryPostProcessor, InitializingBean, ApplicationContextAware, BeanNameAware {
     /**
      * basePackage base package name
      * <p>

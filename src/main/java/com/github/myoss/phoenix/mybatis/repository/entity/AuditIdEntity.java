@@ -30,6 +30,7 @@ import lombok.experimental.Accessors;
 /**
  * 审计实体基类，包含审计的字段，增加了主键id字段
  *
+ * @param <I> "主键id"的类型
  * @author Jerry.Chen
  * @since 2018年5月9日 下午2:15:14
  */
@@ -37,8 +38,11 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class AuditIdEntity<I extends Serializable> extends AuditEntity implements PrimaryKeyEntity<I> {
-    private static final long  serialVersionUID = -7391784386524900465L;
-    public static final String AUDIT_ID_ENTITY  = "AuditIdEntity";
+    private static final long  serialVersionUID      = -7391784386524900465L;
+    /**
+     * AuditIdEntity label
+     */
+    public static final String LABEL_AUDIT_ID_ENTITY = "AuditIdEntity";
 
     /**
      * Database Column Name: id
@@ -48,6 +52,11 @@ public class AuditIdEntity<I extends Serializable> extends AuditEntity implement
     @Column(primaryKey = true)
     private I                  id;
 
+    /**
+     * 获取"主键id"的值
+     *
+     * @return "主键id"的值
+     */
     @JsonIgnore
     @JSONField(serialize = false, deserialize = false)
     @Override
@@ -55,16 +64,32 @@ public class AuditIdEntity<I extends Serializable> extends AuditEntity implement
         return id;
     }
 
+    /**
+     * 设置"主键id"的值
+     *
+     * @param primaryKey "主键id"的值
+     */
     @Override
     public void setPrimaryKey(I primaryKey) {
         this.id = primaryKey;
     }
 
-    @JSONField(label = AUDIT_ID_ENTITY)
+    /**
+     * 获取"主键id"的值
+     *
+     * @return "主键id"的值
+     */
+    @JSONField(label = LABEL_AUDIT_ID_ENTITY)
     public I getId() {
         return id;
     }
 
+    /**
+     * 设置"主键id"的值
+     *
+     * @param id "主键id"的值
+     * @return 当前实例对象
+     */
     public AuditIdEntity<I> setId(I id) {
         this.id = id;
         return this;

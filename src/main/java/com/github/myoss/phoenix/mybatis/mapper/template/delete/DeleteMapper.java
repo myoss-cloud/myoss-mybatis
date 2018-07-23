@@ -22,6 +22,7 @@ import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
 /**
  * 删除（Delete）操作，通用 Mapper 接口
  *
+ * @param <T> 实体类
  * @author Jerry.Chen
  * @since 2018年5月1日 下午6:01:49
  */

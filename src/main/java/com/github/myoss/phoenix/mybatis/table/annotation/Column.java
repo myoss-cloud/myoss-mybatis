@@ -47,7 +47,6 @@ import com.github.myoss.phoenix.mybatis.type.UnsupportedTypeHandler;
  * Example 3:
  * &#064;Column(name="ORDER_COST", insertable=false, updatable=false)
  * private String cost;
- *
  * </pre>
  *
  * </blockquote>

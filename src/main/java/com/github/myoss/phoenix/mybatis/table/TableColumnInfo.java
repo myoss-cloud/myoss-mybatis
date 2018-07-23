@@ -126,7 +126,7 @@ public class TableColumnInfo {
      * @return 字段名
      */
     public String getActualColumn() {
-        return escapedColumn != null ? escapedColumn : column;
+        return (escapedColumn != null ? escapedColumn : column);
     }
 
     /**

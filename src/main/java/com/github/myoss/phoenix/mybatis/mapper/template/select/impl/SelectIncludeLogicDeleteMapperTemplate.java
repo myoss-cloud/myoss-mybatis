@@ -20,7 +20,6 @@ package com.github.myoss.phoenix.mybatis.mapper.template.select.impl;
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.List;
-import java.util.Map;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -71,8 +70,8 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
     public String selectOneIncludeLogicDelete(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         // 替换 resultMap 对象
-        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
-                Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         metaObject.setValue("resultMaps", resultMaps);
 
         // 生成 sql 语句
@@ -84,8 +83,8 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -143,8 +142,8 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -172,7 +171,7 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
      * @see SelectCountIncludeLogicDeleteMapper#selectCountIncludeLogicDelete2(Object,
-     *      Map)
+     *      java.util.Map)
      */
     public String selectCountIncludeLogicDelete2(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
@@ -189,8 +188,8 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -225,8 +224,8 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
     public String selectPageIncludeLogicDelete(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         // 替换 resultMap 对象
-        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
-                Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         metaObject.setValue("resultMaps", resultMaps);
 
         // 生成 sql 语句
@@ -245,8 +244,8 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -285,8 +284,8 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
     public String selectPageIncludeLogicDelete2(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         // 替换 resultMap 对象
-        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
-                Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         metaObject.setValue("resultMaps", resultMaps);
 
         // 生成 sql 语句
@@ -309,8 +308,8 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -335,8 +334,8 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
     public String selectByPrimaryKeyIncludeLogicDelete(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         // 替换 resultMap 对象
-        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
-                Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         metaObject.setValue("resultMaps", resultMaps);
 
         // 生成 sql 语句
@@ -348,8 +347,8 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }

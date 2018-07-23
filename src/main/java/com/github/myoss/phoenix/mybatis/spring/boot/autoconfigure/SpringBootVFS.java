@@ -30,6 +30,8 @@ import org.springframework.core.io.support.PathMatchingResourcePatternResolver;
 import org.springframework.core.io.support.ResourcePatternResolver;
 
 /**
+ * Spring Boot VFS
+ *
  * @author Hans Westerbeek
  * @author Eddú Meléndez
  * @author Kazuki Shimizu
@@ -39,6 +41,9 @@ import org.springframework.core.io.support.ResourcePatternResolver;
 public class SpringBootVFS extends VFS {
     private final ResourcePatternResolver resourceResolver;
 
+    /**
+     * 初始化 Spring Boot VFS
+     */
     public SpringBootVFS() {
         this.resourceResolver = new PathMatchingResourcePatternResolver(getClass().getClassLoader());
     }
@@ -51,8 +56,8 @@ public class SpringBootVFS extends VFS {
     @Override
     protected List<String> list(URL url, String path) throws IOException {
         Resource[] resources = resourceResolver.getResources("classpath*:" + path + "/**/*.class");
-        return Stream.of(resources).map(resource -> preserveSubpackageName(resource, path))
-                .collect(Collectors.toList());
+        return Stream.of(resources).map(resource -> preserveSubpackageName(resource, path)).collect(
+                Collectors.toList());
     }
 
     private static String preserveSubpackageName(final Resource resource, final String rootPath) {

@@ -28,6 +28,7 @@ import com.github.myoss.phoenix.mybatis.mapper.template.update.impl.UpdateMapper
 /**
  * 更新（update）操作，通用 Mapper 接口
  *
+ * @param <T> 实体类
  * @author Jerry.Chen
  * @since 2018年6月11日 上午12:49:23
  */

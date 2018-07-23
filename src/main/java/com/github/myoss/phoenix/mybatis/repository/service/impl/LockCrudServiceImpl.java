@@ -23,6 +23,8 @@ import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
 /**
  * 实现数据库表增、删、改、查常用操作的基类，使用了缓存锁进行创建、删除、更新
  *
+ * @param <M> "实体类"的 Mapper Interface 接口
+ * @param <T> 实体类
  * @author Jerry.Chen
  * @since 2018年5月10日 上午12:20:12
  */

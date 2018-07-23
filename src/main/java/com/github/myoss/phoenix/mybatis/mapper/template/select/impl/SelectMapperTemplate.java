@@ -71,8 +71,8 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
     public String selectOne(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         // 替换 resultMap 对象
-        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
-                Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         metaObject.setValue("resultMaps", resultMaps);
 
         // 生成 sql 语句
@@ -84,8 +84,8 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -145,8 +145,8 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -191,8 +191,8 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -227,8 +227,8 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
     public String selectPage(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         // 替换 resultMap 对象
-        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
-                Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         metaObject.setValue("resultMaps", resultMaps);
 
         // 生成 sql 语句
@@ -247,8 +247,8 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -286,8 +286,8 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
     public String selectPage2(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         // 替换 resultMap 对象
-        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
-                Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         metaObject.setValue("resultMaps", resultMaps);
 
         // 生成 sql 语句
@@ -310,8 +310,8 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -338,8 +338,8 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
     public String selectByPrimaryKey(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         // 替换 resultMap 对象
-        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
-                Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         metaObject.setValue("resultMaps", resultMaps);
 
         // 生成 sql 语句
@@ -351,8 +351,8 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }

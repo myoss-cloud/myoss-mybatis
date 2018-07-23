@@ -92,59 +92,7 @@ public class SysUserLogControllerIntTests {
 
     public Long maxId() {
         Long value = jdbcTemplate.queryForObject("select max(id) from t_sys_user_log", Long.class);
-        return value == null ? 0L : value;
-    }
-
-    @ComponentScan(basePackageClasses = SysUserLogControllerIntTests.class)
-    @Profile("SysUserLogControllerIntTests")
-    @Configuration
-    public static class MyConfig {
-        @Bean
-        public ParameterHandlerCustomizer persistenceParameterHandler() {
-            return new DefaultParameterHandlerCustomizer();
-        }
-
-        @Bean
-        public Optional initSequence(JdbcTemplate jdbcTemplate) {
-            Sequence sequenceBean = parameter -> {
-                Long nextId = jdbcTemplate.queryForObject("select ifnull(max(`id`) ,0) + 1 from t_sys_user_log",
-                        Long.class);
-                log.info("nextId: {}, parameter: {}", nextId, JSON.toJSONString(parameter));
-                return nextId;
-            };
-
-            Map<String, Sequence> sequenceBeanMap = TableMetaObject.getSequenceBeanMap();
-            for (Entry<String, Sequence> entry : sequenceBeanMap.entrySet()) {
-                SequenceCustomizer value = (SequenceCustomizer) entry.getValue();
-                value.setSequence(sequenceBean);
-            }
-            return Optional.empty();
-        }
-    }
-
-    /**
-     * <ul>
-     * <li>第一步：会在 {@link SequenceKeyGenerator} 中初始化此 class
-     * <li>第二步：会在 {@link MyConfig#initSequence(JdbcTemplate)} 中初始化它的代理
-     * {@link SequenceCustomizer#sequence} 对象
-     * <li>
-     * </ul>
-     */
-    @Data
-    public static class SequenceCustomizer implements Sequence {
-        /**
-         * 代理对象
-         */
-        private Sequence sequence;
-
-        public SequenceCustomizer() {
-            log.info("init " + this.getClass());
-        }
-
-        @Override
-        public Object nextValue(Object parameter) {
-            return sequence.nextValue(parameter);
-        }
+        return (value != null ? value : 0L);
     }
 
     /**
@@ -530,5 +478,59 @@ public class SysUserLogControllerIntTests {
             target.setEmployeeNumber((String) updateUseMap.get("employeeNumber"));
             softly.assertThat(idResult4.getValue()).isNotNull().isEqualTo(target);
         });
+    }
+
+    /**
+     * <ul>
+     * <li>第一步：会在 {@link SequenceKeyGenerator} 中初始化此 class
+     * <li>第二步：会在 {@link MyConfig#initSequence(JdbcTemplate)} 中初始化它的代理
+     * {@link SequenceCustomizer#sequence} 对象
+     * <li>
+     * </ul>
+     */
+    @Data
+    public static class SequenceCustomizer implements Sequence {
+
+        /**
+         * 代理对象
+         */
+        private Sequence sequence;
+
+        public SequenceCustomizer() {
+            log.info("init " + this.getClass());
+        }
+
+        @Override
+        public Object nextValue(Object parameter) {
+            return sequence.nextValue(parameter);
+        }
+
+    }
+
+    @ComponentScan(basePackageClasses = SysUserLogControllerIntTests.class)
+    @Profile("SysUserLogControllerIntTests")
+    @Configuration
+    public static class MyConfig {
+        @Bean
+        public ParameterHandlerCustomizer persistenceParameterHandler() {
+            return new DefaultParameterHandlerCustomizer();
+        }
+
+        @Bean
+        public Optional initSequence(JdbcTemplate jdbcTemplate) {
+            Sequence sequenceBean = parameter -> {
+                Long nextId = jdbcTemplate.queryForObject("select ifnull(max(`id`) ,0) + 1 from t_sys_user_log",
+                        Long.class);
+                log.info("nextId: {}, parameter: {}", nextId, JSON.toJSONString(parameter));
+                return nextId;
+            };
+
+            Map<String, Sequence> sequenceBeanMap = TableMetaObject.getSequenceBeanMap();
+            for (Entry<String, Sequence> entry : sequenceBeanMap.entrySet()) {
+                SequenceCustomizer value = (SequenceCustomizer) entry.getValue();
+                value.setSequence(sequenceBean);
+            }
+            return Optional.empty();
+        }
     }
 }

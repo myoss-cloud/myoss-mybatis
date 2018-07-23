@@ -71,8 +71,15 @@ public class TableMetaObject {
      */
     private static final Map<Class<?>, TableInfo>    ENTITY_TABLE_MAP     = new ConcurrentHashMap<>();
     private static final Map<String, Sequence>       SEQUENCE_BEAN_MAP    = new ConcurrentHashMap<>();
-    private static final Class<? extends Annotation> PERSISTENCE_ID_CLASS = resolveAnnotationClassName("javax.persistence.Id");
+    private static final Class<? extends Annotation> PERSISTENCE_ID_CLASS = resolveAnnotationClassName(
+            "javax.persistence.Id");
 
+    /**
+     * 判断 Annotation Class 是否存在，如果存在，返回 Class 对象
+     *
+     * @param className class full name
+     * @return Annotation Class
+     */
     @SuppressWarnings("unchecked")
     public static Class<? extends Annotation> resolveAnnotationClassName(String className) {
         ClassLoader classLoader = TableMetaObject.class.getClassLoader();
@@ -90,8 +97,8 @@ public class TableMetaObject {
      */
     public static void addSequenceBean(String sequenceBeanName, Sequence sequence) {
         if (SEQUENCE_BEAN_MAP.containsKey(sequenceBeanName)) {
-            throw new IllegalArgumentException("already contains value for " + sequenceBeanName + ", sequence: "
-                    + sequence);
+            throw new IllegalArgumentException(
+                    "already contains value for " + sequenceBeanName + ", sequence: " + sequence);
         }
         SEQUENCE_BEAN_MAP.putIfAbsent(sequenceBeanName, sequence);
     }
@@ -211,9 +218,9 @@ public class TableMetaObject {
         tableInfo.setEntityClass(entityClass);
         initTableSequence(entityClass.getAnnotation(SequenceGenerator.class), tableInfo, null);
         TableSequence tableSequence = tableInfo.getTableSequence();
-        String[] keyProperties = tableSequence != null ? tableSequence.getKeyProperties() : null;
-        String[] keyColumns = new String[keyProperties == null ? 0 : keyProperties.length];
-        Class<?>[] resultTypes = new Class[keyProperties == null ? 0 : keyProperties.length];
+        String[] keyProperties = (tableSequence != null ? tableSequence.getKeyProperties() : null);
+        String[] keyColumns = new String[(keyProperties != null ? keyProperties.length : 0)];
+        Class<?>[] resultTypes = new Class[(keyProperties != null ? keyProperties.length : 0)];
 
         // 处理字段信息
         NameStyle columnNameStyle = config.getColumnNameStyle();
@@ -251,7 +258,8 @@ public class TableMetaObject {
                 columnInfo.setInsertable(column.insertable());
                 columnInfo.setUpdatable(column.updatable());
                 columnInfo.setSelectable(column.selectable());
-                Map<FillRule, String> fillRules = Stream.of(column.fillRule()).filter(s -> !FillRule.NONE.equals(s))
+                Map<FillRule, String> fillRules = Stream.of(column.fillRule())
+                        .filter(s -> !FillRule.NONE.equals(s))
                         .collect(Collectors.toMap(Function.identity(), FillRule::getValue));
                 columnInfo.setFillRules(fillRules);
             }
@@ -303,10 +311,10 @@ public class TableMetaObject {
         tableInfo.setWhereConditionSql(builderWhereConditionSql(tableInfo, false));
         tableInfo.setWhereConditionIncludeLogicDeleteSql(builderWhereConditionSql(tableInfo, true));
         // 生成 where 所有条件sql语句，带有参数前缀
-        tableInfo
-                .setWhereConditionWithParameterSql(builderWhereConditionWithParameterSql(tableInfo, false, "condition"));
-        tableInfo.setWhereConditionWithParameterIncludeLogicDeleteSql(builderWhereConditionWithParameterSql(tableInfo,
-                true, "condition"));
+        tableInfo.setWhereConditionWithParameterSql(
+                builderWhereConditionWithParameterSql(tableInfo, false, "condition"));
+        tableInfo.setWhereConditionWithParameterIncludeLogicDeleteSql(
+                builderWhereConditionWithParameterSql(tableInfo, true, "condition"));
         tableInfo.setTableConfig(config);
         tableInfo.setConfiguration(configuration);
         ENTITY_TABLE_MAP.put(entityClass, tableInfo);
@@ -315,6 +323,10 @@ public class TableMetaObject {
 
     /**
      * 加载数据库表"序列生成器"属性配置
+     *
+     * @param sequenceGenerator 序列生成器规则
+     * @param tableInfo 数据库表结构信息
+     * @param columnInfo 数据库表结构字段信息
      */
     private static void initTableSequence(SequenceGenerator sequenceGenerator, TableInfo tableInfo,
                                           TableColumnInfo columnInfo) {
@@ -323,8 +335,8 @@ public class TableMetaObject {
         }
         if (tableInfo.getTableSequence() != null) {
             // 自增序列只能有一个
-            throw new BindingException("more than one sequence field: [" + tableInfo.getTableSequence() + ", "
-                    + columnInfo + "]");
+            throw new BindingException(
+                    "more than one sequence field: [" + tableInfo.getTableSequence() + ", " + columnInfo + "]");
         }
 
         GenerationType strategy = sequenceGenerator.strategy();
@@ -383,6 +395,12 @@ public class TableMetaObject {
 
     /**
      * 初始化"逻辑删除"字段
+     *
+     * @param config MyBatis Table 全局配置
+     * @param tableInfo 数据库表结构信息
+     * @param columnInfo 数据库表结构字段信息
+     * @param column 数据库字段的注解信息
+     * @param logicDeleteColumns 逻辑删除字段信息
      */
     private static void initLogicDelete(TableConfig config, TableInfo tableInfo, TableColumnInfo columnInfo,
                                         Column column, Set<TableColumnInfo> logicDeleteColumns) {
@@ -463,8 +481,8 @@ public class TableMetaObject {
             throw new BizRuntimeException(e);
         }
         PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
-        return Stream.of(descriptors).filter(s -> !"class".equals(s.getName()))
-                .collect(Collectors.toMap(PropertyDescriptor::getName, Function.identity()));
+        return Stream.of(descriptors).filter(s -> !"class".equals(s.getName())).collect(
+                Collectors.toMap(PropertyDescriptor::getName, Function.identity()));
     }
 
     /**
@@ -475,7 +493,8 @@ public class TableMetaObject {
      */
     public static String getTableName(TableInfo tableInfo) {
         return Stream.of(tableInfo.getCatalog(), tableInfo.getSchema(), tableInfo.getActualTableName())
-                .filter(StringUtils::isNotBlank).collect(Collectors.joining("."));
+                .filter(StringUtils::isNotBlank)
+                .collect(Collectors.joining("."));
     }
 
     /**
@@ -530,8 +549,11 @@ public class TableMetaObject {
      * @return sql语句
      */
     public static String builderSelectAllColumns(TableInfo tableInfo) {
-        return tableInfo.getColumns().stream().filter(TableColumnInfo::isSelectable)
-                .map(TableColumnInfo::getActualColumn).collect(Collectors.joining(", "));
+        return tableInfo.getColumns()
+                .stream()
+                .filter(TableColumnInfo::isSelectable)
+                .map(TableColumnInfo::getActualColumn)
+                .collect(Collectors.joining(", "));
     }
 
     /**
@@ -613,8 +635,8 @@ public class TableMetaObject {
             }
             sql.append("    <if test=\"").append(prefix).append(item.getProperty()).append(" != null\">\n");
 
-            sql.append("      and ").append(item.getActualColumn()).append(" = #{").append(prefix)
-                    .append(item.getProperty());
+            sql.append("      and ").append(item.getActualColumn()).append(" = #{").append(prefix).append(
+                    item.getProperty());
             if (item.getJdbcType() != null) {
                 sql.append(",jdbcType=").append(item.getJdbcType().name());
             }

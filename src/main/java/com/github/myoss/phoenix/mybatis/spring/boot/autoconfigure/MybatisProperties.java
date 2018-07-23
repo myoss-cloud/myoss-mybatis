@@ -45,7 +45,13 @@ import lombok.Data;
 @Data
 @ConfigurationProperties(prefix = MybatisProperties.MYBATIS_PREFIX)
 public class MybatisProperties {
+    /**
+     * Mybatis 属性配置的前缀名
+     */
     public static final String                   MYBATIS_PREFIX                = "mybatis";
+    /**
+     * Mybatis 自动扫描属性配置的前缀名
+     */
     public static final String                   MYBATIS_MAPPER_SCANNER_PREFIX = "mybatis.mapper-scanner";
     private static final ResourcePatternResolver RESOURCE_RESOLVER             = new PathMatchingResourcePatternResolver();
 
@@ -107,6 +113,28 @@ public class MybatisProperties {
      */
     private MapperScanner                        mapperScanner;
 
+    /**
+     * 获取 MyBatis xml 文件
+     *
+     * @return MyBatis xml 文件
+     */
+    public Resource[] resolveMapperLocations() {
+        return Stream.of(Optional.ofNullable(this.mapperLocations).orElse(new String[0]))
+                .flatMap(location -> Stream.of(getResources(location)))
+                .toArray(Resource[]::new);
+    }
+
+    private Resource[] getResources(String location) {
+        try {
+            return RESOURCE_RESOLVER.getResources(location);
+        } catch (IOException e) {
+            return new Resource[0];
+        }
+    }
+
+    /**
+     * 自动扫描 Mapper Interface 配置
+     */
     @Data
     @ConfigurationProperties(prefix = MYBATIS_MAPPER_SCANNER_PREFIX)
     public static class MapperScanner {
@@ -119,7 +147,7 @@ public class MybatisProperties {
          */
         private String                      sqlSessionFactoryName;
         /**
-         *
+         * Bean name of the {@link org.mybatis.spring.SqlSessionTemplate}
          */
         private String                      sqlSessionTemplateBeanName;
         /**
@@ -130,18 +158,5 @@ public class MybatisProperties {
          * superClass parent class
          */
         private Class<?>                    markerInterface;
-    }
-
-    public Resource[] resolveMapperLocations() {
-        return Stream.of(Optional.ofNullable(this.mapperLocations).orElse(new String[0]))
-                .flatMap(location -> Stream.of(getResources(location))).toArray(Resource[]::new);
-    }
-
-    private Resource[] getResources(String location) {
-        try {
-            return RESOURCE_RESOLVER.getResources(location);
-        } catch (IOException e) {
-            return new Resource[0];
-        }
     }
 }

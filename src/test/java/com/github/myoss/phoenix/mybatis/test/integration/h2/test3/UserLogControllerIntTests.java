@@ -83,47 +83,7 @@ public class UserLogControllerIntTests {
 
     public Long maxId() {
         Long value = jdbcTemplate.queryForObject("select max(id) from t_sys_user_log", Long.class);
-        return value == null ? 0L : value;
-    }
-
-    @ComponentScan(basePackageClasses = UserLogControllerIntTests.class)
-    @Profile("UserLogControllerIntTests")
-    @Configuration
-    public static class MyConfig {
-        @Bean
-        public ParameterHandlerCustomizer persistenceParameterHandler() {
-            return new ParameterHandlerCustomizer() {
-                @Override
-                public void handlerInsert(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
-                    AuditIdEntity metaObject = (AuditIdEntity) parameterObject;
-                    metaObject.setIsDeleted(PhoenixConstants.N);
-                    metaObject.setCreator("system");
-                    metaObject.setModifier("system");
-                    metaObject.setGmtCreated(new Date());
-                    metaObject.setGmtModified(new Date());
-                }
-
-                @Override
-                public void handlerUpdate(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
-                    AuditIdEntity metaObject = (AuditIdEntity) parameterObject;
-                    metaObject.setModifier("system");
-                    metaObject.setGmtModified(new Date());
-                }
-            };
-        }
-
-        @Bean
-        public SequenceCustomizer seqUserLog(JdbcTemplate jdbcTemplate) {
-            return new SequenceCustomizer() {
-                @Override
-                public Object nextValue(Object parameter) {
-                    Long nextId = jdbcTemplate.queryForObject("select ifnull(max(`id`) ,0) + 1 from t_sys_user_log",
-                            Long.class);
-                    log.info("nextId: {}, parameter: {}", nextId, JSON.toJSONString(parameter));
-                    return nextId;
-                }
-            };
-        }
+        return (value != null ? value : 0L);
     }
 
     /**
@@ -317,5 +277,45 @@ public class UserLogControllerIntTests {
 
         String printLog = this.output.toString();
         assertThat(printLog).isNotBlank().doesNotContain(" delete ", " DELETE ").contains("INSERT", " UPDATE ");
+    }
+
+    @ComponentScan(basePackageClasses = UserLogControllerIntTests.class)
+    @Profile("UserLogControllerIntTests")
+    @Configuration
+    public static class MyConfig {
+        @Bean
+        public ParameterHandlerCustomizer persistenceParameterHandler() {
+            return new ParameterHandlerCustomizer() {
+                @Override
+                public void handlerInsert(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
+                    AuditIdEntity metaObject = (AuditIdEntity) parameterObject;
+                    metaObject.setIsDeleted(PhoenixConstants.N);
+                    metaObject.setCreator("system");
+                    metaObject.setModifier("system");
+                    metaObject.setGmtCreated(new Date());
+                    metaObject.setGmtModified(new Date());
+                }
+
+                @Override
+                public void handlerUpdate(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
+                    AuditIdEntity metaObject = (AuditIdEntity) parameterObject;
+                    metaObject.setModifier("system");
+                    metaObject.setGmtModified(new Date());
+                }
+            };
+        }
+
+        @Bean
+        public SequenceCustomizer seqUserLog(JdbcTemplate jdbcTemplate) {
+            return new SequenceCustomizer() {
+                @Override
+                public Object nextValue(Object parameter) {
+                    Long nextId = jdbcTemplate.queryForObject("select ifnull(max(`id`) ,0) + 1 from t_sys_user_log",
+                            Long.class);
+                    log.info("nextId: {}, parameter: {}", nextId, JSON.toJSONString(parameter));
+                    return nextId;
+                }
+            };
+        }
     }
 }

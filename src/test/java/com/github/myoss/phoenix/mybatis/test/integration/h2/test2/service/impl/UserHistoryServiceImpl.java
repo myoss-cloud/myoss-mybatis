@@ -34,7 +34,7 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.test2.service.UserHi
  * @since 2018年5月14日 下午3:39:43
  */
 @Service
-public class UserHistoryServiceImpl extends BaseCrudServiceImpl<UserHistoryMapper, UserHistory> implements
-        UserHistoryService {
+public class UserHistoryServiceImpl extends BaseCrudServiceImpl<UserHistoryMapper, UserHistory>
+        implements UserHistoryService {
 
 }

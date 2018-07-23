@@ -37,8 +37,11 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Data
 public class AuditEntity extends LogicDeleteEntity {
-    private static final long  serialVersionUID = -4818037441910790468L;
-    public static final String AUDIT_ENTITY     = "AuditEntity";
+    private static final long  serialVersionUID   = -4818037441910790468L;
+    /**
+     * AuditEntity label
+     */
+    public static final String LABEL_AUDIT_ENTITY = "AuditEntity";
 
     /**
      * Database Column Name: creator
@@ -46,7 +49,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 创建者
      * </p>
      */
-    @JSONField(label = AUDIT_ENTITY)
+    @JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "creator", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT })
     private String             creator;
 
@@ -56,7 +59,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 修改者
      * </p>
      */
-    @JSONField(label = AUDIT_ENTITY)
+    @JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "modifier", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT,
             FillRule.UPDATE })
     private String             modifier;
@@ -67,7 +70,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 创建时间
      * </p>
      */
-    @JSONField(label = AUDIT_ENTITY)
+    @JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "gmt_created", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT })
     private Date               gmtCreated;
 
@@ -77,7 +80,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 修改时间
      * </p>
      */
-    @JSONField(label = AUDIT_ENTITY)
+    @JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "gmt_modified", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT,
             FillRule.UPDATE })
     private Date               gmtModified;

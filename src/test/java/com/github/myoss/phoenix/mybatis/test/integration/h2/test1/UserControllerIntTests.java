@@ -77,27 +77,7 @@ public class UserControllerIntTests {
 
     public Long maxId() {
         Long value = jdbcTemplate.queryForObject("select max(id) from t_sys_user", Long.class);
-        return value == null ? 0L : value;
-    }
-
-    @ComponentScan(basePackageClasses = UserControllerIntTests.class)
-    @Profile("UserControllerIntTests")
-    @Configuration
-    public static class MyConfig {
-        @Bean
-        public ParameterHandlerCustomizer persistenceParameterHandler() {
-            return new ParameterHandlerCustomizer() {
-                @Override
-                public void handlerInsert(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
-                    MetaObject metaObject = mappedStatement.getConfiguration().newMetaObject(parameterObject);
-                    metaObject.setValue("isDeleted", PhoenixConstants.N);
-                    metaObject.setValue("creator", "system");
-                    metaObject.setValue("modifier", "system");
-                    metaObject.setValue("gmtCreated", new Date());
-                    metaObject.setValue("gmtModified", new Date());
-                }
-            };
-        }
+        return (value != null ? value : 0L);
     }
 
     /**
@@ -338,5 +318,25 @@ public class UserControllerIntTests {
             softly.assertThat(pageResult2.getValue()).isNotEmpty().hasSize(exceptedList.size());
             softly.assertThat(pageResult2.getValue()).isEqualTo(exceptedList);
         });
+    }
+
+    @ComponentScan(basePackageClasses = UserControllerIntTests.class)
+    @Profile("UserControllerIntTests")
+    @Configuration
+    public static class MyConfig {
+        @Bean
+        public ParameterHandlerCustomizer persistenceParameterHandler() {
+            return new ParameterHandlerCustomizer() {
+                @Override
+                public void handlerInsert(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
+                    MetaObject metaObject = mappedStatement.getConfiguration().newMetaObject(parameterObject);
+                    metaObject.setValue("isDeleted", PhoenixConstants.N);
+                    metaObject.setValue("creator", "system");
+                    metaObject.setValue("modifier", "system");
+                    metaObject.setValue("gmtCreated", new Date());
+                    metaObject.setValue("gmtModified", new Date());
+                }
+            };
+        }
     }
 }

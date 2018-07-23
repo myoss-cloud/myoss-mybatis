@@ -38,6 +38,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 实现数据库表增、删、改、查常用操作的基类，查询支持不过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
  *
+ * @param <M> "实体类"的 Mapper Interface 接口
+ * @param <T> 实体类
  * @author Jerry.Chen
  * @since 2018年6月11日 下午11:21:32
  */

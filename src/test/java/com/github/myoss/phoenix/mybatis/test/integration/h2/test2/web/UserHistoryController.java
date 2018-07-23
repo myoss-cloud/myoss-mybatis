@@ -55,7 +55,7 @@ public class UserHistoryController {
      * @return 主键id
      */
     @LogMethodAround
-    @PostMapping(value = "/create")
+    @PostMapping("/create")
     public <I> Result<I> create(@RequestBody UserHistory record) {
         return userHistoryService.create(record);
     }
@@ -67,7 +67,7 @@ public class UserHistoryController {
      * @return 是否操作成功
      */
     @LogMethodAround
-    @PostMapping(value = "/updateByPrimaryKey")
+    @PostMapping("/updateByPrimaryKey")
     public Result<Boolean> updateByPrimaryKey(@RequestBody UserHistory record) {
         return userHistoryService.updateByPrimaryKey(record);
     }
@@ -90,7 +90,7 @@ public class UserHistoryController {
      * @param id 主键id
      * @return 对应的实体对象
      */
-    @RequestMapping(value = "/findByPrimaryKey")
+    @RequestMapping("/findByPrimaryKey")
     public Result<UserHistory> findByPrimaryKey(@RequestParam("id") Serializable id) {
         return userHistoryService.findByPrimaryKey(id);
     }
@@ -101,7 +101,7 @@ public class UserHistoryController {
      * @param condition 主键id
      * @return 对应的实体对象
      */
-    @PostMapping(value = "/findByPrimaryKey")
+    @PostMapping("/findByPrimaryKey")
     public Result<UserHistory> findByPrimaryKey(@RequestBody UserHistory condition) {
         return userHistoryService.findByPrimaryKey(condition);
     }
@@ -112,7 +112,7 @@ public class UserHistoryController {
      * @param condition 匹配的条件
      * @return 匹配的实体对象
      */
-    @PostMapping(value = "/findList")
+    @PostMapping("/findList")
     public Result<List<UserHistory>> findList(@RequestBody UserHistory condition) {
         return userHistoryService.findList(condition);
     }
@@ -123,7 +123,7 @@ public class UserHistoryController {
      * @param condition 匹配的条件和排序字段
      * @return 匹配的实体对象
      */
-    @PostMapping(value = "/findListWithSort")
+    @PostMapping("/findListWithSort")
     public Result<List<UserHistory>> findListWithSort(@RequestBody Page<UserHistory> condition) {
         return userHistoryService.findListWithSort(condition);
     }

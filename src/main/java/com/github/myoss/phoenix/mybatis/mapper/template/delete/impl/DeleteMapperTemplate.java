@@ -100,8 +100,8 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -150,8 +150,8 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -236,8 +236,8 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }

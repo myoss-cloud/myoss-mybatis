@@ -22,6 +22,7 @@ import java.io.Serializable;
 /**
  * 主键实体基类
  *
+ * @param <I> "主键id"的类型
  * @author Jerry.Chen
  * @since 2018年5月9日 下午6:23:17
  */

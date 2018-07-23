@@ -47,6 +47,12 @@ public class ParameterHandlerInterceptor implements Interceptor {
     @Getter
     private ParameterHandlerCustomizer parameterHandlerCustomizer;
 
+    /**
+     * 初始化 ParameterHandler 拦截器
+     *
+     * @param parameterHandlerCustomizer 自定义通用 SQL SELECT statements 处理
+     *            Parameter 逻辑
+     */
     public ParameterHandlerInterceptor(ParameterHandlerCustomizer parameterHandlerCustomizer) {
         this.parameterHandlerCustomizer = parameterHandlerCustomizer;
     }

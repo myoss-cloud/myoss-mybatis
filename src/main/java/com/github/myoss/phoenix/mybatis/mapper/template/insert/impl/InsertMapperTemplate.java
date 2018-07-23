@@ -60,6 +60,13 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
     /**
      * 生成 selectKey 序列，并增加到 {@link Configuration} 全局配置中
      *
+     * @param id mappedStatement id
+     * @param sequence 数据库表"序列生成器"属性配置
+     * @param parameterTypeClass "实体类"的 class
+     * @param configuration Mybatis Global Configuration
+     * @param langDriver Mybatis langDriver
+     * @param parentId mappedStatement parent id
+     * @return 生成 selectKey 序列对象
      * @see GenerationType#SELECT_KEY
      * @see XMLStatementBuilder#parseSelectKeyNodes
      */
@@ -105,6 +112,12 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
 
     /**
      * 生成"序列生成器"
+     *
+     * @param tableInfo 数据库表结构信息
+     * @param metaObject Mybatis * @param metaObject Mybatis
+     * @param id mappedStatement id
+     * @param configuration Mybatis Global Configuration
+     * @return 序列生成策略
      */
     private GenerationType addKeyGenerator(TableInfo tableInfo, MetaObject metaObject, String id,
                                            Configuration configuration) {
@@ -174,8 +187,8 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -249,8 +262,8 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -304,8 +317,8 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }

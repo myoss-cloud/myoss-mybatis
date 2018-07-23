@@ -81,8 +81,8 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
             if (!fillUpdate) {
                 builder.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
             }
-            builder.append("    ").append(columnInfo.getActualColumn()).append(" = #{")
-                    .append(columnInfo.getProperty());
+            builder.append("    ").append(columnInfo.getActualColumn()).append(" = #{").append(
+                    columnInfo.getProperty());
             if (columnInfo.getJdbcType() != null) {
                 builder.append(",jdbcType=BIGINT");
             }
@@ -96,8 +96,8 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -146,8 +146,8 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -193,8 +193,8 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
             if (!fillUpdate) {
                 builder.append("  <if test=\"record.").append(columnInfo.getProperty()).append(" != null\">\n");
             }
-            builder.append("    ").append(columnInfo.getActualColumn()).append(" = #{record.")
-                    .append(columnInfo.getProperty());
+            builder.append("    ").append(columnInfo.getActualColumn()).append(" = #{record.").append(
+                    columnInfo.getProperty());
             if (columnInfo.getJdbcType() != null) {
                 builder.append(",jdbcType=BIGINT");
             }
@@ -208,8 +208,8 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -255,8 +255,8 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }

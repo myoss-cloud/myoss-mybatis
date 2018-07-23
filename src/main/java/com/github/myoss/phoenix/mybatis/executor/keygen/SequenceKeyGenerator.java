@@ -48,12 +48,22 @@ import com.github.myoss.phoenix.mybatis.table.annotation.SequenceKey;
  * @see Sequence
  */
 public class SequenceKeyGenerator implements KeyGenerator {
+    /**
+     * sequence key 默认的后缀名
+     */
     public static final String SEQUENCE_KEY_SUFFIX = "!sequenceKey";
     private String[]           keyProperties;
     private String[]           keyColumns;
     private boolean            executeBefore;
     private Sequence           sequence;
 
+    /**
+     * 初始化序列生成器
+     *
+     * @param tableInfo 数据库表结构信息
+     * @param sqlId mappedStatement id
+     * @param executeBefore 在 INSERT 之前/之后执行
+     */
     public SequenceKeyGenerator(TableInfo tableInfo, String sqlId, boolean executeBefore) {
         TableSequence tableSequence = tableInfo.getTableSequence();
         this.keyProperties = tableSequence.getKeyProperties();
@@ -65,8 +75,8 @@ public class SequenceKeyGenerator implements KeyGenerator {
         if (StringUtils.isNotBlank(sequenceBeanName)) {
             this.sequence = TableMetaObject.getSequenceBean(sequenceBeanName);
             if (this.sequence == null) {
-                throw new BindingException("no instance of [" + sequenceBeanName
-                        + "] in TableMetaObject, please check!");
+                throw new BindingException(
+                        "no instance of [" + sequenceBeanName + "] in TableMetaObject, please check!");
             }
         } else {
             try {

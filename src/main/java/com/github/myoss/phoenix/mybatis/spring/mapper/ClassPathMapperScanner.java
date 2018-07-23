@@ -69,6 +69,11 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
      */
     private String                      mapperInterfaceRegisterBeanName;
 
+    /**
+     * 初始化 扫描Class Path目录Mapper Interface
+     *
+     * @param registry Bean定义注册器
+     */
     public ClassPathMapperScanner(BeanDefinitionRegistry registry) {
         super(registry, false);
     }
@@ -141,7 +146,7 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 
             // the mapper interface is the original class of the bean
             // but, the actual class of the bean is MapperFactoryBean
-            definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName()); // issue #59
+            definition.getConstructorArgumentValues().addGenericArgumentValue(definition.getBeanClassName());
             definition.setBeanClass(this.mapperFactoryBean.getClass());
 
             definition.getPropertyValues().add("addToConfig", this.addToConfig);
@@ -158,14 +163,16 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
 
             if (StringUtils.hasText(this.sqlSessionTemplateBeanName)) {
                 if (explicitFactoryUsed) {
-                    log.warn("Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
+                    log.warn(
+                            "Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
                 }
                 definition.getPropertyValues().add("sqlSessionTemplate",
                         new RuntimeBeanReference(this.sqlSessionTemplateBeanName));
                 explicitFactoryUsed = true;
             } else if (this.sqlSessionTemplate != null) {
                 if (explicitFactoryUsed) {
-                    log.warn("Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
+                    log.warn(
+                            "Cannot use both: sqlSessionTemplate and sqlSessionFactory together. sqlSessionFactory is ignored.");
                 }
                 definition.getPropertyValues().add("sqlSessionTemplate", this.sqlSessionTemplate);
                 explicitFactoryUsed = true;
@@ -187,7 +194,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
             }
             if (this.mapperInterfaceRegister != null) {
                 if (explicitFactoryUsed) {
-                    log.warn("Cannot use both: mapperInterfaceRegisterBeanName and mapperInterfaceRegister together. mapperInterfaceRegister is ignored.");
+                    log.warn(
+                            "Cannot use both: mapperInterfaceRegisterBeanName and mapperInterfaceRegister together. mapperInterfaceRegister is ignored.");
                 } else {
                     definition.getPropertyValues().add("mapperInterfaceRegister", this.mapperInterfaceRegister);
                 }
@@ -215,9 +223,8 @@ public class ClassPathMapperScanner extends ClassPathBeanDefinitionScanner {
         if (super.checkCandidate(beanName, beanDefinition)) {
             return true;
         } else {
-            log.warn("Skipping MapperFactoryBean with name '" + beanName + "' and '"
-                    + beanDefinition.getBeanClassName() + "' mapperInterface"
-                    + ". Bean already defined with the same name!");
+            log.warn("Skipping MapperFactoryBean with name '" + beanName + "' and '" + beanDefinition.getBeanClassName()
+                    + "' mapperInterface" + ". Bean already defined with the same name!");
             return false;
         }
     }

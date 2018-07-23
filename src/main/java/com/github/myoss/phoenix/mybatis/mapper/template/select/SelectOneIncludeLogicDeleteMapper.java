@@ -26,6 +26,7 @@ import com.github.myoss.phoenix.mybatis.table.annotation.Column;
 /**
  * 查询记录通用 Mapper 接口，不会过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
  *
+ * @param <T> 实体类
  * @author Jerry.Chen
  * @since 2018年6月11日 下午11:01:23
  */

@@ -34,7 +34,7 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.test4.service.SysUse
  * @since 2018年5月14日 下午10:33:55
  */
 @Service
-public class SysUserLogServiceImpl extends BaseCrudServiceImpl<SysUserLogMapper, SysUserLog> implements
-        SysUserLogService {
+public class SysUserLogServiceImpl extends BaseCrudServiceImpl<SysUserLogMapper, SysUserLog>
+        implements SysUserLogService {
 
 }

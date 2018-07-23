@@ -59,6 +59,8 @@ import lombok.extern.slf4j.Slf4j;
 /**
  * 实现数据库表增、删、改、查常用操作的基类
  *
+ * @param <M> "实体类"的 Mapper Interface 接口
+ * @param <T> 实体类
  * @author Jerry.Chen
  * @since 2018年5月9日 下午2:09:18
  */
@@ -73,6 +75,9 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     protected Map<String, String> fieldColumns;
     protected M                   crudMapper;
 
+    /**
+     * 初始化实现数据库表增、删、改、查常用操作的基类
+     */
     public BaseCrudServiceImpl() {
         Class<? extends BaseCrudServiceImpl> clazz = this.getClass();
         Type genType = clazz.getGenericSuperclass();
@@ -81,13 +86,18 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         this.entityClass = (Class) params[1];
     }
 
+    /**
+     * 使用 Spring 自动注入"实体类"的 Mapper Interface 接口代理对象
+     *
+     * @param crudMapper "实体类"的 Mapper Interface 接口代理对象
+     */
     @Autowired
     public void setCrudMapper(M crudMapper) {
         this.crudMapper = crudMapper;
         this.tableInfo = TableMetaObject.getTableInfo(this.entityClass);
         if (this.tableInfo != null) {
-            this.fieldColumns = Collections.unmodifiableMap(this.tableInfo.getColumns().stream()
-                    .collect(Collectors.toMap(TableColumnInfo::getProperty, TableColumnInfo::getActualColumn)));
+            this.fieldColumns = Collections.unmodifiableMap(this.tableInfo.getColumns().stream().collect(
+                    Collectors.toMap(TableColumnInfo::getProperty, TableColumnInfo::getActualColumn)));
         } else {
             log.error("[{}] getTableInfo failed in [{}]", this.entityClass, this.getClass());
         }
@@ -246,6 +256,8 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     }
 
     /**
+     * 检查待保存的记录的字段是否符合预期的格式
+     *
      * @param result 执行结果
      * @param record 实体对象
      * @param optionParam 可选参数，默认为 {@code null }
@@ -514,7 +526,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
                     // 忽略没有主键字段的情况
                     return result;
                 }
-                Object value = size == 1 ? null : new Object[size];
+                Object value = (size == 1 ? null : new Object[size]);
                 int idx = 0;
                 for (TableColumnInfo columnInfo : primaryKeyColumns) {
                     I tmp = BeanUtil.methodInvoke(columnInfo.getPropertyDescriptor().getReadMethod(), record);
@@ -706,7 +718,8 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
     protected Result<Boolean> updateUseMapByConditionCallable(Result<Boolean> result, Map<String, Object> record,
-                                                              T condition, CallableFunc<Result<Boolean>> updateCallFunc) {
+                                                              T condition,
+                                                              CallableFunc<Result<Boolean>> updateCallFunc) {
         return updateCallFunc.call();
     }
 

@@ -28,6 +28,7 @@ import com.github.myoss.phoenix.mybatis.table.annotation.Column;
 /**
  * 封装数据库查询常用操作，不会过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
  *
+ * @param <T> 实体类
  * @author Jerry.Chen
  * @since 2018年6月12日 上午12:10:29
  */

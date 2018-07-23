@@ -27,6 +27,7 @@ import com.github.myoss.phoenix.mybatis.mapper.template.delete.impl.DeleteMapper
 /**
  * 删除记录通用 Mapper 接口
  *
+ * @param <T> 实体类
  * @author Jerry.Chen
  * @since 2018年4月29日 下午4:39:55
  */

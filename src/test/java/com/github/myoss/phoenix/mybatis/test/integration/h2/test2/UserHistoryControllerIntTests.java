@@ -81,34 +81,7 @@ public class UserHistoryControllerIntTests {
 
     public Long maxId() {
         Long value = jdbcTemplate.queryForObject("select max(id) from t_sys_user_history", Long.class);
-        return value == null ? 0L : value;
-    }
-
-    @ComponentScan(basePackageClasses = UserHistoryControllerIntTests.class)
-    @Profile("UserHistoryControllerIntTests")
-    @Configuration
-    public static class MyConfig {
-        @Bean
-        public ParameterHandlerCustomizer persistenceParameterHandler() {
-            return new ParameterHandlerCustomizer() {
-                @Override
-                public void handlerInsert(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
-                    AuditIdEntity metaObject = (AuditIdEntity) parameterObject;
-                    metaObject.setIsDeleted(PhoenixConstants.N);
-                    metaObject.setCreator("system");
-                    metaObject.setModifier("system");
-                    metaObject.setGmtCreated(new Date());
-                    metaObject.setGmtModified(new Date());
-                }
-
-                @Override
-                public void handlerUpdate(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
-                    AuditIdEntity metaObject = (AuditIdEntity) parameterObject;
-                    metaObject.setModifier("system");
-                    metaObject.setGmtModified(new Date());
-                }
-            };
-        }
+        return (value != null ? value : 0L);
     }
 
     /**
@@ -304,5 +277,32 @@ public class UserHistoryControllerIntTests {
 
         String printLog = this.output.toString();
         assertThat(printLog).isNotBlank().doesNotContain(" delete ", " DELETE ").contains("INSERT", " UPDATE ");
+    }
+
+    @ComponentScan(basePackageClasses = UserHistoryControllerIntTests.class)
+    @Profile("UserHistoryControllerIntTests")
+    @Configuration
+    public static class MyConfig {
+        @Bean
+        public ParameterHandlerCustomizer persistenceParameterHandler() {
+            return new ParameterHandlerCustomizer() {
+                @Override
+                public void handlerInsert(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
+                    AuditIdEntity metaObject = (AuditIdEntity) parameterObject;
+                    metaObject.setIsDeleted(PhoenixConstants.N);
+                    metaObject.setCreator("system");
+                    metaObject.setModifier("system");
+                    metaObject.setGmtCreated(new Date());
+                    metaObject.setGmtModified(new Date());
+                }
+
+                @Override
+                public void handlerUpdate(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
+                    AuditIdEntity metaObject = (AuditIdEntity) parameterObject;
+                    metaObject.setModifier("system");
+                    metaObject.setGmtModified(new Date());
+                }
+            };
+        }
     }
 }

@@ -27,6 +27,7 @@ import com.github.myoss.phoenix.mybatis.mapper.template.insert.impl.InsertMapper
 /**
  * 创建新记录通用 Mapper 接口
  *
+ * @param <T> 实体类
  * @author Jerry.Chen
  * @since 2018年5月1日 下午4:15:55
  */

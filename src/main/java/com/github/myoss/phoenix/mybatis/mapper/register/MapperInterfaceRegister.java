@@ -79,6 +79,11 @@ public class MapperInterfaceRegister {
     @Getter
     private Set<Class<? extends Annotation>>              sqlProviderAnnotationTypes;
 
+    /**
+     * 初始化 通用 Mapper 接口注册器
+     *
+     * @param tableConfig MyBatis Table 全局配置
+     */
     public MapperInterfaceRegister(TableConfig tableConfig) {
         Objects.requireNonNull(tableConfig, "tableConfig is null");
         this.tableConfig = tableConfig;
@@ -91,14 +96,19 @@ public class MapperInterfaceRegister {
         this.registerEntityClass = new ConcurrentHashMap<>();
     }
 
+    /**
+     * 为 Mapper Interface 注册 SQL 操作方法
+     *
+     * @param mapperInterface mapper interface class
+     */
     public void executeRegister(Class<?> mapperInterface) {
         Class<?> entityClass = TableMetaObject.getEntityClassByMapperInterface(mapperInterface);
         if (entityClass == null || registerEntityClass.containsKey(entityClass)) {
             // entityClass = null, 它没有实体类泛型，则不去扫描方法
             return;
         }
-        TableInfo tableInfo = TableMetaObject
-                .getTableInfoByMapperInterface(mapperInterface, tableConfig, configuration);
+        TableInfo tableInfo = TableMetaObject.getTableInfoByMapperInterface(mapperInterface, tableConfig,
+                configuration);
         registerEntityClass.put(entityClass, tableInfo);
         scanRegisterMapper(tableInfo, mapperInterface);
     }
@@ -106,6 +116,7 @@ public class MapperInterfaceRegister {
     /**
      * 扫描接口是否有 @RegisterMapper 注解，并自动注册
      *
+     * @param tableInfo 数据库表结构信息
      * @param mapperInterface mapper interface class
      */
     private void scanRegisterMapper(TableInfo tableInfo, Class<?> mapperInterface) {
@@ -150,8 +161,8 @@ public class MapperInterfaceRegister {
                     continue;
                 }
                 if (count > 1) {
-                    throw new BindingException("You cannot supply both more than one SqlProvider to method named "
-                            + name);
+                    throw new BindingException(
+                            "You cannot supply both more than one SqlProvider to method named " + name);
                 }
                 methodSet.computeIfAbsent(providerType, k -> new HashSet<>()).add(name);
                 count++;
@@ -169,8 +180,8 @@ public class MapperInterfaceRegister {
                     Method method = templateClass.getMethod(methodName, TableInfo.class, MappedStatement.class);
                     method.invoke(templateInstance, tableInfo, mappedStatement);
                 } catch (NoSuchMethodException e) {
-                    throw new BindingException(canonicalName + " not found method \"" + methodName + "\" in "
-                            + templateClass, e);
+                    throw new BindingException(
+                            canonicalName + " not found method \"" + methodName + "\" in " + templateClass, e);
                 } catch (IllegalAccessException | InvocationTargetException e) {
                     throw new BindingException(e);
                 }

@@ -27,6 +27,7 @@ import com.github.myoss.phoenix.core.lang.dto.Result;
 /**
  * 封装数据库表增、删、改、查常用操作
  *
+ * @param <T> 实体类
  * @author Jerry.Chen
  * @since 2018年5月9日 下午2:09:05
  */

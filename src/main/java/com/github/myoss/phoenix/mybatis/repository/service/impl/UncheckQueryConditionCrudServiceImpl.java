@@ -30,6 +30,8 @@ import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
  * {@link BaseCrudServiceImpl#checkCommonQueryConditionIsAllNull(SqlCommandType, Result, Object, Map)}
  * 方法，这才是比较安全的做法，不然很可能被人使用为直接查询全表的数据。
  *
+ * @param <M> "实体类"的 Mapper Interface 接口
+ * @param <T> 实体类
  * @author Jerry.Chen
  * @since 2018年5月20日 下午5:46:59
  * @see BaseCrudServiceImpl

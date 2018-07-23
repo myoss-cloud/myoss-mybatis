@@ -72,8 +72,8 @@ public class SelectSortMapperTemplate extends AbstractMapperTemplate {
     public String selectListWithSort(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         // 替换 resultMap 对象
-        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
-                Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         metaObject.setValue("resultMaps", resultMaps);
 
         // 生成 sql 语句
@@ -91,8 +91,8 @@ public class SelectSortMapperTemplate extends AbstractMapperTemplate {
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
@@ -129,8 +129,8 @@ public class SelectSortMapperTemplate extends AbstractMapperTemplate {
     public String selectListWithSort2(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
         // 替换 resultMap 对象
-        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap()).collect(
-                Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
         metaObject.setValue("resultMaps", resultMaps);
 
         // 生成 sql 语句
@@ -152,8 +152,8 @@ public class SelectSortMapperTemplate extends AbstractMapperTemplate {
 
         // 替换 sqlSource 对象
         Configuration configuration = ms.getConfiguration();
-        SqlSource sqlSource = xmlLanguageDriver
-                .createSqlSource(configuration, "<script>\n" + sql + "\n</script>", null);
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
         metaObject.setValue("sqlSource", sqlSource);
         return sql;
     }
