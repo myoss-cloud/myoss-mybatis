@@ -485,25 +485,33 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public <I> Result<I> create(T record) {
+    public <I> Result<I> create(T record, Object optionParam) {
         Result<I> result = new Result<>();
-        boolean validate = createValidate(result, record, null);
+        boolean validate = createValidate(result, record, optionParam);
         if (!validate) {
             return result;
         }
-        return createCallable(result, record, () -> create(result, record));
+        return createCallable(result, record, optionParam, () -> create(result, record, optionParam));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public <I> Result<I> create(T record) {
+        return create(record, null);
     }
 
     /**
      * 用于重写创建的方法，比如加锁创建
      *
-     * @param record 待保存的实体对象
      * @param result 保存的结果
-     * @param createCallFunc 保存方法回调类，参考：{@link #create(Result, Object)}
+     * @param record 待保存的实体对象
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @param createCallFunc 保存方法回调类，参考：{@link #create(Result, Object, Object)}
      * @param <I> 主键类型
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
-    protected <I> Result<I> createCallable(Result<I> result, T record, CallableFunc<Result<I>> createCallFunc) {
+    protected <I> Result<I> createCallable(Result<I> result, T record, Object optionParam,
+                                           CallableFunc<Result<I>> createCallFunc) {
         return createCallFunc.call();
     }
 
@@ -513,13 +521,14 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @param result 保存的结果
      * @param record 待保存的实体对象
      * @param <I> 主键类型
+     * @param optionParam 可选参数，默认为 {@code null }
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
     @SuppressWarnings("unchecked")
-    protected <I> Result<I> create(Result<I> result, T record) {
+    protected <I> Result<I> create(Result<I> result, T record, Object optionParam) {
         boolean ifExist = checkRecordIfExist4Create(result, record);
         if (!ifExist && result.isSuccess()) {
-            setValue4Create(record, null);
+            setValue4Create(record, optionParam);
             boolean flag = checkDBResult(crudMapper.insert(record));
             if (flag) {
                 Set<TableColumnInfo> primaryKeyColumns = tableInfo.getPrimaryKeyColumns();
@@ -549,23 +558,31 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result<Boolean> createBatch(List<T> records) {
+    public Result<Boolean> createBatch(List<T> records, Object optionParam) {
         Result<Boolean> result = new Result<>(false);
         if (CollectionUtils.isEmpty(records)) {
             return result.setValue(true);
         }
-        return createBatchCallable(result, records, () -> createBatch(result, records));
+        return createBatchCallable(result, records, optionParam, () -> createBatch(result, records, optionParam));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Result<Boolean> createBatch(List<T> records) {
+        return createBatch(records, null);
     }
 
     /**
      * 用于重写创建的方法，比如加锁创建
      *
-     * @param records 待保存的实体对象
      * @param result 保存的结果
-     * @param createCallFunc 保存方法回调类，参考： {@link #createBatch(Result, List)}
+     * @param records 待保存的实体对象
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @param createCallFunc 保存方法回调类，参考：
+     *            {@link #createBatch(Result, List, Object)}
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
-    protected Result<Boolean> createBatchCallable(Result<Boolean> result, List<T> records,
+    protected Result<Boolean> createBatchCallable(Result<Boolean> result, List<T> records, Object optionParam,
                                                   CallableFunc<Result<Boolean>> createCallFunc) {
         return createCallFunc.call();
     }
@@ -575,11 +592,12 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      *
      * @param result 保存的结果
      * @param records 待保存的实体对象
+     * @param optionParam 可选参数，默认为 {@code null }
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
-    protected Result<Boolean> createBatch(Result<Boolean> result, List<T> records) {
+    protected Result<Boolean> createBatch(Result<Boolean> result, List<T> records, Object optionParam) {
         for (T record : records) {
-            if (!createValidate(result, record, null)) {
+            if (!createValidate(result, record, optionParam)) {
                 return result;
             }
             boolean ifExist = checkRecordIfExist4Create(result, record);
@@ -589,7 +607,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         }
         // 先校验完数据格式，再设置字段的值
         for (T record : records) {
-            setValue4Create(record, null);
+            setValue4Create(record, optionParam);
             boolean flag = checkDBResult(crudMapper.insert(record));
             if (!flag) {
                 return result.setSuccess(false).setErrorCode(MybatisConstants.INSERT_DB_FAILED).setErrorMsg(
@@ -601,14 +619,21 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result<Boolean> updateByPrimaryKey(T record) {
+    public Result<Boolean> updateByPrimaryKey(T record, Object optionParam) {
         Result<Boolean> result = new Result<>(false);
         checkPrimaryKeyIsNull(SqlCommandType.UPDATE, result, record);
-        validFieldValue(result, record, null);
+        validFieldValue(result, record, optionParam);
         if (!result.isSuccess()) {
             return result;
         }
-        return updateByPrimaryKeyCallable(result, record, () -> updateByPrimaryKey(result, record));
+        return updateByPrimaryKeyCallable(result, record, optionParam,
+                () -> updateByPrimaryKey(result, record, optionParam));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Result<Boolean> updateByPrimaryKey(T record) {
+        return updateByPrimaryKey(record, null);
     }
 
     /**
@@ -616,11 +641,12 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      *
      * @param record 待更新的实体对象
      * @param result 更新的结果
+     * @param optionParam 可选参数，默认为 {@code null }
      * @param updateCallFunc 更新方法回调类，参考：
-     *            {@link #updateByPrimaryKey(Result, Object)}
+     *            {@link #updateByPrimaryKey(Result, Object, Object)}
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
-    protected Result<Boolean> updateByPrimaryKeyCallable(Result<Boolean> result, T record,
+    protected Result<Boolean> updateByPrimaryKeyCallable(Result<Boolean> result, T record, Object optionParam,
                                                          CallableFunc<Result<Boolean>> updateCallFunc) {
         return updateCallFunc.call();
     }
@@ -630,12 +656,13 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      *
      * @param result 更新的结果
      * @param record 待更新的实体对象
+     * @param optionParam 可选参数，默认为 {@code null }
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
-    protected Result<Boolean> updateByPrimaryKey(Result<Boolean> result, T record) {
+    protected Result<Boolean> updateByPrimaryKey(Result<Boolean> result, T record, Object optionParam) {
         boolean ifExist = checkRecordIfExist4Update(result, record);
         if (!ifExist && result.isSuccess()) {
-            setValue4Update(record, null);
+            setValue4Update(record, optionParam);
             boolean flag = checkDBResult(crudMapper.updateByPrimaryKey(record));
             if (!flag) {
                 result.setSuccess(false).setErrorCode(MybatisConstants.NOT_MATCH_RECORDS).setErrorMsg("更新失败，未匹配到相应的记录");
@@ -648,14 +675,21 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result<Boolean> updateByCondition(T record, T condition) {
+    public Result<Boolean> updateByCondition(T record, T condition, Object optionParam) {
         Result<Boolean> result = new Result<>(false);
-        validFieldValue(result, record, null);
+        validFieldValue(result, record, optionParam);
         checkCommonQueryConditionIsAllNull(SqlCommandType.UPDATE, result, condition, null);
         if (!result.isSuccess()) {
             return result;
         }
-        return updateByConditionCallable(result, record, condition, () -> updateByCondition(result, record, condition));
+        return updateByConditionCallable(result, record, condition, optionParam,
+                () -> updateByCondition(result, record, condition, optionParam));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Result<Boolean> updateByCondition(T record, T condition) {
+        return updateByCondition(record, condition, null);
     }
 
     /**
@@ -664,11 +698,13 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @param result 更新的结果
      * @param record 待更新的实体对象
      * @param condition 匹配的条件
+     * @param optionParam 可选参数，默认为 {@code null }
      * @param updateCallFunc 更新方法回调类，参考：
-     *            {@link #updateByCondition(Result, Object, Object)}
+     *            {@link #updateByCondition(Result, Object, Object, Object)}
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
     protected Result<Boolean> updateByConditionCallable(Result<Boolean> result, T record, T condition,
+                                                        Object optionParam,
                                                         CallableFunc<Result<Boolean>> updateCallFunc) {
         return updateCallFunc.call();
     }
@@ -679,12 +715,13 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @param result 更新的结果
      * @param record 待更新的实体对象
      * @param condition 匹配的条件
+     * @param optionParam 可选参数，默认为 {@code null }
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
-    protected Result<Boolean> updateByCondition(Result<Boolean> result, T record, T condition) {
+    protected Result<Boolean> updateByCondition(Result<Boolean> result, T record, T condition, Object optionParam) {
         boolean ifExist = checkRecordIfExist4Update(result, record);
         if (!ifExist && result.isSuccess()) {
-            setValue4Update(record, null);
+            setValue4Update(record, optionParam);
             boolean flag = checkDBResult(crudMapper.updateByCondition(record, condition));
             if (!flag) {
                 result.setSuccess(false).setErrorCode(MybatisConstants.NOT_MATCH_RECORDS).setErrorMsg("更新失败，未匹配到相应的记录");
@@ -697,17 +734,23 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
 
     @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result<Boolean> updateUseMapByCondition(Map<String, Object> record, T condition) {
+    public Result<Boolean> updateUseMapByCondition(Map<String, Object> record, T condition, Object optionParam) {
         Result<Boolean> result = new Result<>(false);
-        if (!validFieldValue(result, record, null)) {
+        if (!validFieldValue(result, record, optionParam)) {
             return result;
         }
         checkCommonQueryConditionIsAllNull(SqlCommandType.UPDATE, result, condition, null);
         if (!result.isSuccess()) {
             return result;
         }
-        return updateUseMapByConditionCallable(result, record, condition,
-                () -> updateUseMapByCondition(result, record, condition));
+        return updateUseMapByConditionCallable(result, record, condition, optionParam,
+                () -> updateUseMapByCondition(result, record, condition, optionParam));
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Result<Boolean> updateUseMapByCondition(Map<String, Object> record, T condition) {
+        return updateUseMapByCondition(record, condition, null);
     }
 
     /**
@@ -716,12 +759,13 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @param result 更新的结果
      * @param record 待更新的实体对象，key：是数据库列名，value：是数据库列的值
      * @param condition 匹配的条件
+     * @param optionParam 可选参数，默认为 {@code null }
      * @param updateCallFunc 更新方法回调类，参考：
-     *            {@link #updateByCondition(Result, Object, Object)}
+     *            {@link #updateUseMapByCondition(Result, Map, Object, Object)}
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
     protected Result<Boolean> updateUseMapByConditionCallable(Result<Boolean> result, Map<String, Object> record,
-                                                              T condition,
+                                                              T condition, Object optionParam,
                                                               CallableFunc<Result<Boolean>> updateCallFunc) {
         return updateCallFunc.call();
     }
@@ -732,12 +776,14 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @param result 更新的结果
      * @param record 待更新的实体对象，key：是数据库列名，value：是数据库列的值
      * @param condition 匹配的条件
+     * @param optionParam 可选参数，默认为 {@code null }
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
-    protected Result<Boolean> updateUseMapByCondition(Result<Boolean> result, Map<String, Object> record, T condition) {
+    protected Result<Boolean> updateUseMapByCondition(Result<Boolean> result, Map<String, Object> record, T condition,
+                                                      Object optionParam) {
         boolean ifExist = checkRecordIfExist4Update(result, record);
         if (!ifExist && result.isSuccess()) {
-            setValue4Update(record, null);
+            setValue4Update(record, optionParam);
             Map<String, Object> updateMap = convertToUpdateUseMap(record);
             boolean flag = checkDBResult(crudMapper.updateUseMapByCondition(updateMap, condition));
             if (!flag) {
@@ -749,8 +795,9 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         return result;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result<Boolean> deleteByPrimaryKey(T condition) {
+    public Result<Boolean> deleteByPrimaryKey(T condition, Object optionParam) {
         Result<Boolean> result = new Result<>(false);
         if (checkPrimaryKeyIsNull(SqlCommandType.DELETE, result, condition)) {
             boolean flag = checkDBResult(crudMapper.deleteWithPrimaryKey(condition));
@@ -763,8 +810,15 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         return result;
     }
 
+    @Transactional(rollbackFor = Exception.class)
     @Override
-    public Result<Boolean> deleteByCondition(T condition) {
+    public Result<Boolean> deleteByPrimaryKey(T condition) {
+        return deleteByPrimaryKey(condition, null);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Result<Boolean> deleteByCondition(T condition, Object optionParam) {
         Result<Boolean> result = new Result<>(false);
         if (checkCommonQueryConditionIsAllNull(SqlCommandType.DELETE, result, condition, null)) {
             boolean flag = checkDBResult(crudMapper.deleteByCondition(condition));
@@ -775,6 +829,12 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             }
         }
         return result;
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public Result<Boolean> deleteByCondition(T condition) {
+        return deleteByCondition(condition, null);
     }
 
     @Override

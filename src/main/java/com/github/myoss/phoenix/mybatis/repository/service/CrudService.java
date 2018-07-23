@@ -37,9 +37,28 @@ public interface CrudService<T> {
      *
      * @param record 待保存的实体对象
      * @param <I> 主键类型
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @return 创建结果
+     */
+    <I> Result<I> create(T record, Object optionParam);
+
+    /**
+     * 创建新的记录
+     *
+     * @param record 待保存的实体对象
+     * @param <I> 主键类型
      * @return 创建结果
      */
     <I> Result<I> create(T record);
+
+    /**
+     * 批量创建新的记录
+     *
+     * @param records 待保存的实体对象
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @return 创建结果
+     */
+    Result<Boolean> createBatch(List<T> records, Object optionParam);
 
     /**
      * 批量创建新的记录
@@ -53,9 +72,28 @@ public interface CrudService<T> {
      * 根据主键更新记录
      *
      * @param record 待更新的实体对象
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @return 更新结果
+     */
+    Result<Boolean> updateByPrimaryKey(T record, Object optionParam);
+
+    /**
+     * 根据主键更新记录
+     *
+     * @param record 待更新的实体对象
      * @return 更新结果
      */
     Result<Boolean> updateByPrimaryKey(T record);
+
+    /**
+     * 根据条件更新记录
+     *
+     * @param record 待更新的实体对象
+     * @param condition 匹配的条件
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @return 更新结果
+     */
+    Result<Boolean> updateByCondition(T record, T condition, Object optionParam);
 
     /**
      * 根据条件更新记录
@@ -71,6 +109,16 @@ public interface CrudService<T> {
      *
      * @param record 待更新的实体对象，key：是实体类的属性名，value：是属性的值
      * @param condition 匹配的条件
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @return 更新结果
+     */
+    Result<Boolean> updateUseMapByCondition(Map<String, Object> record, T condition, Object optionParam);
+
+    /**
+     * 根据条件更新记录
+     *
+     * @param record 待更新的实体对象，key：是实体类的属性名，value：是属性的值
+     * @param condition 匹配的条件
      * @return 更新结果
      */
     Result<Boolean> updateUseMapByCondition(Map<String, Object> record, T condition);
@@ -79,9 +127,27 @@ public interface CrudService<T> {
      * 根据主键删除记录，如果是逻辑删除的实体，使用逻辑删除，而不是物理删除
      *
      * @param condition 匹配的条件，主键有值的实体对象
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @return 影响的行数
+     */
+    Result<Boolean> deleteByPrimaryKey(T condition, Object optionParam);
+
+    /**
+     * 根据主键删除记录，如果是逻辑删除的实体，使用逻辑删除，而不是物理删除
+     *
+     * @param condition 匹配的条件，主键有值的实体对象
      * @return 影响的行数
      */
     Result<Boolean> deleteByPrimaryKey(T condition);
+
+    /**
+     * 根据条件删除记录，如果是审计字段的实体，使用逻辑删除，而不是物理删除
+     *
+     * @param condition 匹配的条件
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @return 是否操作成功
+     */
+    Result<Boolean> deleteByCondition(T condition, Object optionParam);
 
     /**
      * 根据条件删除记录，如果是审计字段的实体，使用逻辑删除，而不是物理删除
