@@ -86,28 +86,39 @@ import lombok.extern.slf4j.Slf4j;
 @ConditionalOnBean(DataSource.class)
 @Configuration
 public class MybatisAutoConfiguration {
+    /**
+     * MyBatis Spring Boot项目配置属性
+     */
     private final MybatisProperties             properties;
+    /**
+     * Mybatis Interceptor Spring Bean【可选】
+     */
     private final Interceptor[]                 interceptors;
-    private final ResourceLoader                resourceLoader;
-    private final DatabaseIdProvider            databaseIdProvider;
+    /**
+     * 自定义配置 Spring Bean【可选】
+     */
     private final List<ConfigurationCustomizer> configurationCustomizers;
+    /**
+     * Spring Application Context
+     */
     private final ApplicationContext            applicationContext;
+    /**
+     * resource loader
+     */
+    private final ResourceLoader                resourceLoader;
 
     /**
      * 初始化 MyBatis Spring Boot 项目自动配置
      *
      * @param properties MyBatis Spring Boot项目配置属性
      * @param interceptorsProvider Mybatis Interceptor Spring Bean【可选】
-     * @param resourceLoader resource loader
-     * @param databaseIdProvider database id provider Spring Bean【可选】
      * @param configurationCustomizersProvider 自定义配置 Spring Bean【可选】
      * @param applicationContext Spring Application Context
+     * @param resourceLoader resource loader
      */
     public MybatisAutoConfiguration(MybatisProperties properties, ObjectProvider<Interceptor[]> interceptorsProvider,
-                                    ResourceLoader resourceLoader,
-                                    ObjectProvider<DatabaseIdProvider> databaseIdProvider,
                                     ObjectProvider<List<ConfigurationCustomizer>> configurationCustomizersProvider,
-                                    ApplicationContext applicationContext) {
+                                    ApplicationContext applicationContext, ResourceLoader resourceLoader) {
         this.properties = properties;
         if (this.properties.getTableConfig() == null) {
             log.debug("MybatisProperties.tableConfig not config, initialize default");
@@ -115,7 +126,6 @@ public class MybatisAutoConfiguration {
         }
         this.interceptors = interceptorsProvider.getIfAvailable();
         this.resourceLoader = resourceLoader;
-        this.databaseIdProvider = databaseIdProvider.getIfAvailable();
         this.configurationCustomizers = configurationCustomizersProvider.getIfAvailable();
         this.applicationContext = applicationContext;
     }
@@ -150,41 +160,73 @@ public class MybatisAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionFactory sqlSessionFactory(DataSource dataSource) throws Exception {
-        SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
-        factory.setDataSource(dataSource);
-        factory.setVfs(SpringBootVFS.class);
-        if (StringUtils.hasText(this.properties.getConfigLocation())) {
-            factory.setConfigLocation(this.resourceLoader.getResource(this.properties.getConfigLocation()));
-        }
-        applyConfiguration(factory);
-        if (this.properties.getConfigurationProperties() != null) {
-            factory.setConfigurationProperties(this.properties.getConfigurationProperties());
-        }
-        applyPlugins(factory);
-        if (this.databaseIdProvider != null) {
-            factory.setDatabaseIdProvider(this.databaseIdProvider);
-        }
-        if (StringUtils.hasLength(this.properties.getTypeAliasesPackage())) {
-            factory.setTypeAliasesPackage(this.properties.getTypeAliasesPackage());
-        }
-        if (StringUtils.hasLength(this.properties.getTypeHandlersPackage())) {
-            factory.setTypeHandlersPackage(this.properties.getTypeHandlersPackage());
-        }
-        Resource[] mapperLocations = this.properties.resolveMapperLocations();
-        if (!ObjectUtils.isEmpty(mapperLocations)) {
-            factory.setMapperLocations(mapperLocations);
-        }
+        SqlSessionFactoryBean factory = createSqlSessionFactoryBean(this.applicationContext, this.resourceLoader,
+                dataSource, this.properties, this.configurationCustomizers, this.interceptors);
         return factory.getObject();
     }
 
-    private void applyPlugins(SqlSessionFactoryBean factory) {
-        Map<String, ParameterHandlerCustomizer> beanMap = this.applicationContext
+    /**
+     * 创建 SqlSessionFactory
+     *
+     * @param applicationContext 自定义配置 Spring Bean【可选】
+     * @param resourceLoader resource loader
+     * @param dataSource 数据源
+     * @param properties MyBatis Spring Boot项目配置属性
+     * @param configurationCustomizers 自定义配置 Spring Bean【可选】
+     * @param interceptors Mybatis Interceptor Spring Bean【可选】
+     * @return SqlSessionFactory 实例对象
+     */
+    public static SqlSessionFactoryBean createSqlSessionFactoryBean(ApplicationContext applicationContext,
+                                                                    ResourceLoader resourceLoader,
+                                                                    DataSource dataSource, MybatisProperties properties,
+                                                                    List<ConfigurationCustomizer> configurationCustomizers,
+                                                                    Interceptor[] interceptors) {
+        SqlSessionFactoryBean factory = new SqlSessionFactoryBean();
+        factory.setDataSource(dataSource);
+        factory.setVfs(SpringBootVFS.class);
+        if (StringUtils.hasText(properties.getConfigLocation())) {
+            factory.setConfigLocation(resourceLoader.getResource(properties.getConfigLocation()));
+        }
+        applyConfiguration(factory, properties, configurationCustomizers);
+        if (properties.getConfigurationProperties() != null) {
+            factory.setConfigurationProperties(properties.getConfigurationProperties());
+        }
+        applyPlugins(applicationContext, factory, interceptors);
+        Map<String, DatabaseIdProvider> databaseIdProviderMap = applicationContext
+                .getBeansOfType(DatabaseIdProvider.class);
+        if (!databaseIdProviderMap.isEmpty()) {
+            DatabaseIdProvider databaseIdProvider = databaseIdProviderMap.values().iterator().next();
+            factory.setDatabaseIdProvider(databaseIdProvider);
+        }
+        if (StringUtils.hasLength(properties.getTypeAliasesPackage())) {
+            factory.setTypeAliasesPackage(properties.getTypeAliasesPackage());
+        }
+        if (StringUtils.hasLength(properties.getTypeHandlersPackage())) {
+            factory.setTypeHandlersPackage(properties.getTypeHandlersPackage());
+        }
+        Resource[] mapperLocations = properties.resolveMapperLocations();
+        if (!ObjectUtils.isEmpty(mapperLocations)) {
+            factory.setMapperLocations(mapperLocations);
+        }
+        return factory;
+    }
+
+    /**
+     * 为 SqlSessionFactory 配置 Mybatis 拦截器插件
+     *
+     * @param applicationContext 自定义配置 Spring Bean【可选】
+     * @param factory SqlSessionFactory 实例对象
+     * @param interceptors Mybatis Interceptor 实例对象【可选】
+     */
+    public static void applyPlugins(ApplicationContext applicationContext, SqlSessionFactoryBean factory,
+                                    Interceptor[] interceptors) {
+        Map<String, ParameterHandlerCustomizer> beanMap = applicationContext
                 .getBeansOfType(ParameterHandlerCustomizer.class);
-        boolean emptyInterceptors = ObjectUtils.isEmpty(this.interceptors);
+        boolean emptyInterceptors = ObjectUtils.isEmpty(interceptors);
         if (CollectionUtils.isEmpty(beanMap)) {
             if (!emptyInterceptors) {
                 // 如果没有 ParameterHandlerCustomizer Bean对象，则直接设置
-                factory.setPlugins(this.interceptors);
+                factory.setPlugins(interceptors);
             }
             return;
         }
@@ -200,22 +242,30 @@ public class MybatisAutoConfiguration {
 
         if (Stream.of(interceptors).anyMatch(s -> s instanceof ParameterHandlerInterceptor)) {
             // 已经有 ParameterHandlerInterceptor，则不处理
-            factory.setPlugins(this.interceptors);
+            factory.setPlugins(interceptors);
         } else {
             // 添加新的 ParameterHandlerInterceptor
             ParameterHandlerInterceptor interceptor = new ParameterHandlerInterceptor(parameterHandlerCustomizer);
-            Interceptor[] plugins = ArrayUtils.add(this.interceptors, interceptor);
+            Interceptor[] plugins = ArrayUtils.add(interceptors, interceptor);
             factory.setPlugins(plugins);
         }
     }
 
-    private void applyConfiguration(SqlSessionFactoryBean factory) {
-        org.apache.ibatis.session.Configuration configuration = this.properties.getConfiguration();
-        if (configuration == null && !StringUtils.hasText(this.properties.getConfigLocation())) {
+    /**
+     * 为 SqlSessionFactory 配置"自定义配置"插件
+     *
+     * @param factory SqlSessionFactory 实例对象
+     * @param properties MyBatis Spring Boot项目配置属性
+     * @param configurationCustomizers 自定义配置【可选】
+     */
+    public static void applyConfiguration(SqlSessionFactoryBean factory, MybatisProperties properties,
+                                          List<ConfigurationCustomizer> configurationCustomizers) {
+        org.apache.ibatis.session.Configuration configuration = properties.getConfiguration();
+        if (configuration == null && !StringUtils.hasText(properties.getConfigLocation())) {
             configuration = new org.apache.ibatis.session.Configuration();
         }
-        if (configuration != null && !CollectionUtils.isEmpty(this.configurationCustomizers)) {
-            for (ConfigurationCustomizer customizer : this.configurationCustomizers) {
+        if (configuration != null && !CollectionUtils.isEmpty(configurationCustomizers)) {
+            for (ConfigurationCustomizer customizer : configurationCustomizers) {
                 customizer.customize(configuration);
             }
         }
@@ -231,7 +281,19 @@ public class MybatisAutoConfiguration {
     @Bean
     @ConditionalOnMissingBean
     public SqlSessionTemplate sqlSessionTemplate(SqlSessionFactory sqlSessionFactory) {
-        ExecutorType executorType = this.properties.getExecutorType();
+        return createSqlSessionTemplate(sqlSessionFactory, this.properties);
+    }
+
+    /**
+     * 创建 SqlSessionTemplate
+     *
+     * @param sqlSessionFactory SqlSessionFactory 实例对象
+     * @param properties MyBatis Spring Boot项目配置属性
+     * @return SqlSessionTemplate 实例对象
+     */
+    public static SqlSessionTemplate createSqlSessionTemplate(SqlSessionFactory sqlSessionFactory,
+                                                              MybatisProperties properties) {
+        ExecutorType executorType = properties.getExecutorType();
         if (executorType != null) {
             return new SqlSessionTemplate(sqlSessionFactory, executorType);
         } else {
