@@ -10,7 +10,7 @@
     </parent>
 
     <artifactId>phoenix-mybatis</artifactId>
-    <version>1.1.1-SNAPSHOT</version>
+    <version>1.1.1.RELEASE</version>
     <packaging>jar</packaging>
 
     <name>phoenix-mybatis</name>
