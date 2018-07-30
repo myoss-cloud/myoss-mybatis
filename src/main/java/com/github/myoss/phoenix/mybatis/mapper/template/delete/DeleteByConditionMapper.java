@@ -18,6 +18,7 @@
 package com.github.myoss.phoenix.mybatis.mapper.template.delete;
 
 import org.apache.ibatis.annotations.DeleteProvider;
+import org.apache.ibatis.annotations.Param;
 
 import com.github.myoss.phoenix.mybatis.mapper.annotation.RegisterMapper;
 import com.github.myoss.phoenix.mybatis.mapper.template.delete.impl.DeleteMapperTemplate;
@@ -40,4 +41,15 @@ public interface DeleteByConditionMapper<T> {
      */
     @DeleteProvider(type = DeleteMapperTemplate.class, method = "dynamicSql")
     int deleteByCondition(T condition);
+
+    /**
+     * 根据条件删除记录，同时支持更新其它字段（只有逻辑删除，才能支持更新逻辑）
+     *
+     * @param record 待更新的实体对象
+     * @param condition 匹配的条件
+     * @return SQL执行成功之后，影响的行数
+     * @see DeleteMapperTemplate#deleteByConditionAndUpdate
+     */
+    @DeleteProvider(type = DeleteMapperTemplate.class, method = "dynamicSql")
+    int deleteByConditionAndUpdate(@Param("record") T record, @Param("condition") T condition);
 }

@@ -217,6 +217,7 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
      *    &lt;if test=&quot;id != null&quot;&gt;
      *      and id = #{id}
      *    &lt;/if&gt;
+     *    AND is_deleted = 'N'
      * &lt;/where&gt;
      * </pre>
      *
@@ -233,6 +234,100 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
         StringBuilder builder = new StringBuilder(2048);
         buildDeleteEntitySql(tableInfo, metaObject, builder);
         builder.append(tableInfo.getWhereConditionSql());
+        String sql = builder.toString();
+
+        // 替换 sqlSource 对象
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
+        metaObject.setValue("sqlSource", sqlSource);
+        return sql;
+    }
+
+    /**
+     * 删除记录，生成 delete 语句。
+     * <p>
+     * delete 语句示例如下：
+     *
+     * <pre>
+     * DELETE FROM table_name
+     * &lt;where&gt;
+     *    &lt;if test=&quot;id != null&quot;&gt;
+     *      and id = #{id}
+     *    &lt;/if&gt;
+     * &lt;/where&gt;
+     * </pre>
+     * <p>
+     * update 语句示例如下：
+     *
+     * <pre>
+     * UPDATE table_name
+     * &lt;set&gt;
+     *   is_deleted = 'Y',
+     *   &lt;if test=&quot;record.creator != null&quot;&gt;
+     *     creator = #{record.creator},
+     *   &lt;/if&gt;
+     *   modifier = #{record.modifier},
+     * &lt;/set&gt;
+     * &lt;where&gt;
+     *   &lt;if test=&quot;condition != null&quot;&gt;
+     *     &lt;if test=&quot;condition.creator != null&quot;&gt;
+     *       and creator = #{condition.creator}
+     *     &lt;/if&gt;
+     *     &lt;if test=&quot;condition.modifier != null&quot;&gt;
+     *       and modifier = #{condition.modifier}
+     *     &lt;/if&gt;
+     *     &lt;if test=&quot;condition.id != null&quot;&gt;
+     *       and id = #{condition.id}
+     *     &lt;/if&gt;
+     *   &lt;/if&gt;
+     *   and is_deleted = 'N'
+     * &lt;/where&gt;
+     * </pre>
+     *
+     * @param tableInfo 数据库表结构信息
+     * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
+     * @return 生成的sql语句
+     * @see DeleteByConditionMapper#deleteByConditionAndUpdate(Object, Object)
+     */
+    public String deleteByConditionAndUpdate(TableInfo tableInfo, MappedStatement ms) {
+        MetaObject metaObject = SystemMetaObject.forObject(ms);
+        Configuration configuration = ms.getConfiguration();
+
+        // 生成 sql 语句
+        StringBuilder builder = new StringBuilder(2048);
+        builder.append("UPDATE ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
+        builder.append("<set>\n");
+        for (TableColumnInfo columnInfo : tableInfo.getColumns()) {
+            boolean logicDelete = columnInfo.isLogicDelete();
+            boolean fillUpdate = columnInfo.haveFillRule(FillRule.UPDATE);
+            if (!(logicDelete || fillUpdate || !columnInfo.isPrimaryKey())) {
+                continue;
+            }
+            if (logicDelete) {
+                builder.append("  ").append(columnInfo.getActualColumn());
+                if (CharSequence.class.isAssignableFrom(columnInfo.getJavaType())) {
+                    builder.append(" = '").append(columnInfo.getLogicDeleteValue()).append("'");
+                } else {
+                    builder.append(" = ").append(columnInfo.getLogicDeleteValue());
+                }
+                builder.append(",\n");
+            } else {
+                if (!fillUpdate) {
+                    builder.append("  <if test=\"record.").append(columnInfo.getProperty()).append(" != null\">\n  ");
+                }
+                builder.append("  ").append(columnInfo.getActualColumn()).append(" = #{record.").append(
+                        columnInfo.getProperty());
+                if (columnInfo.getJdbcType() != null) {
+                    builder.append(",jdbcType=BIGINT");
+                }
+                builder.append("},\n");
+                if (!fillUpdate) {
+                    builder.append("  </if>\n");
+                }
+            }
+        }
+        builder.append("</set>\n");
+        builder.append(tableInfo.getWhereConditionWithParameterSql());
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
