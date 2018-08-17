@@ -17,6 +17,8 @@
 
 package com.github.myoss.phoenix.mybatis.test.integration.h2.test1.mapper;
 
+import org.springframework.stereotype.Repository;
+
 import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.entity.User;
 
@@ -29,6 +31,7 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.entity.User;
  * @author jerry
  * @since 2018年5月11日 上午10:41:47
  */
+@Repository
 public interface UserMapper extends CrudMapper<User> {
 
 }

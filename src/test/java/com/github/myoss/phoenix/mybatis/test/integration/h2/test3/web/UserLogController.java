@@ -51,10 +51,11 @@ public class UserLogController {
      * 创建新的记录
      *
      * @param record 待保存的实体对象
+     * @param <I> 主键类型
      * @return 主键id
      */
     @LogMethodAround
-    // @PostMapping(value = "/create")
+    // @PostMapping("/create")
     public <I> Result<I> create(@RequestBody UserLog record) {
         return userLogService.create(record);
     }
@@ -66,7 +67,7 @@ public class UserLogController {
      * @return 是否操作成功
      */
     @LogMethodAround
-    // @PostMapping(value = "/updateByPrimaryKey")
+    // @PostMapping("/updateByPrimaryKey")
     public Result<Boolean> updateByPrimaryKey(@RequestBody UserLog record) {
         return userLogService.updateByPrimaryKey(record);
     }
@@ -89,7 +90,7 @@ public class UserLogController {
      * @param id 主键id
      * @return 对应的实体对象
      */
-    // @RequestMapping(value = "/findByPrimaryKey")
+    // @RequestMapping("/findByPrimaryKey")
     public Result<UserLog> findByPrimaryKey(@RequestParam("id") Serializable id) {
         return userLogService.findByPrimaryKey(id);
     }
@@ -100,7 +101,7 @@ public class UserLogController {
      * @param condition 主键id
      * @return 对应的实体对象
      */
-    // @PostMapping(value = "/findByPrimaryKey")
+    // @PostMapping("/findByPrimaryKey")
     public Result<UserLog> findByPrimaryKey(@RequestBody UserLog condition) {
         return userLogService.findByPrimaryKey(condition);
     }
@@ -111,7 +112,7 @@ public class UserLogController {
      * @param condition 匹配的条件
      * @return 匹配的实体对象
      */
-    // @PostMapping(value = "/findList")
+    // @PostMapping("/findList")
     public Result<List<UserLog>> findList(@RequestBody UserLog condition) {
         return userLogService.findList(condition);
     }
@@ -122,7 +123,7 @@ public class UserLogController {
      * @param condition 匹配的条件和排序字段
      * @return 匹配的实体对象
      */
-    // @PostMapping(value = "/findListWithSort")
+    // @PostMapping("/findListWithSort")
     public Result<List<UserLog>> findListWithSort(@RequestBody Page<UserLog> condition) {
         return userLogService.findListWithSort(condition);
     }

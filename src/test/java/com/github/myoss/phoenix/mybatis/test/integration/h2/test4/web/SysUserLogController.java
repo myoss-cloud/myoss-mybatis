@@ -51,10 +51,11 @@ public class SysUserLogController {
      * 创建新的记录
      *
      * @param record 待保存的实体对象
+     * @param <I> 主键类型
      * @return 主键id
      */
     @LogMethodAround
-    // @PostMapping(value = "/create")
+    // @PostMapping("/create")
     public <I> Result<I> create(@RequestBody SysUserLog record) {
         return sysUserLogService.create(record);
     }
@@ -66,7 +67,7 @@ public class SysUserLogController {
      * @return 是否操作成功
      */
     @LogMethodAround
-    // @PostMapping(value = "/updateByPrimaryKey")
+    // @PostMapping("/updateByPrimaryKey")
     public Result<Boolean> updateByPrimaryKey(@RequestBody SysUserLog record) {
         return sysUserLogService.updateByPrimaryKey(record);
     }
@@ -89,7 +90,7 @@ public class SysUserLogController {
      * @param id 主键id
      * @return 对应的实体对象
      */
-    // @RequestMapping(value = "/findByPrimaryKey")
+    // @RequestMapping("/findByPrimaryKey")
     public Result<SysUserLog> findByPrimaryKey(@RequestParam("id") Serializable id) {
         return sysUserLogService.findByPrimaryKey(id);
     }
@@ -100,7 +101,7 @@ public class SysUserLogController {
      * @param condition 主键id
      * @return 对应的实体对象
      */
-    // @PostMapping(value = "/findByPrimaryKey")
+    // @PostMapping("/findByPrimaryKey")
     public Result<SysUserLog> findByPrimaryKey(@RequestBody SysUserLog condition) {
         return sysUserLogService.findByPrimaryKey(condition);
     }
@@ -111,7 +112,7 @@ public class SysUserLogController {
      * @param condition 匹配的条件
      * @return 匹配的实体对象
      */
-    // @PostMapping(value = "/findList")
+    // @PostMapping("/findList")
     public Result<List<SysUserLog>> findList(@RequestBody SysUserLog condition) {
         return sysUserLogService.findList(condition);
     }
@@ -122,7 +123,7 @@ public class SysUserLogController {
      * @param condition 匹配的条件和排序字段
      * @return 匹配的实体对象
      */
-    // @PostMapping(value = "/findListWithSort")
+    // @PostMapping("/findListWithSort")
     public Result<List<SysUserLog>> findListWithSort(@RequestBody Page<SysUserLog> condition) {
         return sysUserLogService.findListWithSort(condition);
     }

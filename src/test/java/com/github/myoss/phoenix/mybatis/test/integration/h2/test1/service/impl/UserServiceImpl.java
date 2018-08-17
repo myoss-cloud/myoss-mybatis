@@ -35,4 +35,5 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.test1.service.UserSe
  */
 @Service
 public class UserServiceImpl extends BaseCrudServiceImpl<UserMapper, User> implements UserService {
+
 }

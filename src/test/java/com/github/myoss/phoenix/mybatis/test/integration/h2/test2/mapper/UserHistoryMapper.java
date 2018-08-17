@@ -17,6 +17,8 @@
 
 package com.github.myoss.phoenix.mybatis.test.integration.h2.test2.mapper;
 
+import org.springframework.stereotype.Repository;
+
 import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test2.entity.UserHistory;
 
@@ -29,6 +31,7 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.test2.entity.UserHis
  * @author jerry
  * @since 2018年5月14日 下午3:39:43
  */
+@Repository
 public interface UserHistoryMapper extends CrudMapper<UserHistory> {
 
 }

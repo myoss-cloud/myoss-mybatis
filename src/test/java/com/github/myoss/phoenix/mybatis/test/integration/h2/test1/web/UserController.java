@@ -52,6 +52,7 @@ public class UserController {
      * 创建新的记录
      *
      * @param record 待保存的实体对象
+     * @param <I> 主键类型
      * @return 主键id
      */
     @LogMethodAround

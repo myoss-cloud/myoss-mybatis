@@ -17,6 +17,8 @@
 
 package com.github.myoss.phoenix.mybatis.test.integration.h2.test3.mapper;
 
+import org.springframework.stereotype.Repository;
+
 import com.github.myoss.phoenix.mybatis.mapper.template.CrudMapper;
 import com.github.myoss.phoenix.mybatis.test.integration.h2.test3.entity.UserLog;
 
@@ -29,6 +31,7 @@ import com.github.myoss.phoenix.mybatis.test.integration.h2.test3.entity.UserLog
  * @author jerry
  * @since 2018年5月14日 下午10:33:55
  */
+@Repository
 public interface UserLogMapper extends CrudMapper<UserLog> {
 
 }
