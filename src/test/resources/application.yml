@@ -12,4 +12,4 @@ spring:
         # 设置可以获取tables remarks信息
         useInformationSchema: true
 
-logging.level.com.github.myoss: DEBUG
+logging.level.app.myoss.cloud: DEBUG
