@@ -45,6 +45,7 @@ import org.springframework.boot.autoconfigure.condition.ConditionalOnBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnExpression;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.boot.context.properties.bind.Binder;
@@ -82,6 +83,7 @@ import lombok.extern.slf4j.Slf4j;
  * @since 2018年4月23日 上午11:07:07
  */
 @Slf4j
+@ConditionalOnProperty(prefix = MybatisProperties.MYBATIS_PREFIX, value = "enabled", matchIfMissing = true)
 @EnableConfigurationProperties({ MybatisProperties.class })
 @ConditionalOnClass({ SqlSessionFactory.class, SqlSessionFactoryBean.class })
 @ConditionalOnBean(DataSource.class)

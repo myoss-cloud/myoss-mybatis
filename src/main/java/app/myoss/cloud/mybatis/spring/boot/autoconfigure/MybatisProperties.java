@@ -56,6 +56,12 @@ public class MybatisProperties {
     private static final ResourcePatternResolver RESOURCE_RESOLVER             = new PathMatchingResourcePatternResolver();
 
     /**
+     * Enable MyBatis Spring Boot autoconfig support.
+     *
+     * @see MybatisAutoConfiguration
+     */
+    private Boolean                              enabled;
+    /**
      * Location of MyBatis xml config file.
      */
     private String                               configLocation;
