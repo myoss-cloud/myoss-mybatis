@@ -1,3 +1,12 @@
+CREATE TABLE IF NOT EXISTS `sequence` (
+  `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
+  `gmt_created` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  `name` varchar(64) NOT NULL COMMENT '序列名称',
+  `value` bigint(20) NOT NULL COMMENT '序列值',
+  PRIMARY KEY (`id`)
+);
+
 CREATE TABLE IF NOT EXISTS `t_sys_user` (
   `id` bigint(20) NOT NULL AUTO_INCREMENT COMMENT '主键id',
   `employee_number` varchar(32) DEFAULT NULL COMMENT '员工编号',

@@ -17,6 +17,8 @@
 
 package app.myoss.cloud.mybatis.test.integration.h2.test4.mapper;
 
+import org.springframework.stereotype.Repository;
+
 import app.myoss.cloud.mybatis.mapper.template.CrudMapper;
 import app.myoss.cloud.mybatis.mapper.template.select.SelectListIncludeLogicDeleteMapper;
 import app.myoss.cloud.mybatis.mapper.template.select.SelectPageIncludeLogicDeleteMapper;
@@ -31,6 +33,7 @@ import app.myoss.cloud.mybatis.test.integration.h2.test4.entity.SysUserLog;
  * @author jerry
  * @since 2018年5月14日 下午10:33:55
  */
+@Repository
 public interface SysUserLogMapper extends CrudMapper<SysUserLog>, SelectListIncludeLogicDeleteMapper<SysUserLog>,
         SelectPageIncludeLogicDeleteMapper<SysUserLog> {
 
