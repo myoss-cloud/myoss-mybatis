@@ -42,7 +42,7 @@ import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
 
 /**
- * 使用数据库生成序列
+ * 使用关系数据库生成序列
  *
  * @author Jerry.Chen
  * @since 2018年12月16日 下午12:12:06
@@ -91,7 +91,8 @@ public class RdsSequenceRepository implements SequenceRepository {
     private static final long       DELTA                            = 100000000L;
 
     /**
-     * group阵列
+     * 数据库名：从哪些数据库中取ID，如果在末尾插入"-OFF",该源将被关掉，该源占据的SQL段会被保留。如果没有设置，会从
+     * dataSourceMap 中取 key 的值
      */
     @Setter
     @Getter
@@ -195,6 +196,7 @@ public class RdsSequenceRepository implements SequenceRepository {
             if (dbGroupKeys.size() >= dataSourceCount) {
                 dataSourceCount = dbGroupKeys.size();
             } else {
+                // 当dbGroupKeys中配置的个数小于 dataSourceCount 的值的时候，默认配置了"-OFF"的源
                 for (int i = dbGroupKeys.size(); i < dataSourceCount; i++) {
                     dbGroupKeys.add(dataSourceCount + "-OFF");
                 }

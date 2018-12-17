@@ -20,7 +20,7 @@ package app.myoss.cloud.sequence;
 import app.myoss.cloud.sequence.exception.SequenceException;
 
 /**
- * 序列生成器接口
+ * 分布式序列生成器接口
  *
  * @author Jerry.Chen
  * @since 2018年7月27日 下午3:31:15

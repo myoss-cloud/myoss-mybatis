@@ -36,7 +36,54 @@ public interface Sequence {
      */
     default void setTableInfo(TableInfo tableInfo) {
         // do nothing
-    };
+    }
+
+    /**
+     * 获取数据库表结构信息
+     *
+     * @return 数据库表结构信息
+     */
+    default TableInfo getTableInfo() {
+        // do nothing
+        return null;
+    }
+
+    /**
+     * 设置代理的 "序列生成器" class 对象
+     *
+     * @param clazz 序列生成器 class 对象
+     */
+    default void setSequenceDelegateClass(Class clazz) {
+        // do nothing
+    }
+
+    /**
+     * 获取代理的 "序列生成器" class 对象
+     *
+     * @return 序列生成器 class 对象
+     */
+    default Class getSequenceDelegateClass() {
+        return null;
+    }
+
+    /**
+     * 设置代理的 "序列生成器" 对象
+     *
+     * @param delegate 序列生成器
+     */
+    default void setSequenceDelegate(Object delegate) {
+        // do nothing
+    }
+
+    /**
+     * 获取代理的 "序列生成器" 对象
+     *
+     * @param <T> 范型
+     * @return 序列生成器
+     */
+    default <T> T getSequenceDelegate() {
+        return null;
+    }
 
     /**
      * 生成下一个序列值
