@@ -235,6 +235,11 @@ public class TableMetaObject {
             columnInfo.setTableInfo(tableInfo);
             columnInfo.setProperty(name);
             PropertyDescriptor propertyDescriptor = propertyDescriptorMap.get(name);
+            if (propertyDescriptor == null) {
+                // 举例 field 名称为：xPath，property 名称为：XPath，需要先转换
+                String pascalName = NameStyle.PASCAL_CASE.transform(name);
+                propertyDescriptor = propertyDescriptorMap.get(pascalName);
+            }
             columnInfo.setJavaType(propertyDescriptor.getPropertyType());
             columnInfo.setPropertyDescriptor(propertyDescriptor);
             Column column = field.getAnnotation(Column.class);
@@ -481,8 +486,9 @@ public class TableMetaObject {
             throw new BizRuntimeException(e);
         }
         PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
-        return Stream.of(descriptors).filter(s -> !"class".equals(s.getName())).collect(
-                Collectors.toMap(PropertyDescriptor::getName, Function.identity()));
+        return Stream.of(descriptors)
+                .filter(s -> !"class".equals(s.getName()))
+                .collect(Collectors.toMap(PropertyDescriptor::getName, Function.identity()));
     }
 
     /**
@@ -635,8 +641,11 @@ public class TableMetaObject {
             }
             sql.append("    <if test=\"").append(prefix).append(item.getProperty()).append(" != null\">\n");
 
-            sql.append("      and ").append(item.getActualColumn()).append(" = #{").append(prefix).append(
-                    item.getProperty());
+            sql.append("      and ")
+                    .append(item.getActualColumn())
+                    .append(" = #{")
+                    .append(prefix)
+                    .append(item.getProperty());
             if (item.getJdbcType() != null) {
                 sql.append(",jdbcType=").append(item.getJdbcType().name());
             }
