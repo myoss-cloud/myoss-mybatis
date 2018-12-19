@@ -18,7 +18,7 @@
 package app.myoss.cloud.sequence;
 
 /**
- * 序列生成器生气周期接口
+ * 序列生成器生命周期接口
  *
  * @author Jerry.Chen
  * @since 2018年12月16日 下午3:15:32

@@ -323,7 +323,7 @@ public class RdsSequenceRepository implements SequenceRepository {
             if (affectedRows == 0) {
                 throw new SequenceException("failed to auto adjust init value at " + name + " update affectedRow =0");
             }
-            log.info(key + "更新初值成功！sequence Name：" + name + "更新过程：" + value + "-->" + newValue);
+            log.info(key + " 更新初值成功！sequence Name：" + name + "更新过程：" + value + "-->" + newValue);
         } catch (SQLException e) {
             throw new SequenceException("出现SQLException，更新初值自适应失败！dbGroupIndex: " + key + "，sequence Name：" + name
                     + "更新过程：" + value + "-->" + newValue, e);
@@ -350,7 +350,7 @@ public class RdsSequenceRepository implements SequenceRepository {
             if (affectedRows == 0) {
                 throw new SequenceException("failed to auto adjust init value at " + name + " update affectedRow =0");
             }
-            log.info(key + "插入初值成功！sequence Name: " + name + ", value: " + newValue);
+            log.info(key + " 插入初值成功！sequence Name: " + name + ", value: " + newValue);
         } catch (SQLException e) {
             throw new SequenceException(
                     "出现SQLException，插入初值自适应失败！dbGroupIndex: " + key + "，sequence Name：" + name + "，value:" + newValue,
