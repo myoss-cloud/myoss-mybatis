@@ -31,7 +31,7 @@ import app.myoss.cloud.sequence.exception.SequenceException;
  * @author Jerry.Chen
  * @since 2018年12月16日 下午2:56:51
  */
-public class RandomSequence {
+public class RandomSequenceUtils {
     /**
      * 产生包含 0~n-1 的n个数值的随机序列
      *

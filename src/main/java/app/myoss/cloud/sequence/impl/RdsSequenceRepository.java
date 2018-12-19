@@ -36,7 +36,7 @@ import org.springframework.util.CollectionUtils;
 import app.myoss.cloud.sequence.SequenceRange;
 import app.myoss.cloud.sequence.SequenceRepository;
 import app.myoss.cloud.sequence.exception.SequenceException;
-import app.myoss.cloud.sequence.utils.RandomSequence;
+import app.myoss.cloud.sequence.utils.RandomSequenceUtils;
 import lombok.Getter;
 import lombok.Setter;
 import lombok.extern.slf4j.Slf4j;
@@ -368,7 +368,7 @@ public class RdsSequenceRepository implements SequenceRepository {
         Connection conn = null;
         PreparedStatement stmt = null;
         ResultSet rs = null;
-        int[] randomIntSequence = RandomSequence.randomIntSequence(dataSourceCount);
+        int[] randomIntSequence = RandomSequenceUtils.randomIntSequence(dataSourceCount);
         for (int i = 0; i < retryTimes; i++) {
             for (int j = 0; j < dataSourceCount; j++) {
                 int index = randomIntSequence[j];
