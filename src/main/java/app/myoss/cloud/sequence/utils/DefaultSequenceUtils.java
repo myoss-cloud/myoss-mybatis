@@ -78,12 +78,12 @@ public class DefaultSequenceUtils {
             }
         }
         repository.setDataSourceCount(sequenceConfig.getDataSourceCount());
-        repository.setDbGroupKeys(sequenceConfig.getDbGroupKeys());
         repository.setInnerStep(sequenceConfig.getInnerStep());
         repository.setRetryTimes(sequenceConfig.getRetryTimes());
         repository.setTableName(sequenceConfig.getTableName());
         repository.setNameColumnName(sequenceConfig.getNameColumnName());
         repository.setValueColumnName(sequenceConfig.getValueColumnName());
+        repository.setGmtCreatedColumnName(sequenceConfig.getGmtCreatedColumnName());
         repository.setGmtModifiedColumnName(sequenceConfig.getGmtModifiedColumnName());
         repository.setAdjust(sequenceConfig.isAdjust());
         if (init) {
