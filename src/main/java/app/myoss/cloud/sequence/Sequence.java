@@ -25,7 +25,7 @@ import app.myoss.cloud.sequence.exception.SequenceException;
  * @author Jerry.Chen
  * @since 2018年7月27日 下午3:31:15
  */
-public interface Sequence {
+public interface Sequence extends SequenceLifecycle {
     /**
      * 生成下一个序列值
      *
