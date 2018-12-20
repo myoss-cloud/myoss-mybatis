@@ -21,6 +21,7 @@ import com.alibaba.fastjson.annotation.JSONField;
 
 import app.myoss.cloud.core.constants.MyossConstants;
 import app.myoss.cloud.mybatis.table.annotation.Column;
+import app.myoss.cloud.mybatis.table.annotation.FillRule;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -46,6 +47,7 @@ public class LogicDeleteEntity implements BaseEntity {
      * </p>
      */
     @JSONField(label = LABEL_LOGIC_DELETE_ENTITY)
-    @Column(name = "is_deleted", nullable = false, jdbcTypeName = "CHAR", logicDelete = true, logicDeleteValue = MyossConstants.Y, logicUnDeleteValue = MyossConstants.N)
+    @Column(name = "is_deleted", nullable = false, jdbcTypeName = "CHAR", fillRule = {
+            FillRule.INSERT }, logicDelete = true, logicDeleteValue = MyossConstants.Y, logicUnDeleteValue = MyossConstants.N)
     private String             isDeleted;
 }

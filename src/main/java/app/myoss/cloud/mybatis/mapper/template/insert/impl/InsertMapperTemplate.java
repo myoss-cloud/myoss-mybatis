@@ -235,9 +235,9 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
             if (!columnInfo.isInsertable() || columnInfo.isAutoIncrement()) {
                 continue;
             }
-            // 如果是主键字段（不是自动增长的主键）或者字段有自动填充的规则，不加 if 表达式判断
+            // 如果是主键字段（不是自动增长的主键）、字段有自动填充的规则、字段是逻辑删除字段，不加 if 表达式判断
             boolean fillInsert = (columnInfo.isPrimaryKey() && GenerationType.USE_GENERATED_KEYS != generationType)
-                    || columnInfo.haveFillRule(FillRule.INSERT);
+                    || columnInfo.haveFillRule(FillRule.INSERT) || columnInfo.isLogicDelete();
             if (!fillInsert) {
                 builder.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
             }
