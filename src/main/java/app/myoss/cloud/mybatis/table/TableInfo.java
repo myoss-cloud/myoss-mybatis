@@ -17,6 +17,8 @@
 
 package app.myoss.cloud.mybatis.table;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Set;
 
 import org.apache.ibatis.mapping.ResultMap;
@@ -64,9 +66,9 @@ public class TableInfo {
      */
     private Class<?>             entityClass;
     /**
-     * mapper interface class
+     * 关联的 mapper interface class，可能会有多个
      */
-    private Class<?>             mapperInterfaceClass;
+    private List<Class<?>>       mapperInterfaceClass;
 
     /**
      * 表字段信息
@@ -159,5 +161,19 @@ public class TableInfo {
      */
     public String getActualTableName() {
         return (escapedTableName != null ? escapedTableName : tableName);
+    }
+
+    /**
+     * 设置关联的 mapper interface class
+     *
+     * @param mapperInterface 关联的 mapper interface class
+     * @return 当前对象 {@code TableInfo}
+     */
+    public TableInfo addMapperInterfaceClass(Class<?> mapperInterface) {
+        if (mapperInterfaceClass == null) {
+            mapperInterfaceClass = new ArrayList<>();
+        }
+        mapperInterfaceClass.add(mapperInterface);
+        return this;
     }
 }

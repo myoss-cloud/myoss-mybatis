@@ -62,11 +62,6 @@ public class MapperInterfaceRegister {
      */
     private Map<Class<?>, Future<AbstractMapperTemplate>> mapperTemplateCached;
     /**
-     * 实体类对象和它的表结构等信息
-     */
-    @Getter
-    private Map<Class<?>, TableInfo>                      registerEntityClass;
-    /**
      * Table全局配置
      */
     @Setter
@@ -92,7 +87,6 @@ public class MapperInterfaceRegister {
         this.sqlProviderAnnotationTypes.add(UpdateProvider.class);
         this.sqlProviderAnnotationTypes.add(DeleteProvider.class);
         this.mapperTemplateCached = new ConcurrentHashMap<>();
-        this.registerEntityClass = new ConcurrentHashMap<>();
     }
 
     /**
@@ -102,31 +96,31 @@ public class MapperInterfaceRegister {
      */
     public void executeRegister(Class<?> mapperInterface) {
         Class<?> entityClass = TableMetaObject.getEntityClassByMapperInterface(mapperInterface);
-        if (entityClass == null || registerEntityClass.containsKey(entityClass)) {
+        if (entityClass == null) {
             // entityClass = null, 它没有实体类泛型，则不去扫描方法
             return;
         }
         TableInfo tableInfo = TableMetaObject.getTableInfoByMapperInterface(mapperInterface, tableConfig,
                 configuration);
-        registerEntityClass.put(entityClass, tableInfo);
-        scanRegisterMapper(tableInfo, mapperInterface);
+        scanRegisterMapper(tableInfo, mapperInterface, mapperInterface);
     }
 
     /**
      * 扫描接口是否有 @RegisterMapper 注解，并自动注册
      *
      * @param tableInfo 数据库表结构信息
-     * @param mapperInterface mapper interface class
+     * @param rootMapperInterfaceClass 实体对象关联的 mapper interface class
+     * @param mapperInterface 当前要被扫描的 mapper interface class
      */
-    private void scanRegisterMapper(TableInfo tableInfo, Class<?> mapperInterface) {
+    private void scanRegisterMapper(TableInfo tableInfo, Class<?> rootMapperInterfaceClass, Class<?> mapperInterface) {
         Class<?>[] interfaces = mapperInterface.getInterfaces();
-        for (Class<?> item : interfaces) {
+        for (Class<?> sqlMapperClass : interfaces) {
             // 自动注册标记了 @RegisterMapper 的接口
-            if (item.isAnnotationPresent(RegisterMapper.class)) {
-                processRegisterMapper(tableInfo, item);
+            if (sqlMapperClass.isAnnotationPresent(RegisterMapper.class)) {
+                processRegisterMapper(tableInfo, rootMapperInterfaceClass, sqlMapperClass);
             }
             // 扫描父接口
-            scanRegisterMapper(tableInfo, item);
+            scanRegisterMapper(tableInfo, rootMapperInterfaceClass, sqlMapperClass);
         }
     }
 
@@ -134,10 +128,11 @@ public class MapperInterfaceRegister {
      * 注册通用Mapper接口
      *
      * @param tableInfo 数据库表结构信息
-     * @param mapperClass mapper class
+     * @param mapperInterfaceClass 实体对象关联的 mapper interface class
+     * @param sqlMapperClass sql mapper class
      */
-    public void processRegisterMapper(TableInfo tableInfo, Class<?> mapperClass) {
-        Method[] methods = mapperClass.getDeclaredMethods();
+    public void processRegisterMapper(TableInfo tableInfo, Class<?> mapperInterfaceClass, Class<?> sqlMapperClass) {
+        Method[] methods = sqlMapperClass.getDeclaredMethods();
         if (methods.length == 0) {
             return;
         }
@@ -172,7 +167,7 @@ public class MapperInterfaceRegister {
             Class<?> templateClass = entry.getKey();
             AbstractMapperTemplate templateInstance = getMapperTemplate(templateClass);
             HashSet<String> value = entry.getValue();
-            String canonicalName = tableInfo.getMapperInterfaceClass().getCanonicalName();
+            String canonicalName = mapperInterfaceClass.getCanonicalName();
             for (String methodName : value) {
                 MappedStatement mappedStatement = configuration.getMappedStatement(canonicalName + "." + methodName);
                 try {

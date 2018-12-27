@@ -173,7 +173,7 @@ public class TableMetaObject {
                                                           Configuration configuration) {
         Class<?> entityClass = getEntityClassByMapperInterface(mapperInterface);
         TableInfo tableInfo = getTableInfo(entityClass, config, configuration);
-        tableInfo.setMapperInterfaceClass(mapperInterface);
+        tableInfo.addMapperInterfaceClass(mapperInterface);
         return tableInfo;
     }
 
