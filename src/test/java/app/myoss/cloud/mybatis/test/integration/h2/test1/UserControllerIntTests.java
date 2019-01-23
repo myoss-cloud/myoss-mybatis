@@ -50,6 +50,7 @@ import app.myoss.cloud.mybatis.plugin.ParameterHandlerCustomizer;
 import app.myoss.cloud.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import app.myoss.cloud.mybatis.spring.mapper.MapperFactoryBean;
 import app.myoss.cloud.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConfig;
+import app.myoss.cloud.mybatis.test.integration.h2.test1.UserControllerIntTests.MyConfig;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.entity.User;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.service.UserService;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.web.UserController;
@@ -65,7 +66,8 @@ import lombok.extern.slf4j.Slf4j;
 @ActiveProfiles({ "h2-test1", "UserControllerIntTests" })
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { DataSourceAutoConfiguration.class, IntAutoConfig.class, MybatisAutoConfiguration.class })
+@SpringBootTest(classes = { DataSourceAutoConfiguration.class, IntAutoConfig.class, MybatisAutoConfiguration.class,
+        MyConfig.class })
 public class UserControllerIntTests {
     @Autowired
     private UserController userController;

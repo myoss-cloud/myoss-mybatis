@@ -60,6 +60,7 @@ import app.myoss.cloud.mybatis.spring.mapper.MapperFactoryBean;
 import app.myoss.cloud.mybatis.table.Sequence;
 import app.myoss.cloud.mybatis.table.TableMetaObject;
 import app.myoss.cloud.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConfig;
+import app.myoss.cloud.mybatis.test.integration.h2.test4.SysUserLogControllerIntTests.MyConfig;
 import app.myoss.cloud.mybatis.test.integration.h2.test4.entity.SysUserLog;
 import app.myoss.cloud.mybatis.test.integration.h2.test4.mapper.SysUserLogMapper;
 import app.myoss.cloud.mybatis.test.integration.h2.test4.service.SysUserLogService;
@@ -77,7 +78,8 @@ import lombok.extern.slf4j.Slf4j;
 @ActiveProfiles({ "h2-test4", "SysUserLogControllerIntTests" })
 @Slf4j
 @RunWith(SpringRunner.class)
-@SpringBootTest(classes = { DataSourceAutoConfiguration.class, IntAutoConfig.class, MybatisAutoConfiguration.class })
+@SpringBootTest(classes = { DataSourceAutoConfiguration.class, IntAutoConfig.class, MybatisAutoConfiguration.class,
+        MyConfig.class })
 public class SysUserLogControllerIntTests {
     @Autowired
     private SysUserLogController userLogController;
