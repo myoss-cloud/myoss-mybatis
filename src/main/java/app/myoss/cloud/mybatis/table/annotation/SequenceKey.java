@@ -71,11 +71,21 @@ public @interface SequenceKey {
     String[] keyColumn() default {};
 
     /**
-     * {@link Sequence} 接口实现类
+     * {@link Sequence} 接口实现类。可以设置为: Sequence.class，然后使用
+     * {@link #sequenceClassName()} 覆盖
      *
      * @return 序列的实现类
      */
     Class<? extends Sequence> sequenceClass();
+
+    /**
+     * {@link Sequence} 接口实现类。{@link #sequenceClass()} 优先级高于
+     * {@link #sequenceClassName()}，可用于二方库中规避找不到 class 问题
+     *
+     * @return 序列的实现类
+     * @see #sequenceClass()
+     */
+    String sequenceClassName() default "";
 
     /**
      * (Optional) {@code sequenceClass} 对应的 Spring Bean instance name

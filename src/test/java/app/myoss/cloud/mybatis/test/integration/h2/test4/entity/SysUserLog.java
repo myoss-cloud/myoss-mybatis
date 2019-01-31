@@ -18,13 +18,13 @@
 package app.myoss.cloud.mybatis.test.integration.h2.test4.entity;
 
 import app.myoss.cloud.mybatis.repository.entity.AuditIdEntity;
+import app.myoss.cloud.mybatis.table.Sequence;
 import app.myoss.cloud.mybatis.table.annotation.Column;
 import app.myoss.cloud.mybatis.table.annotation.GenerationType;
 import app.myoss.cloud.mybatis.table.annotation.SequenceGenerator;
 import app.myoss.cloud.mybatis.table.annotation.SequenceGenerator.Order;
 import app.myoss.cloud.mybatis.table.annotation.SequenceKey;
 import app.myoss.cloud.mybatis.table.annotation.Table;
-import app.myoss.cloud.mybatis.test.integration.h2.test4.SysUserLogControllerIntTests.SequenceCustomizer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -43,7 +43,7 @@ import lombok.experimental.Accessors;
 @EqualsAndHashCode(callSuper = true)
 @Accessors(chain = true)
 @Data
-@SequenceGenerator(strategy = GenerationType.SEQUENCE_KEY, sequenceKey = @SequenceKey(sequenceClass = SequenceCustomizer.class, sequenceName = "sequenceUserLog", keyProperty = {
+@SequenceGenerator(strategy = GenerationType.SEQUENCE_KEY, sequenceKey = @SequenceKey(sequenceClass = Sequence.class, sequenceClassName = "app.myoss.cloud.mybatis.test.integration.h2.test4.SysUserLogControllerIntTests.SequenceCustomizer", sequenceName = "sequenceUserLog", keyProperty = {
         "id" }, keyColumn = { "id" }, order = Order.BEFORE))
 @Table(name = "t_sys_user_log")
 public class SysUserLog extends AuditIdEntity<Long> {

@@ -333,6 +333,7 @@ public class TableMetaObject {
      * @param tableInfo 数据库表结构信息
      * @param columnInfo 数据库表结构字段信息
      */
+    @SuppressWarnings("unchecked")
     private static void initTableSequence(SequenceGenerator sequenceGenerator, TableInfo tableInfo,
                                           TableColumnInfo columnInfo) {
         if (sequenceGenerator == null) {
@@ -376,6 +377,13 @@ public class TableMetaObject {
             tableSequence.setKeyProperties(sequenceKey.keyProperty());
             tableSequence.setKeyColumns(sequenceKey.keyColumn());
             tableSequence.setSequenceClass(sequenceKey.sequenceClass());
+            if (tableSequence.getSequenceClass() == Sequence.class
+                    && StringUtils.isNotBlank(sequenceKey.sequenceClassName())) {
+                ClassLoader classLoader = TableMetaObject.class.getClassLoader();
+                Class<? extends Sequence> clazz = (Class<? extends Sequence>) ClassUtils
+                        .resolveClassName(sequenceKey.sequenceClassName(), classLoader);
+                tableSequence.setSequenceClass(clazz);
+            }
             tableSequence.setSequenceBeanName(sequenceKey.sequenceBeanName());
             tableSequence.setSequenceName(sequenceKey.sequenceName());
             tableSequence.setOrder(sequenceKey.order());
