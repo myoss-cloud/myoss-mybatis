@@ -115,4 +115,9 @@ public class DefaultParameterHandlerCustomizer implements ParameterHandlerCustom
     public void handlerUpdate(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
         setCommonParameter(parameterObject, false);
     }
+
+    @Override
+    public void handlerDelete(MappedStatement mappedStatement, BoundSql boundSql, Object parameterObject) {
+        setCommonParameter(parameterObject, false);
+    }
 }
