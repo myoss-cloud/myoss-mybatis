@@ -381,7 +381,7 @@ public class MybatisAutoConfiguration {
                 scanner.registerFilters();
                 scanner.doScan(StringUtils.toStringArray(packages));
             } catch (IllegalStateException ex) {
-                log.debug("Could not determine auto-configuration package, automatic mapper scanning disabled.", ex);
+                log.warn("Could not determine auto-configuration package, automatic mapper scanning disabled.", ex);
             }
         }
     }
