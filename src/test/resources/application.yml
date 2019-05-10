@@ -11,5 +11,7 @@ spring:
         remarks: true
         # 设置可以获取tables remarks信息
         useInformationSchema: true
+  autoconfigure:
+    exclude: app.myoss.cloud.cache.redis.RedisLockServiceAutoConfiguration
 
 logging.level.app.myoss.cloud: DEBUG
