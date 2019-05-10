@@ -141,7 +141,6 @@ public class MybatisProperties {
      * 自动扫描 Mapper Interface 配置
      */
     @Data
-    @ConfigurationProperties(prefix = MYBATIS_MAPPER_SCANNER_PREFIX)
     public static class MapperScanner {
         /**
          * base package name
