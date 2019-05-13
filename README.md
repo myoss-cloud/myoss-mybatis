@@ -6,7 +6,7 @@
 
 ## Documentation
 
-- [Documentation Home](https://github.com/myoss-cloud/myoss-mybatis/wiki)
+- [Documentation Home](https://cloud-docs.myoss.app/myoss-mybatis/readme.html)
 
 ## Download
 
@@ -22,6 +22,6 @@
 <dependency>
     <groupId>app.myoss.cloud.mybatis</groupId>
     <artifactId>myoss-mybatis</artifactId>
-    <version>2.1.1.RELEASE</version>
+    <version>2.1.2.RELEASE</version>
 </dependency>
 ```
