@@ -51,6 +51,7 @@ import app.myoss.cloud.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguratio
 import app.myoss.cloud.mybatis.spring.mapper.MapperFactoryBean;
 import app.myoss.cloud.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConfig;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.UserControllerIntTests.MyConfig;
+import app.myoss.cloud.mybatis.test.integration.h2.test1.constants.UserStatusEnum;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.entity.User;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.service.UserService;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.web.UserController;
@@ -90,6 +91,7 @@ public class UserControllerIntTests {
         User record = new User();
         record.setEmployeeNumber("10000");
         record.setName("Jerry");
+        record.setStatus(UserStatusEnum.NORMAL);
 
         // 创建记录
         Result<Long> createResult = userController.create(record);
@@ -232,6 +234,7 @@ public class UserControllerIntTests {
         User record = new User();
         record.setEmployeeNumber("10001");
         record.setName("Jerry");
+        record.setStatus(UserStatusEnum.LOCKED);
 
         // 创建记录
         Result<Long> createResult = userService.create(record);
@@ -251,6 +254,15 @@ public class UserControllerIntTests {
             softly.assertThat(countResult.getErrorCode()).isNull();
             softly.assertThat(countResult.getErrorMsg()).isNull();
             softly.assertThat(countResult.getValue()).isNotNull().isEqualTo(1);
+        });
+
+        Result<User> idResult = userService.findByPrimaryKey(createResult.getValue());
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(idResult).isNotNull();
+            softly.assertThat(idResult.isSuccess()).isTrue();
+            softly.assertThat(idResult.getErrorCode()).isNull();
+            softly.assertThat(idResult.getErrorMsg()).isNull();
+            softly.assertThat(idResult.getValue()).isNotNull().isEqualTo(record);
         });
 
         // 删除数据

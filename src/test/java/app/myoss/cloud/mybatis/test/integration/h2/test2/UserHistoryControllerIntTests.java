@@ -53,6 +53,7 @@ import app.myoss.cloud.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguratio
 import app.myoss.cloud.mybatis.spring.mapper.MapperFactoryBean;
 import app.myoss.cloud.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConfig;
 import app.myoss.cloud.mybatis.test.integration.h2.test2.UserHistoryControllerIntTests.MyConfig;
+import app.myoss.cloud.mybatis.test.integration.h2.test2.constants.AccountStatusEnum;
 import app.myoss.cloud.mybatis.test.integration.h2.test2.entity.UserHistory;
 import app.myoss.cloud.mybatis.test.integration.h2.test2.service.UserHistoryService;
 import app.myoss.cloud.mybatis.test.integration.h2.test2.web.UserHistoryController;
@@ -94,6 +95,7 @@ public class UserHistoryControllerIntTests {
         UserHistory record = new UserHistory();
         record.setEmployeeNumber("10000");
         record.setName("Jerry");
+        record.setStatus(AccountStatusEnum.NORMAL);
 
         // 创建记录
         Result<Long> createResult = userHistoryController.create(record);
@@ -234,6 +236,7 @@ public class UserHistoryControllerIntTests {
         UserHistory record = new UserHistory();
         record.setEmployeeNumber("10001");
         record.setName("Jerry");
+        record.setStatus(AccountStatusEnum.LOCKED);
 
         // 创建记录
         Result<Long> createResult = userHistoryService.create(record);

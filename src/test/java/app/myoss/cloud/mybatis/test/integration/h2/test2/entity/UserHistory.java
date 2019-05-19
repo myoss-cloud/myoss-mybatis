@@ -26,6 +26,7 @@ import app.myoss.cloud.mybatis.table.annotation.SelectKey;
 import app.myoss.cloud.mybatis.table.annotation.SequenceGenerator;
 import app.myoss.cloud.mybatis.table.annotation.SequenceGenerator.Order;
 import app.myoss.cloud.mybatis.table.annotation.Table;
+import app.myoss.cloud.mybatis.test.integration.h2.test2.constants.AccountStatusEnum;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -183,7 +184,7 @@ public class UserHistory extends AuditIdEntity<Long> {
      * </p>
      */
     @Column(name = "status", escapedName = "`status`", jdbcTypeName = "CHAR")
-    private String            status;
+    private AccountStatusEnum status;
 
     /**
      * Database Column Name: t_sys_user_history.entry_date

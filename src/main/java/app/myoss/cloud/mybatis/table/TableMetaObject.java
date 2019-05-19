@@ -46,6 +46,7 @@ import org.apache.ibatis.mapping.ResultMap;
 import org.apache.ibatis.mapping.ResultMapping;
 import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
+import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.springframework.util.ClassUtils;
 
 import app.myoss.cloud.core.exception.BizRuntimeException;
@@ -57,6 +58,10 @@ import app.myoss.cloud.mybatis.table.annotation.SelectKey;
 import app.myoss.cloud.mybatis.table.annotation.SequenceGenerator;
 import app.myoss.cloud.mybatis.table.annotation.SequenceKey;
 import app.myoss.cloud.mybatis.table.annotation.Table;
+import app.myoss.cloud.mybatis.type.EnumValue;
+import app.myoss.cloud.mybatis.type.EnumValueAnnotationTypeHandler;
+import app.myoss.cloud.mybatis.type.EnumValueMappedType;
+import app.myoss.cloud.mybatis.type.EnumValueTypeHandler;
 import app.myoss.cloud.mybatis.type.UnsupportedTypeHandler;
 
 /**
@@ -289,6 +294,7 @@ public class TableMetaObject {
                 resultTypes[indexOf] = columnInfo.getJavaType();
             }
             initTableSequence(field.getAnnotation(SequenceGenerator.class), tableInfo, columnInfo);
+            initTypeHandlerRegistry(configuration.getTypeHandlerRegistry(), columnInfo);
             columns.add(columnInfo);
         }
         tableInfo.setColumns(columns);
@@ -404,6 +410,38 @@ public class TableMetaObject {
         }
         tableSequence.setStrategy(strategy);
         tableInfo.setTableSequence(tableSequence);
+    }
+
+    /**
+     * 初始化 "字段类型转换器"
+     *
+     * @param typeHandlerRegistry 字段类型转换器
+     * @param columnInfo 数据库表结构字段信息
+     */
+    private static void initTypeHandlerRegistry(TypeHandlerRegistry typeHandlerRegistry, TableColumnInfo columnInfo) {
+        Class<?> javaType = columnInfo.getJavaType();
+        if (javaType.isEnum()) {
+            // 注册枚举字段的类型转换器
+            Class<?> typeHandlerClass = null;
+            if (EnumValue.class.isAssignableFrom(javaType)) {
+                typeHandlerClass = EnumValueTypeHandler.class;
+            } else {
+                Field[] declaredFields = javaType.getDeclaredFields();
+                for (Field field : declaredFields) {
+                    if (field.isAnnotationPresent(EnumValueMappedType.class)) {
+                        EnumValueAnnotationTypeHandler.registryEnumField(javaType, field);
+                        typeHandlerClass = EnumValueAnnotationTypeHandler.class;
+                    }
+                }
+            }
+            if (typeHandlerClass != null) {
+                if (columnInfo.getJdbcType() != null) {
+                    typeHandlerRegistry.register(javaType, columnInfo.getJdbcType(), typeHandlerClass);
+                } else {
+                    typeHandlerRegistry.register(javaType, typeHandlerClass);
+                }
+            }
+        }
     }
 
     /**

@@ -25,6 +25,7 @@ import app.myoss.cloud.mybatis.table.annotation.FillRule;
 import app.myoss.cloud.mybatis.table.annotation.GenerationType;
 import app.myoss.cloud.mybatis.table.annotation.SequenceGenerator;
 import app.myoss.cloud.mybatis.table.annotation.Table;
+import app.myoss.cloud.mybatis.test.integration.h2.test1.constants.UserStatusEnum;
 import lombok.Data;
 import lombok.experimental.Accessors;
 
@@ -186,7 +187,7 @@ public class User implements Serializable {
      * </p>
      */
     @Column(name = "status", escapedName = "`status`", jdbcTypeName = "CHAR")
-    private String            status;
+    private UserStatusEnum    status;
 
     /**
      * Database Column Name: t_sys_user.entry_date
