@@ -17,8 +17,6 @@
 
 package app.myoss.cloud.mybatis.test.integration.h2.test2.constants;
 
-import java.io.Serializable;
-
 import app.myoss.cloud.mybatis.type.EnumValue;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -32,7 +30,7 @@ import lombok.Getter;
  */
 @Getter
 @AllArgsConstructor
-public enum AccountStatusEnum implements EnumValue {
+public enum AccountStatusEnum implements EnumValue<String> {
     /**
      * 正常
      */
@@ -46,7 +44,7 @@ public enum AccountStatusEnum implements EnumValue {
     private String name;
 
     @Override
-    public Serializable getDbValue() {
+    public String getDbValue() {
         return this.code;
     }
 }

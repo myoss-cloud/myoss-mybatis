@@ -25,7 +25,7 @@ import java.io.Serializable;
  * <pre>
  * &#64;Getter
  * &#64;AllArgsConstructor
- * public enum AccountStatusEnum implements EnumValue {
+ * public enum AccountStatusEnum implements EnumValue&lt;String&gt; {
  *     NORMAL(&quot;N&quot;, &quot;正常&quot;),
  *     LOCKED(&quot;L&quot;, &quot;锁定&quot;);
  *
@@ -33,7 +33,7 @@ import java.io.Serializable;
  *     private String name;
  *
  *     &#64;Override
- *     public Serializable getDbValue() {
+ *     public String getDbValue() {
  *         return this.code;
  *     }
  * }
