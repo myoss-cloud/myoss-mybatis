@@ -96,8 +96,9 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         this.crudMapper = crudMapper;
         this.tableInfo = TableMetaObject.getTableInfo(this.entityClass);
         if (this.tableInfo != null) {
-            this.fieldColumns = Collections.unmodifiableMap(this.tableInfo.getColumns().stream().collect(
-                    Collectors.toMap(TableColumnInfo::getProperty, TableColumnInfo::getActualColumn)));
+            this.fieldColumns = Collections.unmodifiableMap(this.tableInfo.getColumns()
+                    .stream()
+                    .collect(Collectors.toMap(TableColumnInfo::getProperty, TableColumnInfo::getActualColumn)));
         } else {
             log.error("[{}] getTableInfo failed in [{}]", this.entityClass, this.getClass());
         }
@@ -388,8 +389,9 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             for (T item : exists) {
                 Serializable id1 = ((PrimaryKeyEntity) item).getPrimaryKey();
                 if (!id1.equals(id)) {
-                    result.setSuccess(false).setErrorCode(MybatisConstants.MORE_RECORDS).setErrorMsg(
-                            "已经存在相同的记录，主键id=" + id1);
+                    result.setSuccess(false)
+                            .setErrorCode(MybatisConstants.MORE_RECORDS)
+                            .setErrorMsg("已经存在相同的记录，主键id=" + id1);
                     return true;
                 }
             }
@@ -609,8 +611,9 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             setValue4Create(record, optionParam);
             boolean flag = checkDBResult(crudMapper.insert(record));
             if (!flag) {
-                return result.setSuccess(false).setErrorCode(MybatisConstants.INSERT_DB_FAILED).setErrorMsg(
-                        "插入失败，请检查。[" + record + "]");
+                return result.setSuccess(false)
+                        .setErrorCode(MybatisConstants.INSERT_DB_FAILED)
+                        .setErrorMsg("插入失败，请检查。[" + record + "]");
             }
         }
         return result.setValue(true);
@@ -927,10 +930,9 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         Map<String, Object> extraInfo = condition.getExtraInfo();
         List<T> details = crudMapper.selectPage2(param, extraInfo, pageStart, pageSize, orders);
         int totalCount = crudMapper.selectCount2(param, extraInfo);
+        result.setValue(details).setTotalCount(totalCount).setPageNum(dbPageNum + 1).setPageSize(pageSize);
         // 设置额外字段
         addPageExtraInfo(condition, result);
-
-        result.setValue(details).setTotalCount(totalCount).setPageNum(dbPageNum + 1).setPageSize(pageSize);
         return result;
     }
 }
