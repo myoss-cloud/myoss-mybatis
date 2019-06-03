@@ -19,12 +19,15 @@ package app.myoss.cloud.mybatis.test.integration.h2.test4;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Assert;
 import org.junit.Rule;
@@ -480,6 +483,83 @@ public class SysUserLogControllerIntTests {
             target.setEmployeeNumber((String) updateUseMap.get("employeeNumber"));
             softly.assertThat(idResult4.getValue()).isNotNull().isEqualTo(target);
         });
+    }
+
+    /**
+     * "自定义通用SQL查询条件"测试案例1
+     */
+    @Test
+    public void createBatchAndWhereExtraConditionTest1() {
+        List<SysUserLog> exceptedList = new ArrayList<>();
+        List<SysUserLog> allList = new ArrayList<>();
+        for (int i = 0; i < 10; i++) {
+            SysUserLog record = new SysUserLog();
+            record.setEmployeeNumber("10000_" + 1);
+            record.setInfo("Jerry_" + i);
+            if (i >= 5) {
+                exceptedList.add(record);
+            } else {
+                // 干扰查询数据，检验查询条件正确
+                record.setInfo("GoodBody_" + i);
+            }
+            allList.add(record);
+        }
+        // 创建记录
+        Result<Boolean> createResult = userLogService.createBatch(allList);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(createResult).isNotNull();
+            softly.assertThat(createResult.isSuccess()).isTrue();
+            softly.assertThat(createResult.getErrorCode()).isNull();
+            softly.assertThat(createResult.getErrorMsg()).isNull();
+            softly.assertThat(createResult.getValue()).isTrue();
+        });
+
+        Page<SysUserLog> pageCondition2 = new Page<>();
+        HashMap<String, Object> extraInfo = new HashMap<>();
+        extraInfo.put("infoLike", "erry_");
+        pageCondition2.setExtraInfo(extraInfo);
+        pageCondition2.setPageNum(1);
+        pageCondition2.setPageSize(exceptedList.size());
+        Page<SysUserLog> pageResult2 = userLogController.findPage(pageCondition2);
+        SoftAssertions.assertSoftly(softly -> {
+            softly.assertThat(pageResult2).isNotNull();
+            softly.assertThat(pageResult2.isSuccess()).isTrue();
+            softly.assertThat(pageResult2.getErrorCode()).isNull();
+            softly.assertThat(pageResult2.getErrorMsg()).isNull();
+            softly.assertThat(pageResult2.getPageNum()).isEqualTo(1);
+            softly.assertThat(pageResult2.getPageSize()).isEqualTo(exceptedList.size());
+            softly.assertThat(pageResult2.getTotalCount()).isEqualTo(exceptedList.size());
+            softly.assertThat(pageResult2.getValue()).isNotEmpty().hasSize(exceptedList.size());
+            softly.assertThat(pageResult2.getValue()).isEqualTo(exceptedList);
+        });
+
+        // 使用主键id查询
+        List<Long> ids = pageResult2.getValue().stream().map(SysUserLog::getId).collect(Collectors.toList());
+        List<SysUserLog> users = userLogMapper.selectListByPrimaryKey(ids);
+        Assertions.assertThat(users).isNotEmpty().hasSize(exceptedList.size());
+
+        List<SysUserLog> userIds = pageResult2.getValue().stream().map(user -> {
+            SysUserLog sysUserLog = new SysUserLog();
+            sysUserLog.setId(user.getId());
+            return sysUserLog;
+        }).collect(Collectors.toList());
+        List<SysUserLog> users2 = userLogMapper.selectListWithPrimaryKey(userIds);
+        Assertions.assertThat(users2).isNotEmpty().hasSize(exceptedList.size());
+
+        Assertions.assertThat(users).isEqualTo(users2);
+
+        // 删除记录
+        int deleteCount = userLogMapper.deleteByPrimaryKey(ids.get(0));
+        Assertions.assertThat(deleteCount).isEqualTo(1);
+
+        // 再次查询，获取逻辑删除记录
+        List<SysUserLog> users3 = userLogMapper.selectListByPrimaryKey(ids);
+        SysUserLog sysUserLogDeleted = pageResult2.getValue().get(0);
+        Assertions.assertThat(users3).isNotEmpty().hasSize(exceptedList.size() - 1).doesNotContain(sysUserLogDeleted);
+        List<SysUserLog> users4 = userLogMapper.selectListByPrimaryKeyIncludeLogicDelete(ids);
+        Assertions.assertThat(users4).isNotEmpty().hasSize(exceptedList.size());
+        Assertions.assertThat(users4.get(0))
+                .isEqualToComparingOnlyGivenFields(sysUserLogDeleted, "id", "employeeNumber", "info");
     }
 
     /**

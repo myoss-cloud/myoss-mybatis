@@ -756,4 +756,96 @@ public class TableMetaObject {
         return sql;
     }
 
+    /**
+     * 生成 where 主键条件sql语句（{@code includeLogicDelete = false}
+     * ，如果表是逻辑删除，会添加逻辑删除的字段），示例如下：
+     *
+     * <pre>
+     * &lt;where&gt;
+     *  AND id in
+     *  &lt;foreach collection=&quot;ids&quot; item=&quot;item&quot; separator=&quot;,&quot; open=&quot;(&quot; close=&quot;)&quot;&gt;
+     *    #{item}
+     *  &lt;/foreach&gt;
+     *  AND is_deleted = 'N'
+     * &lt;/where&gt;
+     * </pre>
+     *
+     * @param tableInfo 数据库表结构信息
+     * @param includeLogicDelete 是否不过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
+     * @return sql语句
+     */
+    public static StringBuilder builderWhereByListPrimaryKeySql(TableInfo tableInfo, boolean includeLogicDelete) {
+        StringBuilder sql = new StringBuilder(256);
+        sql.append("<where>\n");
+        for (TableColumnInfo columnInfo : tableInfo.getPrimaryKeyColumns()) {
+            sql.append("  AND ").append(columnInfo.getActualColumn()).append(" in ");
+            sql.append("\n  <foreach collection=\"ids\" item=\"item\" separator=\",\" open=\"(\" close=\")\">");
+            sql.append("\n    #{").append("item");
+            if (columnInfo.getJdbcType() != null) {
+                sql.append(",jdbcType=BIGINT");
+            }
+            sql.append("}");
+            sql.append("\n  </foreach>\n");
+        }
+        if (!includeLogicDelete && tableInfo.isLogicDelete()) {
+            for (TableColumnInfo item : tableInfo.getLogicDeleteColumns()) {
+                sql.append("  AND ").append(item.getActualColumn()).append(" = ");
+                if (CharSequence.class.isAssignableFrom(item.getJavaType())) {
+                    sql.append("'").append(item.getLogicUnDeleteValue()).append("'");
+                } else {
+                    sql.append(item.getLogicUnDeleteValue());
+                }
+                sql.append("\n");
+            }
+        }
+        sql.append("</where>");
+        return sql;
+    }
+
+    /**
+     * 生成 where 主键条件sql语句（{@code includeLogicDelete = false}
+     * ，如果表是逻辑删除，会添加逻辑删除的字段），示例如下：
+     *
+     * <pre>
+     * &lt;where&gt;
+     *  AND id in
+     *  &lt;foreach collection=&quot;ids&quot; item=&quot;item&quot; separator=&quot;,&quot; open=&quot;(&quot; close=&quot;)&quot;&gt;
+     *    #{item}
+     *  &lt;/foreach&gt;
+     *  AND is_deleted = 'N'
+     * &lt;/where&gt;
+     * </pre>
+     *
+     * @param tableInfo 数据库表结构信息
+     * @param includeLogicDelete 是否不过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
+     * @return sql语句
+     */
+    public static StringBuilder builderWhereWithListPrimaryKeySql(TableInfo tableInfo, boolean includeLogicDelete) {
+        StringBuilder sql = new StringBuilder(256);
+        sql.append("<where>\n");
+        for (TableColumnInfo columnInfo : tableInfo.getPrimaryKeyColumns()) {
+            sql.append("  AND ").append(columnInfo.getActualColumn()).append(" in ");
+            sql.append("\n  <foreach collection=\"ids\" item=\"item\" separator=\",\" open=\"(\" close=\")\">");
+            sql.append("\n    #{").append("item.").append(columnInfo.getProperty());
+            if (columnInfo.getJdbcType() != null) {
+                sql.append(",jdbcType=BIGINT");
+            }
+            sql.append("}");
+            sql.append("\n  </foreach>\n");
+        }
+        if (!includeLogicDelete && tableInfo.isLogicDelete()) {
+            for (TableColumnInfo item : tableInfo.getLogicDeleteColumns()) {
+                sql.append("  AND ").append(item.getActualColumn()).append(" = ");
+                if (CharSequence.class.isAssignableFrom(item.getJavaType())) {
+                    sql.append("'").append(item.getLogicUnDeleteValue()).append("'");
+                } else {
+                    sql.append(item.getLogicUnDeleteValue());
+                }
+                sql.append("\n");
+            }
+        }
+        sql.append("</where>");
+        return sql;
+    }
+
 }

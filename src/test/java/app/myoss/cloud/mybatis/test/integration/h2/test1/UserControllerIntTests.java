@@ -21,10 +21,12 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import org.apache.ibatis.mapping.BoundSql;
 import org.apache.ibatis.mapping.MappedStatement;
 import org.apache.ibatis.reflection.MetaObject;
+import org.assertj.core.api.Assertions;
 import org.assertj.core.api.SoftAssertions;
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +55,7 @@ import app.myoss.cloud.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConf
 import app.myoss.cloud.mybatis.test.integration.h2.test1.UserControllerIntTests.MyConfig;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.constants.UserStatusEnum;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.entity.User;
+import app.myoss.cloud.mybatis.test.integration.h2.test1.mapper.UserMapper;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.service.UserService;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.web.UserController;
 import lombok.extern.slf4j.Slf4j;
@@ -74,6 +77,8 @@ public class UserControllerIntTests {
     private UserController userController;
     @Autowired
     private UserService    userService;
+    @Autowired
+    private UserMapper     userMapper;
     @Autowired
     private JdbcTemplate   jdbcTemplate;
 
@@ -331,6 +336,19 @@ public class UserControllerIntTests {
             softly.assertThat(pageResult2.getValue()).isNotEmpty().hasSize(exceptedList.size());
             softly.assertThat(pageResult2.getValue()).isEqualTo(exceptedList);
         });
+
+        List<Long> ids = pageResult2.getValue().stream().map(User::getId).collect(Collectors.toList());
+        List<User> users = userMapper.selectListByPrimaryKey(ids);
+        Assertions.assertThat(users).isNotEmpty().hasSize(exceptedList.size());
+
+        List<User> userIds = pageResult2.getValue()
+                .stream()
+                .map(user -> new User().setId(user.getId()))
+                .collect(Collectors.toList());
+        List<User> users2 = userMapper.selectListWithPrimaryKey(userIds);
+        Assertions.assertThat(users2).isNotEmpty().hasSize(exceptedList.size());
+
+        Assertions.assertThat(users).isEqualTo(users2);
     }
 
     @ComponentScan(basePackageClasses = UserControllerIntTests.class)

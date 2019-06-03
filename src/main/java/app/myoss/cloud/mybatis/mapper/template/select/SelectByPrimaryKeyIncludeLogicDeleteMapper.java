@@ -18,7 +18,10 @@
 package app.myoss.cloud.mybatis.mapper.template.select;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 
 import app.myoss.cloud.mybatis.mapper.annotation.RegisterMapper;
@@ -53,4 +56,24 @@ public interface SelectByPrimaryKeyIncludeLogicDeleteMapper<T> {
      */
     @SelectProvider(type = SelectIncludeLogicDeleteMapperTemplate.class, method = "dynamicSql")
     T selectWithPrimaryKeyIncludeLogicDelete(T condition);
+
+    /**
+     * 根据主键字段查询实体对象，可以支持查询多个主键，不会过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
+     *
+     * @param ids 多个主键id
+     * @return 对应的实体对象
+     * @see SelectIncludeLogicDeleteMapperTemplate#selectListByPrimaryKeyIncludeLogicDelete
+     */
+    @SelectProvider(type = SelectIncludeLogicDeleteMapperTemplate.class, method = "dynamicSql")
+    List<T> selectListByPrimaryKeyIncludeLogicDelete(@Param("ids") Collection<? extends Serializable> ids);
+
+    /**
+     * 根据主键字段查询实体对象，可以支持查询多个主键，不会过滤掉已经被标记为逻辑删除（{@link Column#logicDelete}）的数据
+     *
+     * @param ids 多个主键id
+     * @return 对应的实体对象
+     * @see SelectIncludeLogicDeleteMapperTemplate#selectListWithPrimaryKeyIncludeLogicDelete
+     */
+    @SelectProvider(type = SelectIncludeLogicDeleteMapperTemplate.class, method = "dynamicSql")
+    List<T> selectListWithPrimaryKeyIncludeLogicDelete(@Param("ids") Collection<T> ids);
 }

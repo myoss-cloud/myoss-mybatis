@@ -18,6 +18,7 @@
 package app.myoss.cloud.mybatis.mapper.template.select.impl;
 
 import java.io.Serializable;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -377,5 +378,91 @@ public class SelectMapperTemplate extends AbstractMapperTemplate {
      */
     public String selectWithPrimaryKey(TableInfo tableInfo, MappedStatement ms) {
         return selectByPrimaryKey(tableInfo, ms);
+    }
+
+    /**
+     * 查询记录，生成 select 语句。
+     * <p>
+     * 示例如下：
+     *
+     * <pre>
+     * SELECT id,... FROM table_name
+     * &lt;where&gt;
+     *  AND id in
+     *  &lt;foreach collection=&quot;ids&quot; item=&quot;item&quot; separator=&quot;,&quot; open=&quot;(&quot; close=&quot;)&quot;&gt;
+     *    #{item}
+     *  &lt;/foreach&gt;
+     *  AND is_deleted = 'N'
+     * &lt;/where&gt;
+     * </pre>
+     *
+     * @param tableInfo 数据库表结构信息
+     * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
+     * @return 生成的sql语句
+     * @see SelectByPrimaryKeyMapper#selectListByPrimaryKey(Collection)
+     */
+    public String selectListByPrimaryKey(TableInfo tableInfo, MappedStatement ms) {
+        MetaObject metaObject = SystemMetaObject.forObject(ms);
+        // 替换 resultMap 对象
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        metaObject.setValue("resultMaps", resultMaps);
+
+        // 生成 sql 语句
+        StringBuilder builder = new StringBuilder(1024);
+        builder.append("SELECT ").append(tableInfo.getSelectAllColumnsSql());
+        builder.append(" FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
+        builder.append(TableMetaObject.builderWhereByListPrimaryKeySql(tableInfo, false));
+        String sql = builder.toString();
+
+        // 替换 sqlSource 对象
+        Configuration configuration = ms.getConfiguration();
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
+        metaObject.setValue("sqlSource", sqlSource);
+        return sql;
+    }
+
+    /**
+     * 查询记录，生成 select 语句。
+     * <p>
+     * 示例如下：
+     *
+     * <pre>
+     * SELECT id,... FROM table_name
+     * &lt;where&gt;
+     *  AND id in
+     *  &lt;foreach collection=&quot;ids&quot; item=&quot;item&quot; separator=&quot;,&quot; open=&quot;(&quot; close=&quot;)&quot;&gt;
+     *    #{item}
+     *  &lt;/foreach&gt;
+     *  AND is_deleted = 'N'
+     * &lt;/where&gt;
+     * </pre>
+     *
+     * @param tableInfo 数据库表结构信息
+     * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
+     * @return 生成的sql语句
+     * @see SelectByPrimaryKeyMapper#selectListWithPrimaryKey(Collection)
+     */
+    public String selectListWithPrimaryKey(TableInfo tableInfo, MappedStatement ms) {
+        MetaObject metaObject = SystemMetaObject.forObject(ms);
+        // 替换 resultMap 对象
+        List<ResultMap> resultMaps = Stream.of(tableInfo.getBaseResultMap())
+                .collect(Collectors.collectingAndThen(Collectors.toList(), Collections::unmodifiableList));
+        metaObject.setValue("resultMaps", resultMaps);
+
+        // 生成 sql 语句
+        StringBuilder builder = new StringBuilder(1024);
+        builder.append("SELECT ").append(tableInfo.getSelectAllColumnsSql());
+        builder.append(" FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
+        builder.append(TableMetaObject.builderWhereWithListPrimaryKeySql(tableInfo, false));
+        String sql = builder.toString();
+
+        // 替换 sqlSource 对象
+        Configuration configuration = ms.getConfiguration();
+        SqlSource sqlSource = xmlLanguageDriver.createSqlSource(configuration, "<script>\n" + sql + "\n</script>",
+                null);
+        metaObject.setValue("sqlSource", sqlSource);
+        return sql;
     }
 }

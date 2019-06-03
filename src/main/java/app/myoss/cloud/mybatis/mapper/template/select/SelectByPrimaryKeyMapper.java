@@ -18,7 +18,10 @@
 package app.myoss.cloud.mybatis.mapper.template.select;
 
 import java.io.Serializable;
+import java.util.Collection;
+import java.util.List;
 
+import org.apache.ibatis.annotations.Param;
 import org.apache.ibatis.annotations.SelectProvider;
 
 import app.myoss.cloud.mybatis.mapper.annotation.RegisterMapper;
@@ -52,4 +55,24 @@ public interface SelectByPrimaryKeyMapper<T> {
      */
     @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
     T selectWithPrimaryKey(T condition);
+
+    /**
+     * 根据主键字段查询实体对象，可以支持查询多个主键
+     *
+     * @param ids 多个主键id
+     * @return 对应的实体对象
+     * @see SelectMapperTemplate#selectListByPrimaryKey
+     */
+    @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
+    List<T> selectListByPrimaryKey(@Param("ids") Collection<? extends Serializable> ids);
+
+    /**
+     * 根据主键字段查询实体对象，可以支持查询多个主键
+     *
+     * @param ids 多个主键id
+     * @return 对应的实体对象
+     * @see SelectMapperTemplate#selectListWithPrimaryKey
+     */
+    @SelectProvider(type = SelectMapperTemplate.class, method = "dynamicSql")
+    List<T> selectListWithPrimaryKey(@Param("ids") Collection<T> ids);
 }

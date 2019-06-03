@@ -1,5 +1,5 @@
 mybatis:
   mapper-locations:
-    - classpath*:mybatis/mapper/h2/test2/UserHistoryMapper.xml
+    - classpath*:mybatis/mapper/test2/UserHistoryMapper.xml
   configuration:
     log-impl: org.apache.ibatis.logging.slf4j.Slf4jImpl

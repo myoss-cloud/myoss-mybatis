@@ -21,5 +21,8 @@
 
     <!-- 自定义通用SQL查询条件 -->
     <sql id="Where_Extra_Condition">
+        <if test="extraCondition.infoLike != null">
+            AND info LIKE CONCAT('%', #{extraCondition.infoLike,jdbcType=VARCHAR}, '%')
+        </if>
     </sql>
 </mapper>
