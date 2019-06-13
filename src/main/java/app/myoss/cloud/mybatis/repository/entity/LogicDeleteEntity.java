@@ -47,7 +47,7 @@ public class LogicDeleteEntity implements BaseEntity {
      * </p>
      */
     @JSONField(label = LABEL_LOGIC_DELETE_ENTITY)
-    @Column(name = "is_deleted", nullable = false, jdbcTypeName = "CHAR", fillRule = {
+    @Column(name = "is_deleted", nullable = false, fillRule = {
             FillRule.INSERT }, logicDelete = true, logicDeleteValue = MyossConstants.Y, logicUnDeleteValue = MyossConstants.N)
     private String             isDeleted;
 }

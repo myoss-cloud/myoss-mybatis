@@ -147,13 +147,6 @@ public @interface Column {
     String logicUnDeleteValue() default "";
 
     /**
-     * (Optional) jdbcType name, like: VARCHAR, INTEGER, BIGINT, DECIMAL
-     *
-     * @return jdbcType name
-     */
-    String jdbcTypeName() default "";
-
-    /**
      * 数据库字段类型转换为Java类型处理器
      *
      * @return Java类型处理器

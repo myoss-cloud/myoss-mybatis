@@ -177,9 +177,6 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
                     }
                 } else {
                     builder.append(" = #{").append(columnInfo.getProperty());
-                    if (columnInfo.getJdbcType() != null) {
-                        builder.append(",jdbcType=BIGINT");
-                    }
                     builder.append("}");
                 }
                 builder.append(",\n");
@@ -315,11 +312,10 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
                 if (!fillUpdate) {
                     builder.append("  <if test=\"record.").append(columnInfo.getProperty()).append(" != null\">\n  ");
                 }
-                builder.append("  ").append(columnInfo.getActualColumn()).append(" = #{record.").append(
-                        columnInfo.getProperty());
-                if (columnInfo.getJdbcType() != null) {
-                    builder.append(",jdbcType=BIGINT");
-                }
+                builder.append("  ")
+                        .append(columnInfo.getActualColumn())
+                        .append(" = #{record.")
+                        .append(columnInfo.getProperty());
                 builder.append("},\n");
                 if (!fillUpdate) {
                     builder.append("  </if>\n");

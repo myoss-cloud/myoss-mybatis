@@ -20,7 +20,6 @@ package app.myoss.cloud.mybatis.table;
 import java.beans.PropertyDescriptor;
 import java.util.Map;
 
-import org.apache.ibatis.type.JdbcType;
 import org.apache.ibatis.type.TypeHandler;
 
 import app.myoss.cloud.mybatis.table.annotation.FillRule;
@@ -49,10 +48,6 @@ public class TableColumnInfo {
      * 编码之后的字段名，比如：字段名是关键字、有空格
      */
     private String                          escapedColumn;
-    /**
-     * 字段jdbc type
-     */
-    private JdbcType                        jdbcType;
     /**
      * 数据库字段类型转换为Java类型处理器
      */

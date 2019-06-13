@@ -55,7 +55,7 @@ public class UserLog extends AuditIdEntity<Long> {
      * Database Column Remarks: 员工编号
      * </p>
      */
-    @Column(name = "employee_number", jdbcTypeName = "VARCHAR")
+    @Column(name = "employee_number")
     private String            employeeNumber;
 
     /**
@@ -64,7 +64,7 @@ public class UserLog extends AuditIdEntity<Long> {
      * Database Column Remarks: 日志信息
      * </p>
      */
-    @Column(name = "info", jdbcTypeName = "VARCHAR")
+    @Column(name = "info")
     private String            info;
 
 }

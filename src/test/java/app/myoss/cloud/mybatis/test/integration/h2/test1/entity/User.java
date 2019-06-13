@@ -51,7 +51,7 @@ public class User implements Serializable {
      * Database Column Remarks: 主键id
      * </p>
      */
-    @Column(name = "id", nullable = false, jdbcTypeName = "BIGINT", primaryKey = true)
+    @Column(name = "id", nullable = false, primaryKey = true)
     private Long              id;
 
     /**
@@ -60,7 +60,7 @@ public class User implements Serializable {
      * Database Column Remarks: 员工编号
      * </p>
      */
-    @Column(name = "employee_number", jdbcTypeName = "VARCHAR")
+    @Column(name = "employee_number")
     private String            employeeNumber;
 
     /**
@@ -69,7 +69,7 @@ public class User implements Serializable {
      * Database Column Remarks: 登录账号
      * </p>
      */
-    @Column(name = "account", jdbcTypeName = "VARCHAR")
+    @Column(name = "account")
     private String            account;
 
     /**
@@ -78,7 +78,7 @@ public class User implements Serializable {
      * Database Column Remarks: 密码
      * </p>
      */
-    @Column(name = "password", escapedName = "`password`", jdbcTypeName = "VARCHAR")
+    @Column(name = "password", escapedName = "`password`")
     private String            password;
 
     /**
@@ -87,7 +87,7 @@ public class User implements Serializable {
      * Database Column Remarks: 密钥
      * </p>
      */
-    @Column(name = "salt", jdbcTypeName = "VARCHAR")
+    @Column(name = "salt")
     private String            salt;
 
     /**
@@ -96,7 +96,7 @@ public class User implements Serializable {
      * Database Column Remarks: 姓名
      * </p>
      */
-    @Column(name = "name", escapedName = "`name`", jdbcTypeName = "VARCHAR")
+    @Column(name = "name", escapedName = "`name`")
     private String            name;
 
     /**
@@ -105,7 +105,7 @@ public class User implements Serializable {
      * Database Column Remarks: 性别
      * </p>
      */
-    @Column(name = "gender", jdbcTypeName = "CHAR")
+    @Column(name = "gender")
     private String            gender;
 
     /**
@@ -114,7 +114,7 @@ public class User implements Serializable {
      * Database Column Remarks: 生日
      * </p>
      */
-    @Column(name = "birthday", jdbcTypeName = "DATE")
+    @Column(name = "birthday")
     private Date              birthday;
 
     /**
@@ -123,7 +123,7 @@ public class User implements Serializable {
      * Database Column Remarks: 邮箱
      * </p>
      */
-    @Column(name = "email", jdbcTypeName = "VARCHAR")
+    @Column(name = "email")
     private String            email;
 
     /**
@@ -132,7 +132,7 @@ public class User implements Serializable {
      * Database Column Remarks: 联系电话
      * </p>
      */
-    @Column(name = "phone", jdbcTypeName = "VARCHAR")
+    @Column(name = "phone")
     private String            phone;
 
     /**
@@ -141,7 +141,7 @@ public class User implements Serializable {
      * Database Column Remarks: 工作电话
      * </p>
      */
-    @Column(name = "telephone", jdbcTypeName = "VARCHAR")
+    @Column(name = "telephone")
     private String            telephone;
 
     /**
@@ -150,7 +150,7 @@ public class User implements Serializable {
      * Database Column Remarks: 所属公司
      * </p>
      */
-    @Column(name = "company_id", jdbcTypeName = "BIGINT")
+    @Column(name = "company_id")
     private Long              companyId;
 
     /**
@@ -159,7 +159,7 @@ public class User implements Serializable {
      * Database Column Remarks: 用户所属部门
      * </p>
      */
-    @Column(name = "dept_id", jdbcTypeName = "BIGINT")
+    @Column(name = "dept_id")
     private Long              deptId;
 
     /**
@@ -168,7 +168,7 @@ public class User implements Serializable {
      * Database Column Remarks: 所在职位
      * </p>
      */
-    @Column(name = "position_id", jdbcTypeName = "BIGINT")
+    @Column(name = "position_id")
     private Long              positionId;
 
     /**
@@ -177,7 +177,7 @@ public class User implements Serializable {
      * Database Column Remarks: 归属领导id
      * </p>
      */
-    @Column(name = "parent_user_id", jdbcTypeName = "BIGINT")
+    @Column(name = "parent_user_id")
     private Long              parentUserId;
 
     /**
@@ -186,7 +186,7 @@ public class User implements Serializable {
      * Database Column Remarks: 状态（1: 启用; 2: 禁用）
      * </p>
      */
-    @Column(name = "status", escapedName = "`status`", jdbcTypeName = "CHAR")
+    @Column(name = "status", escapedName = "`status`")
     private UserStatusEnum    status;
 
     /**
@@ -195,7 +195,7 @@ public class User implements Serializable {
      * Database Column Remarks: 入职时间
      * </p>
      */
-    @Column(name = "entry_date", jdbcTypeName = "DATE")
+    @Column(name = "entry_date")
     private Date              entryDate;
 
     /**
@@ -204,7 +204,7 @@ public class User implements Serializable {
      * Database Column Remarks: 离职日期
      * </p>
      */
-    @Column(name = "leave_date", jdbcTypeName = "DATE")
+    @Column(name = "leave_date")
     private Date              leaveDate;
 
     /**
@@ -213,8 +213,7 @@ public class User implements Serializable {
      * Database Column Remarks: 是否删除
      * </p>
      */
-    @Column(name = "is_deleted", nullable = false, jdbcTypeName = "CHAR", fillRule = { FillRule.INSERT,
-            FillRule.UPDATE })
+    @Column(name = "is_deleted", nullable = false, fillRule = { FillRule.INSERT, FillRule.UPDATE })
     private String            isDeleted;
 
     /**
@@ -223,8 +222,7 @@ public class User implements Serializable {
      * Database Column Remarks: 创建者
      * </p>
      */
-    @Column(name = "creator", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT,
-            FillRule.UPDATE })
+    @Column(name = "creator", nullable = false, fillRule = { FillRule.INSERT, FillRule.UPDATE })
     private String            creator;
 
     /**
@@ -233,8 +231,7 @@ public class User implements Serializable {
      * Database Column Remarks: 修改者
      * </p>
      */
-    @Column(name = "modifier", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT,
-            FillRule.UPDATE })
+    @Column(name = "modifier", nullable = false, fillRule = { FillRule.INSERT, FillRule.UPDATE })
     private String            modifier;
 
     /**
@@ -243,8 +240,7 @@ public class User implements Serializable {
      * Database Column Remarks: 创建时间
      * </p>
      */
-    @Column(name = "gmt_created", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT,
-            FillRule.UPDATE })
+    @Column(name = "gmt_created", nullable = false, fillRule = { FillRule.INSERT, FillRule.UPDATE })
     private Date              gmtCreated;
 
     /**
@@ -253,8 +249,7 @@ public class User implements Serializable {
      * Database Column Remarks: 修改时间
      * </p>
      */
-    @Column(name = "gmt_modified", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT,
-            FillRule.UPDATE })
+    @Column(name = "gmt_modified", nullable = false, fillRule = { FillRule.INSERT, FillRule.UPDATE })
     private Date              gmtModified;
 
 }

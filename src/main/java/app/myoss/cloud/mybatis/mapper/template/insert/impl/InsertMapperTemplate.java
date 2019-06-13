@@ -176,9 +176,6 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
             builder.append(columnInfo.getActualColumn()).append(", ");
 
             values.append("#{").append(columnInfo.getProperty());
-            if (columnInfo.getJdbcType() != null) {
-                values.append(",jdbcType=BIGINT");
-            }
             values.append("}, ");
         }
         values.deleteCharAt(values.length() - 2);
@@ -250,9 +247,6 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
                 values.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
             }
             values.append("    #{").append(columnInfo.getProperty());
-            if (columnInfo.getJdbcType() != null) {
-                values.append(",jdbcType=BIGINT");
-            }
             values.append("},\n");
             if (!fillInsert) {
                 values.append("  </if>\n");
@@ -306,9 +300,6 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
             builder.append(columnInfo.getActualColumn()).append(", ");
 
             values.append("#{item.").append(columnInfo.getProperty());
-            if (columnInfo.getJdbcType() != null) {
-                values.append(",jdbcType=BIGINT");
-            }
             values.append("}, ");
         }
         values.deleteCharAt(values.length() - 2).append(")\n</foreach>");

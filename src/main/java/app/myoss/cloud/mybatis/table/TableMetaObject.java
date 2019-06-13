@@ -435,11 +435,7 @@ public class TableMetaObject {
                 }
             }
             if (typeHandlerClass != null) {
-                if (columnInfo.getJdbcType() != null) {
-                    typeHandlerRegistry.register(javaType, columnInfo.getJdbcType(), typeHandlerClass);
-                } else {
-                    typeHandlerRegistry.register(javaType, typeHandlerClass);
-                }
+                typeHandlerRegistry.register(javaType, typeHandlerClass);
             }
         }
     }
@@ -567,9 +563,6 @@ public class TableMetaObject {
         for (TableColumnInfo item : tableInfo.getColumns()) {
             ResultMapping.Builder builder = new ResultMapping.Builder(configuration, item.getProperty(),
                     item.getColumn(), item.getJavaType());
-            if (item.getJdbcType() != null) {
-                builder.jdbcType(item.getJdbcType());
-            }
             if (item.getTypeHandler() != null) {
                 try {
                     TypeHandler<?> typeHandler = item.getTypeHandler().newInstance();
@@ -635,9 +628,6 @@ public class TableMetaObject {
             sql.append("  <if test=\"").append(item.getProperty()).append(" != null\">\n");
 
             sql.append("    and ").append(item.getActualColumn()).append(" = #{").append(item.getProperty());
-            if (item.getJdbcType() != null) {
-                sql.append(",jdbcType=").append(item.getJdbcType().name());
-            }
             sql.append("}\n");
 
             sql.append("  </if>\n");
@@ -692,9 +682,6 @@ public class TableMetaObject {
                     .append(" = #{")
                     .append(prefix)
                     .append(item.getProperty());
-            if (item.getJdbcType() != null) {
-                sql.append(",jdbcType=").append(item.getJdbcType().name());
-            }
             sql.append("}\n");
 
             sql.append("    </if>\n");
@@ -736,9 +723,6 @@ public class TableMetaObject {
         for (TableColumnInfo columnInfo : tableInfo.getPrimaryKeyColumns()) {
             sql.append("  AND ").append(columnInfo.getActualColumn()).append(" = ");
             sql.append("#{").append(columnInfo.getProperty());
-            if (columnInfo.getJdbcType() != null) {
-                sql.append(",jdbcType=BIGINT");
-            }
             sql.append("}\n");
         }
         if (!includeLogicDelete && tableInfo.isLogicDelete()) {
@@ -781,9 +765,6 @@ public class TableMetaObject {
             sql.append("  AND ").append(columnInfo.getActualColumn()).append(" in ");
             sql.append("\n  <foreach collection=\"ids\" item=\"item\" separator=\",\" open=\"(\" close=\")\">");
             sql.append("\n    #{").append("item");
-            if (columnInfo.getJdbcType() != null) {
-                sql.append(",jdbcType=BIGINT");
-            }
             sql.append("}");
             sql.append("\n  </foreach>\n");
         }
@@ -827,9 +808,6 @@ public class TableMetaObject {
             sql.append("  AND ").append(columnInfo.getActualColumn()).append(" in ");
             sql.append("\n  <foreach collection=\"ids\" item=\"item\" separator=\",\" open=\"(\" close=\")\">");
             sql.append("\n    #{").append("item.").append(columnInfo.getProperty());
-            if (columnInfo.getJdbcType() != null) {
-                sql.append(",jdbcType=BIGINT");
-            }
             sql.append("}");
             sql.append("\n  </foreach>\n");
         }

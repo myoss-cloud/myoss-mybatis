@@ -50,7 +50,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * </p>
      */
     @JSONField(label = LABEL_AUDIT_ENTITY)
-    @Column(name = "creator", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT })
+    @Column(name = "creator", nullable = false, fillRule = { FillRule.INSERT })
     private String             creator;
 
     /**
@@ -60,8 +60,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * </p>
      */
     @JSONField(label = LABEL_AUDIT_ENTITY)
-    @Column(name = "modifier", nullable = false, jdbcTypeName = "VARCHAR", fillRule = { FillRule.INSERT,
-            FillRule.UPDATE })
+    @Column(name = "modifier", nullable = false, fillRule = { FillRule.INSERT, FillRule.UPDATE })
     private String             modifier;
 
     /**
@@ -71,7 +70,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * </p>
      */
     @JSONField(label = LABEL_AUDIT_ENTITY)
-    @Column(name = "gmt_created", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT })
+    @Column(name = "gmt_created", nullable = false, fillRule = { FillRule.INSERT })
     private Date               gmtCreated;
 
     /**
@@ -81,7 +80,6 @@ public class AuditEntity extends LogicDeleteEntity {
      * </p>
      */
     @JSONField(label = LABEL_AUDIT_ENTITY)
-    @Column(name = "gmt_modified", nullable = false, jdbcTypeName = "TIMESTAMP", fillRule = { FillRule.INSERT,
-            FillRule.UPDATE })
+    @Column(name = "gmt_modified", nullable = false, fillRule = { FillRule.INSERT, FillRule.UPDATE })
     private Date               gmtModified;
 }

@@ -81,11 +81,10 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
             if (!fillUpdate) {
                 builder.append("  <if test=\"").append(columnInfo.getProperty()).append(" != null\">\n");
             }
-            builder.append("    ").append(columnInfo.getActualColumn()).append(" = #{").append(
-                    columnInfo.getProperty());
-            if (columnInfo.getJdbcType() != null) {
-                builder.append(",jdbcType=BIGINT");
-            }
+            builder.append("    ")
+                    .append(columnInfo.getActualColumn())
+                    .append(" = #{")
+                    .append(columnInfo.getProperty());
             builder.append("},\n");
             if (!fillUpdate) {
                 builder.append("  </if>\n");
@@ -136,9 +135,6 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
                 continue;
             }
             builder.append("  ").append(columnInfo.getActualColumn()).append(" = #{").append(columnInfo.getProperty());
-            if (columnInfo.getJdbcType() != null) {
-                builder.append(",jdbcType=BIGINT");
-            }
             builder.append("},\n");
         }
         builder.append("</set>\n");
@@ -193,11 +189,10 @@ public class UpdateMapperTemplate extends AbstractMapperTemplate {
             if (!fillUpdate) {
                 builder.append("  <if test=\"record.").append(columnInfo.getProperty()).append(" != null\">\n");
             }
-            builder.append("    ").append(columnInfo.getActualColumn()).append(" = #{record.").append(
-                    columnInfo.getProperty());
-            if (columnInfo.getJdbcType() != null) {
-                builder.append(",jdbcType=BIGINT");
-            }
+            builder.append("    ")
+                    .append(columnInfo.getActualColumn())
+                    .append(" = #{record.")
+                    .append(columnInfo.getProperty());
             builder.append("},\n");
             if (!fillUpdate) {
                 builder.append("</if>\n");
