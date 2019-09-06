@@ -333,15 +333,20 @@ public class TableMetaObject {
         tableInfo.setPrimaryKeyColumns(pkColumns);
         tableInfo.setLogicDeleteColumns(logicDeleteColumns);
         tableInfo.setCustomEnumValueColumns(customEnumValueColumns);
-        if (keyProperties != null && keyColumns.length > 0
-                && ArrayUtils.isEmpty(tableInfo.getTableSequence().getKeyColumns())) {
+        tableSequence = tableInfo.getTableSequence();
+        if (keyProperties != null && keyColumns.length > 0 && ArrayUtils.isEmpty(tableSequence.getKeyColumns())) {
             // 如果 @SequenceGenerator 注解放在 class 上，并且没有设置 keyColumns 属性，则取相应 keyProperty 中的字段名
-            tableInfo.getTableSequence().setKeyColumns(keyColumns);
+            tableSequence.setKeyColumns(keyColumns);
         }
-        if (keyProperties != null && resultTypes.length > 0
-                && ArrayUtils.isEmpty(tableInfo.getTableSequence().getResultType())) {
+        if (keyProperties != null && resultTypes.length > 0 && ArrayUtils.isEmpty(tableSequence.getResultType())) {
             // 如果 @SequenceGenerator 注解放在 class 上，并且没有设置 resultType 属性，则取相应 keyProperty 中的字段类型
-            tableInfo.getTableSequence().setResultType(resultTypes);
+            tableSequence.setResultType(resultTypes);
+        }
+        if (tableSequence != null && ArrayUtils.isEmpty(tableSequence.getKeyProperties())
+                && !CollectionUtils.isEmpty(pkColumns)) {
+            tableSequence.setKeyProperties(pkColumns.stream().map(TableColumnInfo::getProperty).toArray(String[]::new));
+            tableSequence.setKeyColumns(pkColumns.stream().map(TableColumnInfo::getColumn).toArray(String[]::new));
+            tableSequence.setResultType(pkColumns.stream().map(TableColumnInfo::getJavaType).toArray(Class<?>[]::new));
         }
 
         // 生成实体的 BaseResultMap 对象

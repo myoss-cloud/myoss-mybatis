@@ -100,7 +100,7 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
         builderAssistant.setCurrentNamespace(StringUtils.substringBeforeLast(parentId, "."));
         builderAssistant.addMappedStatement(id, sqlSource, statementType, sqlCommandType, null, null, null,
                 parameterTypeClass, null, resultTypeClass, null, false, false, false, keyGenerator, keyProperty,
-                keyColumn, null, langDriver, null);
+                keyColumn, configuration.getDatabaseId(), langDriver, null);
 
         id = builderAssistant.applyCurrentNamespace(id, false);
 
@@ -140,6 +140,8 @@ public class InsertMapperTemplate extends AbstractMapperTemplate {
             throw new UnsupportedOperationException("keyGenerator strategy " + strategy.getType() + " unsupported");
         }
         metaObject.setValue("keyGenerator", keyGenerator);
+        metaObject.setValue("keyProperties", tableSequence.getKeyProperties());
+        metaObject.setValue("keyColumns", tableSequence.getKeyColumns());
         return strategy;
     }
 
