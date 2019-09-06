@@ -17,6 +17,8 @@
 
 package app.myoss.cloud.mybatis.test.integration.h2.test2.service;
 
+import java.util.List;
+
 import app.myoss.cloud.mybatis.repository.service.CrudService;
 import app.myoss.cloud.mybatis.test.integration.h2.test2.entity.UserHistory;
 
@@ -30,5 +32,11 @@ import app.myoss.cloud.mybatis.test.integration.h2.test2.entity.UserHistory;
  * @since 2018年5月14日 下午3:39:43
  */
 public interface UserHistoryService extends CrudService<UserHistory> {
-
+    /**
+     * 查询相似的记录
+     *
+     * @param name 名字
+     * @return 匹配的记录
+     */
+    List<UserHistory> findLikeName(String name);
 }

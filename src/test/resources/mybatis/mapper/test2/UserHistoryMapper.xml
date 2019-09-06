@@ -37,4 +37,12 @@
     <!-- 自定义通用SQL查询条件 -->
     <sql id="Where_Extra_Condition">
     </sql>
+
+    <select id="selectLikeName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from t_sys_user_history
+        where name LIKE CONCAT('%', #{name,jdbcType=VARCHAR}, '%')
+        AND is_deleted = 'N'
+    </select>
 </mapper>

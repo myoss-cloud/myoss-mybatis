@@ -40,6 +40,7 @@ import java.util.stream.Stream;
 
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.lang3.reflect.FieldUtils;
 import org.apache.ibatis.binding.BindingException;
 import org.apache.ibatis.mapping.ResultFlag;
 import org.apache.ibatis.mapping.ResultMap;
@@ -48,6 +49,7 @@ import org.apache.ibatis.session.Configuration;
 import org.apache.ibatis.type.TypeHandler;
 import org.apache.ibatis.type.TypeHandlerRegistry;
 import org.springframework.util.ClassUtils;
+import org.springframework.util.CollectionUtils;
 
 import app.myoss.cloud.core.exception.BizRuntimeException;
 import app.myoss.cloud.core.utils.NameStyle;
@@ -179,6 +181,30 @@ public class TableMetaObject {
         Class<?> entityClass = getEntityClassByMapperInterface(mapperInterface);
         TableInfo tableInfo = getTableInfo(entityClass, config, configuration);
         tableInfo.addMapperInterfaceClass(mapperInterface);
+        Set<TableColumnInfo> customEnumValueColumns = tableInfo.getCustomEnumValueColumns();
+        if (!CollectionUtils.isEmpty(customEnumValueColumns)) {
+            // 使用了自定义枚举属性，在这里强制更新 {@link org.mybatis.spring.SqlSessionFactoryBean#buildSqlSessionFactory} -> "xmlMapperBuilder.parse();" 代码中
+            // 扫描 xmlMapper 文件，解析 resultMap 节点时，会先注册 ResultMapping，这里扩展的代码会后触发
+            String canonicalName = mapperInterface.getCanonicalName();
+            Field typeHandlerFiled = FieldUtils.getField(ResultMapping.class, "typeHandler", true);
+            configuration.getResultMapNames().stream().filter(item -> item.startsWith(canonicalName)).forEach(item -> {
+                ResultMap resultMap = configuration.getResultMap(item);
+                List<ResultMapping> resultMappings = resultMap.getResultMappings();
+                for (ResultMapping resultMapping : resultMappings) {
+                    for (TableColumnInfo columnInfo : customEnumValueColumns) {
+                        if (resultMapping.getProperty().equals(columnInfo.getProperty())
+                                && resultMapping.getColumn().equals(columnInfo.getColumn())) {
+                            try {
+                                typeHandlerFiled.set(resultMapping, columnInfo.getTypeHandler());
+                            } catch (IllegalAccessException e) {
+                                throw new BizRuntimeException("强制更新 [" + canonicalName + "." + columnInfo.getProperty()
+                                        + "] typeHandler 属性失败", e);
+                            }
+                        }
+                    }
+                }
+            });
+        }
         return tableInfo;
     }
 
@@ -232,6 +258,8 @@ public class TableMetaObject {
         Set<TableColumnInfo> columns = new LinkedHashSet<>();
         Set<TableColumnInfo> pkColumns = new LinkedHashSet<>();
         Set<TableColumnInfo> logicDeleteColumns = new LinkedHashSet<>();
+        Set<TableColumnInfo> customEnumValueColumns = new LinkedHashSet<>();
+        TypeHandlerRegistry typeHandlerRegistry = configuration.getTypeHandlerRegistry();
         Map<String, PropertyDescriptor> propertyDescriptorMap = getPropertyDescriptorMap(entityClass);
         List<Field> fields = getFieldList(entityClass);
         for (Field field : fields) {
@@ -263,7 +291,8 @@ public class TableMetaObject {
                     columnInfo.setPrimaryKey(true);
                 }
                 if (column.typeHandler() != UnsupportedTypeHandler.class) {
-                    columnInfo.setTypeHandler(column.typeHandler());
+                    typeHandlerRegistry.register(columnInfo.getJavaType(), column.typeHandler());
+                    columnInfo.setTypeHandler(typeHandlerRegistry.getTypeHandler(columnInfo.getJavaType()));
                 }
                 columnInfo.setInsertable(column.insertable());
                 columnInfo.setUpdatable(column.updatable());
@@ -294,12 +323,16 @@ public class TableMetaObject {
                 resultTypes[indexOf] = columnInfo.getJavaType();
             }
             initTableSequence(field.getAnnotation(SequenceGenerator.class), tableInfo, columnInfo);
-            initTypeHandlerRegistry(configuration.getTypeHandlerRegistry(), columnInfo);
+            initTypeHandlerRegistry(typeHandlerRegistry, columnInfo);
+            if (columnInfo.getTypeHandler() != null) {
+                customEnumValueColumns.add(columnInfo);
+            }
             columns.add(columnInfo);
         }
         tableInfo.setColumns(columns);
         tableInfo.setPrimaryKeyColumns(pkColumns);
         tableInfo.setLogicDeleteColumns(logicDeleteColumns);
+        tableInfo.setCustomEnumValueColumns(customEnumValueColumns);
         if (keyProperties != null && keyColumns.length > 0
                 && ArrayUtils.isEmpty(tableInfo.getTableSequence().getKeyColumns())) {
             // 如果 @SequenceGenerator 注解放在 class 上，并且没有设置 keyColumns 属性，则取相应 keyProperty 中的字段名
@@ -436,6 +469,8 @@ public class TableMetaObject {
             }
             if (typeHandlerClass != null) {
                 typeHandlerRegistry.register(javaType, typeHandlerClass);
+                TypeHandler<?> typeHandler = typeHandlerRegistry.getTypeHandler(javaType);
+                columnInfo.setTypeHandler(typeHandler);
             }
         }
     }
@@ -564,12 +599,7 @@ public class TableMetaObject {
             ResultMapping.Builder builder = new ResultMapping.Builder(configuration, item.getProperty(),
                     item.getColumn(), item.getJavaType());
             if (item.getTypeHandler() != null) {
-                try {
-                    TypeHandler<?> typeHandler = item.getTypeHandler().newInstance();
-                    builder.typeHandler(typeHandler);
-                } catch (InstantiationException | IllegalAccessException e) {
-                    throw new BizRuntimeException(e);
-                }
+                builder.typeHandler(item.getTypeHandler());
             }
             List<ResultFlag> flags = new ArrayList<>();
             if (item.isPrimaryKey()) {

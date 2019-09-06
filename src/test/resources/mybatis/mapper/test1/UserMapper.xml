@@ -40,4 +40,12 @@
             AND name LIKE CONCAT('%', #{extraCondition.nameLike,jdbcType=VARCHAR}, '%')
         </if>
     </sql>
+
+    <select id="selectLikeName" resultMap="BaseResultMap" parameterType="java.lang.String">
+        select
+        <include refid="Base_Column_List"/>
+        from t_sys_user
+        where name LIKE CONCAT('%', #{name,jdbcType=VARCHAR}, '%')
+        AND is_deleted = 'N'
+    </select>
 </mapper>

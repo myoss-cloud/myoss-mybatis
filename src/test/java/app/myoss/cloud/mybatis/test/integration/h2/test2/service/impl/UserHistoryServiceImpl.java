@@ -17,6 +17,8 @@
 
 package app.myoss.cloud.mybatis.test.integration.h2.test2.service.impl;
 
+import java.util.List;
+
 import org.springframework.stereotype.Service;
 
 import app.myoss.cloud.mybatis.repository.service.impl.BaseCrudServiceImpl;
@@ -36,5 +38,8 @@ import app.myoss.cloud.mybatis.test.integration.h2.test2.service.UserHistoryServ
 @Service
 public class UserHistoryServiceImpl extends BaseCrudServiceImpl<UserHistoryMapper, UserHistory>
         implements UserHistoryService {
-
+    @Override
+    public List<UserHistory> findLikeName(String name) {
+        return crudMapper.selectLikeName(name);
+    }
 }

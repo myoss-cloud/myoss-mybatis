@@ -258,6 +258,12 @@ public class UserHistoryControllerIntTests {
             softly.assertThat(countResult.getValue()).isNotNull().isEqualTo(1);
         });
 
+        List<UserHistory> userList = userHistoryService.findLikeName("Jer");
+        assertThat(userList.size()).isEqualTo(1);
+        for (UserHistory user : userList) {
+            assertThat(user.getStatus()).isEqualTo(AccountStatusEnum.LOCKED);
+        }
+
         // 删除数据
         UserHistory deleteUser = new UserHistory();
         deleteUser.setId(exceptedId);

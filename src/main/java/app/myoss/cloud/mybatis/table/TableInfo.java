@@ -94,6 +94,14 @@ public class TableInfo {
     private Set<TableColumnInfo> logicDeleteColumns;
 
     /**
+     * 自定义枚举字段信息
+     *
+     * @see app.myoss.cloud.mybatis.type.EnumValueMappedType
+     * @see app.myoss.cloud.mybatis.type.EnumValue
+     */
+    private Set<TableColumnInfo> customEnumValueColumns;
+
+    /**
      * 生成实体的 BaseResultMap 对象，表映射结果集
      *
      * @see TableMetaObject#builderBaseResultMap(TableInfo, Configuration)

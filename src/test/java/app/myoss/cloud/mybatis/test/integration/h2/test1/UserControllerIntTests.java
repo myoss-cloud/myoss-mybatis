@@ -303,6 +303,7 @@ public class UserControllerIntTests {
             User record = new User();
             record.setEmployeeNumber("10000_" + 1);
             record.setName("Jerry_" + i);
+            record.setStatus(UserStatusEnum.NORMAL);
             if (i >= 5) {
                 exceptedList.add(record);
             }
@@ -349,6 +350,12 @@ public class UserControllerIntTests {
         Assertions.assertThat(users2).isNotEmpty().hasSize(exceptedList.size());
 
         Assertions.assertThat(users).isEqualTo(users2);
+
+        List<User> userList = userMapper.selectLikeName("Jerry");
+        Assertions.assertThat(userList.size()).isEqualTo(exceptedList.size() * 2);
+        for (User user : userList) {
+            Assertions.assertThat(user.getStatus()).isEqualTo(UserStatusEnum.NORMAL);
+        }
     }
 
     @ComponentScan(basePackageClasses = UserControllerIntTests.class)

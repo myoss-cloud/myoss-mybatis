@@ -17,6 +17,8 @@
 
 package app.myoss.cloud.mybatis.test.integration.h2.test1.mapper;
 
+import java.util.List;
+
 import org.springframework.stereotype.Repository;
 
 import app.myoss.cloud.mybatis.mapper.template.CrudMapper;
@@ -33,5 +35,11 @@ import app.myoss.cloud.mybatis.test.integration.h2.test1.entity.User;
  */
 @Repository
 public interface UserMapper extends CrudMapper<User> {
-
+    /**
+     * 查询相似的记录
+     *
+     * @param name 名字
+     * @return 匹配的记录
+     */
+    List<User> selectLikeName(String name);
 }
