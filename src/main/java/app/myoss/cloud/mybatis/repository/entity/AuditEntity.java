@@ -19,8 +19,6 @@ package app.myoss.cloud.mybatis.repository.entity;
 
 import java.util.Date;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import app.myoss.cloud.mybatis.table.annotation.Column;
 import app.myoss.cloud.mybatis.table.annotation.FillRule;
 import lombok.Data;
@@ -49,7 +47,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 创建者
      * </p>
      */
-    @JSONField(label = LABEL_AUDIT_ENTITY)
+    @com.alibaba.fastjson.annotation.JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "creator", nullable = false, fillRule = { FillRule.INSERT })
     private String             creator;
 
@@ -59,7 +57,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 修改者
      * </p>
      */
-    @JSONField(label = LABEL_AUDIT_ENTITY)
+    @com.alibaba.fastjson.annotation.JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "modifier", nullable = false, fillRule = { FillRule.INSERT, FillRule.UPDATE })
     private String             modifier;
 
@@ -69,7 +67,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 创建时间
      * </p>
      */
-    @JSONField(label = LABEL_AUDIT_ENTITY)
+    @com.alibaba.fastjson.annotation.JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "gmt_created", nullable = false, fillRule = { FillRule.INSERT })
     private Date               gmtCreated;
 
@@ -79,7 +77,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 修改时间
      * </p>
      */
-    @JSONField(label = LABEL_AUDIT_ENTITY)
+    @com.alibaba.fastjson.annotation.JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "gmt_modified", nullable = false, fillRule = { FillRule.INSERT, FillRule.UPDATE })
     private Date               gmtModified;
 }

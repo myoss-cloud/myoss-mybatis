@@ -17,8 +17,6 @@
 
 package app.myoss.cloud.mybatis.repository.entity;
 
-import com.alibaba.fastjson.annotation.JSONField;
-
 import app.myoss.cloud.core.constants.MyossConstants;
 import app.myoss.cloud.mybatis.table.annotation.Column;
 import app.myoss.cloud.mybatis.table.annotation.FillRule;
@@ -46,7 +44,7 @@ public class LogicDeleteEntity implements BaseEntity {
      * Database Column Remarks: 是否删除
      * </p>
      */
-    @JSONField(label = LABEL_LOGIC_DELETE_ENTITY)
+    @com.alibaba.fastjson.annotation.JSONField(label = LABEL_LOGIC_DELETE_ENTITY)
     @Column(name = "is_deleted", nullable = false, fillRule = {
             FillRule.INSERT }, logicDelete = true, logicDeleteValue = MyossConstants.Y, logicUnDeleteValue = MyossConstants.N)
     private String             isDeleted;

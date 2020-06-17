@@ -47,12 +47,11 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
 
-import com.alibaba.fastjson.JSON;
-
 import app.myoss.cloud.core.constants.MyossConstants;
 import app.myoss.cloud.core.lang.dto.Page;
 import app.myoss.cloud.core.lang.dto.Result;
 import app.myoss.cloud.core.lang.dto.Sort;
+import app.myoss.cloud.core.lang.json.JsonApi;
 import app.myoss.cloud.mybatis.executor.keygen.SequenceKeyGenerator;
 import app.myoss.cloud.mybatis.mapper.template.CrudMapper;
 import app.myoss.cloud.mybatis.plugin.ParameterHandlerCustomizer;
@@ -603,7 +602,7 @@ public class SysUserLogControllerIntTests {
             Sequence sequenceBean = parameter -> {
                 Long nextId = jdbcTemplate.queryForObject("select ifnull(max(`id`) ,0) + 1 from t_sys_user_log",
                         Long.class);
-                log.info("nextId: {}, parameter: {}", nextId, JSON.toJSONString(parameter));
+                log.info("nextId: {}, parameter: {}", nextId, JsonApi.toJson(parameter));
                 return nextId;
             };
 

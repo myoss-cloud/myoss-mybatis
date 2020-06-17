@@ -19,9 +19,6 @@ package app.myoss.cloud.mybatis.repository.entity;
 
 import java.io.Serializable;
 
-import com.alibaba.fastjson.annotation.JSONField;
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
 import app.myoss.cloud.mybatis.table.annotation.Column;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
@@ -57,8 +54,8 @@ public class AuditIdEntity<I extends Serializable> extends AuditEntity implement
      *
      * @return "主键id"的值
      */
-    @JsonIgnore
-    @JSONField(serialize = false, deserialize = false)
+    @com.fasterxml.jackson.annotation.JsonIgnore
+    @com.alibaba.fastjson.annotation.JSONField(serialize = false, deserialize = false)
     @Override
     public I getPrimaryKey() {
         return id;
@@ -79,7 +76,7 @@ public class AuditIdEntity<I extends Serializable> extends AuditEntity implement
      *
      * @return "主键id"的值
      */
-    @JSONField(label = LABEL_AUDIT_ID_ENTITY)
+    @com.alibaba.fastjson.annotation.JSONField(label = LABEL_AUDIT_ID_ENTITY)
     public I getId() {
         return id;
     }

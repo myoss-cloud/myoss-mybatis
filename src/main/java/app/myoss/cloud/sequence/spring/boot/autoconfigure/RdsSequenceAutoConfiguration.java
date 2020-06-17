@@ -31,8 +31,7 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Primary;
 
-import com.alibaba.fastjson.JSON;
-
+import app.myoss.cloud.core.lang.json.JsonApi;
 import app.myoss.cloud.mybatis.table.TableMetaObject;
 import app.myoss.cloud.sequence.Sequence;
 import app.myoss.cloud.sequence.SequenceRepository;
@@ -64,7 +63,7 @@ public class RdsSequenceAutoConfiguration {
     public RdsSequenceAutoConfiguration(RdsSequenceProperties properties) {
         this.properties = properties;
         if (log.isInfoEnabled()) {
-            log.info("init RdsSequence auto configuration, properties: {}", JSON.toJSONString(properties));
+            log.info("init RdsSequence auto configuration, properties: {}", JsonApi.toJson(properties));
         }
     }
 
