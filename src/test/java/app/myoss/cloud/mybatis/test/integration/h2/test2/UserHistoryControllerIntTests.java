@@ -33,7 +33,7 @@ import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
 import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.rule.OutputCapture;
+import org.springframework.boot.test.system.OutputCaptureRule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
@@ -77,7 +77,7 @@ public class UserHistoryControllerIntTests {
     @Autowired
     private UserHistoryService    userHistoryService;
     @Rule
-    public OutputCapture          output = new OutputCapture();
+    public OutputCaptureRule      output = new OutputCaptureRule();
     @Autowired
     private JdbcTemplate          jdbcTemplate;
 

@@ -31,7 +31,7 @@ CREATE TABLE IF NOT EXISTS `t_sys_user` (
   `modifier` varchar(32) NOT NULL COMMENT '修改者',
   `gmt_created` datetime NOT NULL COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 );
 
 COMMENT ON TABLE `t_sys_user` IS '系统用户信息表';
@@ -60,7 +60,7 @@ CREATE TABLE IF NOT EXISTS `t_sys_user_history` (
   `modifier` varchar(32) NOT NULL COMMENT '修改者',
   `gmt_created` datetime NOT NULL COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 );
 
 COMMENT ON TABLE `t_sys_user_history` IS '系统用户信息历史备份表';
@@ -74,7 +74,7 @@ CREATE TABLE IF NOT EXISTS `t_sys_user_log` (
   `modifier` varchar(32) NOT NULL COMMENT '修改者',
   `gmt_created` datetime NOT NULL COMMENT '创建时间',
   `gmt_modified` datetime NOT NULL COMMENT '修改时间',
-  PRIMARY KEY (`id`),
+  PRIMARY KEY (`id`)
 );
 
 COMMENT ON TABLE `t_sys_user_log` IS '系统用户日志记录表';
