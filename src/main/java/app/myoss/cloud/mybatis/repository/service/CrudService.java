@@ -69,6 +69,44 @@ public interface CrudService<T> {
     Result<Boolean> createBatch(List<T> records);
 
     /**
+     * 先校验记录是否已经存在，如果不存在则创建新的记录，如果已经存在返回原记录的主键信息
+     *
+     * @param record 待保存的实体对象
+     * @param <I> 主键类型
+     * @return 创建结果
+     */
+    <I> Result<I> save(T record);
+
+    /**
+     * 先校验记录是否已经存在，如果不存在则创建新的记录，如果已经存在返回原记录的主键信息
+     *
+     * @param record 待保存的实体对象
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @param <I> 主键类型
+     * @return 创建结果
+     */
+    <I> Result<I> save(T record, Object optionParam);
+
+    /**
+     * 先校验记录是否已经存在，如果不存在则创建新的记录，如果已经存在则更新原有的记录
+     *
+     * @param record 待保存的实体对象
+     * @param <I> 主键类型
+     * @return 创建结果
+     */
+    <I> Result<I> saveOrUpdate(T record);
+
+    /**
+     * 先校验记录是否已经存在，如果不存在则创建新的记录，如果已经存在则更新原有的记录
+     *
+     * @param record 待保存的实体对象
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @param <I> 主键类型
+     * @return 创建结果
+     */
+    <I> Result<I> saveOrUpdate(T record, Object optionParam);
+
+    /**
      * 根据主键更新记录
      *
      * @param record 待更新的实体对象

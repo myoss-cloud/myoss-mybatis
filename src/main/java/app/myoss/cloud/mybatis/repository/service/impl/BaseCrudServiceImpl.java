@@ -525,36 +525,40 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @param optionParam 可选参数，默认为 {@code null }
      * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
      */
-    @SuppressWarnings("unchecked")
     protected <I> Result<I> create(Result<I> result, T record, Object optionParam) {
         boolean ifExist = checkRecordIfExist4Create(result, record);
         if (!ifExist && result.isSuccess()) {
             setValue4Create(record, optionParam);
             boolean flag = checkDBResult(crudMapper.insert(record));
             if (flag) {
-                Set<TableColumnInfo> primaryKeyColumns = tableInfo.getPrimaryKeyColumns();
-                int size = primaryKeyColumns.size();
-                if (size == 0) {
-                    // 忽略没有主键字段的情况
-                    return result;
-                }
-                Object value = (size == 1 ? null : new Object[size]);
-                int idx = 0;
-                for (TableColumnInfo columnInfo : primaryKeyColumns) {
-                    I tmp = BeanUtil.methodInvoke(columnInfo.getPropertyDescriptor().getReadMethod(), record);
-                    if (size > 1) {
-                        // 如果有多个主键字段，使用数组返回
-                        ((Object[]) value)[idx++] = tmp;
-                    } else {
-                        value = tmp;
-                    }
-                }
-                result.setValue((I) value);
+                return getPrimaryKeyValue(record, result);
             } else {
                 result.setSuccess(false).setErrorCode(MybatisConstants.INSERT_DB_FAILED).setErrorMsg("插入失败，请检查");
             }
         }
         return result;
+    }
+
+    @SuppressWarnings("unchecked")
+    protected <I> Result<I> getPrimaryKeyValue(T record, Result<I> result) {
+        Set<TableColumnInfo> primaryKeyColumns = tableInfo.getPrimaryKeyColumns();
+        int size = primaryKeyColumns.size();
+        if (size == 0) {
+            // 忽略没有主键字段的情况
+            return result;
+        }
+        Object value = (size == 1 ? null : new Object[size]);
+        int idx = 0;
+        for (TableColumnInfo columnInfo : primaryKeyColumns) {
+            I tmp = BeanUtil.methodInvoke(columnInfo.getPropertyDescriptor().getReadMethod(), record);
+            if (size > 1) {
+                // 如果有多个主键字段，使用数组返回
+                ((Object[]) value)[idx++] = tmp;
+            } else {
+                value = tmp;
+            }
+        }
+        return result.setValue((I) value);
     }
 
     @Transactional(rollbackFor = Exception.class)
@@ -617,6 +621,71 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             }
         }
         return result.setValue(true);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public <I> Result<I> save(T record) {
+        return save(record, null);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public <I> Result<I> save(T record, Object optionParam) {
+        Result<I> result = new Result<>();
+        boolean validate = createValidate(result, record, optionParam);
+        if (!validate) {
+            return result;
+        }
+        return createCallable(result, record, optionParam, () -> save(result, record, optionParam));
+    }
+
+    /**
+     * 保存新的记录，{@link #create(Object)} 方法的最后一步调用
+     *
+     * @param result 保存的结果
+     * @param record 待保存的实体对象
+     * @param <I> 主键类型
+     * @param optionParam 可选参数，默认为 {@code null }
+     * @return 返回执行结果，默认返回的是 {@code result } 参数，可以被子类覆盖重写
+     */
+    protected <I> Result<I> save(Result<I> result, T record, Object optionParam) {
+        List<T> exists = findExistRecord4CheckRecord(result, record);
+        if (CollectionUtils.isEmpty(exists)) {
+            setValue4Create(record, optionParam);
+            boolean flag = checkDBResult(crudMapper.insert(record));
+            if (flag) {
+                return getPrimaryKeyValue(record, result);
+            } else {
+                return result.setSuccess(false).setErrorCode(MybatisConstants.INSERT_DB_FAILED).setErrorMsg("插入失败，请检查");
+            }
+        }
+        return getPrimaryKeyValue(exists.get(0), result);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @Override
+    public <I> Result<I> saveOrUpdate(T record) {
+        return saveOrUpdate(record, null);
+    }
+
+    @Transactional(rollbackFor = Exception.class)
+    @SuppressWarnings("unchecked")
+    @Override
+    public <I> Result<I> saveOrUpdate(T record, Object optionParam) {
+        Result<I> result = new Result<>();
+        Result<I> primaryKeyValue = getPrimaryKeyValue(record, result);
+        if (primaryKeyValue.getValue() == null) {
+            create(record, optionParam);
+        } else {
+            Result<Boolean> updateResult = updateByPrimaryKey(record, optionParam);
+            result.setSuccess(updateResult.isSuccess())
+                    .setErrorCode(updateResult.getErrorCode())
+                    .setErrorMsg(updateResult.getErrorMsg())
+                    .setValue((I) primaryKeyValue)
+                    .setExtraInfo(updateResult.getExtraInfo());
+        }
+        return result;
     }
 
     @Transactional(rollbackFor = Exception.class)
