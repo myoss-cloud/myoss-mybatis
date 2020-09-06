@@ -259,4 +259,13 @@ public interface CrudService<T> {
      * @return 匹配的实体对象
      */
     Page<T> findPage(Page<T> condition);
+
+    /**
+     * 使用 PageHelper 分页插件，根据条件查询匹配的实体对象，并进行分页
+     *
+     * @param condition 匹配的条件
+     * @param <DTO> 范型类型
+     * @return 匹配的实体对象
+     */
+    <DTO> Page<DTO> findPageByHelper(Page<DTO> condition);
 }

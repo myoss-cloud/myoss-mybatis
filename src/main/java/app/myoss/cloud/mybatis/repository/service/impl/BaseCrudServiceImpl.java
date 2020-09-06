@@ -1004,4 +1004,22 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         addPageExtraInfo(condition, result);
         return result;
     }
+
+    @Override
+    public <DTO> Page<DTO> findPageByHelper(Page<DTO> condition) {
+        int pageNum = condition.getPageNum();
+        int pageSize = condition.getPageSize();
+        com.github.pagehelper.Page<DTO> page = com.github.pagehelper.PageHelper.startPage(pageNum, pageSize)
+                .doSelectPage(() -> pageHelperQuery(condition.getParam(), condition));
+        Page<DTO> pageResult = new Page<>();
+        pageResult.setTotalCount(Math.toIntExact(page.getTotal()))
+                .setPageNum(pageNum)
+                .setPageSize(pageSize)
+                .setValue(page.getResult());
+        return pageResult;
+    }
+
+    protected <DTO> List<DTO> pageHelperQuery(Object param, Page<DTO> condition) {
+        return null;
+    }
 }
