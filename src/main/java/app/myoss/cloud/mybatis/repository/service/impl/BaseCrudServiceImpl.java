@@ -624,7 +624,6 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     }
 
     @Transactional(rollbackFor = Exception.class)
-    @SuppressWarnings("unchecked")
     @Override
     public <I> Result<I> saveOrUpdate(T record, Object optionParam) {
         Result<I> result = new Result<>();
@@ -636,7 +635,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             result.setSuccess(updateResult.isSuccess())
                     .setErrorCode(updateResult.getErrorCode())
                     .setErrorMsg(updateResult.getErrorMsg())
-                    .setValue((I) primaryKeyValue)
+                    .setValue(primaryKeyValue.getValue())
                     .setExtraInfo(updateResult.getExtraInfo());
         }
         return result;
