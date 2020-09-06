@@ -91,6 +91,14 @@
         </dependency>
         <!-- mybatis end -->
 
+        <!-- mybatis page helper start -->
+        <dependency>
+            <groupId>com.github.pagehelper</groupId>
+            <artifactId>pagehelper</artifactId>
+            <optional>true</optional>
+        </dependency>
+        <!-- mybatis page helper end -->
+
         <!-- test start -->
         <dependency>
             <groupId>com.h2database</groupId>

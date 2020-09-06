@@ -1,5 +1,6 @@
 # Auto Configure
 org.springframework.boot.autoconfigure.EnableAutoConfiguration = \
+app.myoss.cloud.mybatis.spring.boot.autoconfigure.MybatisPageHelperAutoConfiguration,\
 app.myoss.cloud.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration,\
 app.myoss.cloud.sequence.spring.boot.autoconfigure.RdsSequenceAutoConfiguration
 
