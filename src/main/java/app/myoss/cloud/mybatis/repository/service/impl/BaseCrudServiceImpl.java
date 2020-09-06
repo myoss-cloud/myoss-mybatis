@@ -24,11 +24,9 @@ import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Objects;
 import java.util.Set;
 import java.util.stream.Collectors;
@@ -51,6 +49,7 @@ import app.myoss.cloud.mybatis.mapper.template.CrudMapper;
 import app.myoss.cloud.mybatis.repository.entity.LogicDeleteEntity;
 import app.myoss.cloud.mybatis.repository.entity.PrimaryKeyEntity;
 import app.myoss.cloud.mybatis.repository.service.CrudService;
+import app.myoss.cloud.mybatis.repository.utils.CrudServiceUtils;
 import app.myoss.cloud.mybatis.table.TableColumnInfo;
 import app.myoss.cloud.mybatis.table.TableInfo;
 import app.myoss.cloud.mybatis.table.TableMetaObject;
@@ -149,27 +148,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @return true: 校验成功; false: 校验失败
      */
     protected boolean checkPrimaryKeyIsNull(SqlCommandType sqlCommandType, Object record, boolean checkAll) {
-        boolean isNull = record == null;
-        if (!isNull) {
-            int nullCount = 0;
-            Set<TableColumnInfo> primaryKeyColumns = tableInfo.getPrimaryKeyColumns();
-            for (TableColumnInfo columnInfo : primaryKeyColumns) {
-                Object value = BeanUtil.methodInvoke(columnInfo.getPropertyDescriptor().getReadMethod(), record);
-                if (value == null) {
-                    nullCount++;
-                } else if (value instanceof CharSequence && StringUtils.isBlank((CharSequence) value)) {
-                    nullCount++;
-                }
-                if (nullCount > 0 && !checkAll) {
-                    isNull = true;
-                    break;
-                }
-            }
-            if (checkAll && nullCount > 0 && nullCount == primaryKeyColumns.size()) {
-                isNull = true;
-            }
-        }
-        return isNull;
+        return CrudServiceUtils.checkPrimaryKeyIsNull(tableInfo, record, checkAll);
     }
 
     /**
@@ -278,18 +257,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @return 数据库字段列表
      */
     protected Map<String, Object> convertToUpdateUseMap(Map<String, Object> record) {
-        Map<String, Object> updateMap = new HashMap<>(record.size());
-        for (Entry<String, Object> entry : record.entrySet()) {
-            String key = entry.getKey();
-            String columnName = fieldColumns.get(key);
-            if (columnName != null) {
-                // 校验字段名，防止SQL注入
-                updateMap.put(columnName, entry.getValue());
-            } else {
-                log.error("[{}] ignored invalid filed: {}", this.getClass(), key);
-            }
-        }
-        return updateMap;
+        return CrudServiceUtils.convertToUpdateUseMap(fieldColumns, record, this.getClass());
     }
 
     /**
@@ -299,21 +267,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
      * @return 数据库字段排序
      */
     protected List<Order> convertToOrders(Sort sort) {
-        if (sort == null || CollectionUtils.isEmpty(sort.getOrders())) {
-            return null;
-        }
-        List<Order> orders = new ArrayList<>(sort.getOrders().size());
-        for (Order item : sort.getOrders()) {
-            String columnName = fieldColumns.get(item.getProperty());
-            if (columnName != null) {
-                // 校验字段名，防止SQL注入
-                Order order = new Order(item.getDirection(), columnName);
-                orders.add(order);
-            } else {
-                log.error("[{}] ignored invalid filed: {}", this.getClass(), item.getProperty());
-            }
-        }
-        return orders;
+        return CrudServiceUtils.convertToOrders(fieldColumns, sort, this.getClass());
     }
 
     /**
@@ -997,12 +951,18 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         Sort sort = condition.getSort();
         List<Order> orders = convertToOrders(sort);
         Map<String, Object> extraInfo = condition.getExtraInfo();
-        List<T> details = crudMapper.selectPage2(param, extraInfo, pageStart, pageSize, orders);
-        int totalCount = crudMapper.selectCount2(param, extraInfo);
-        result.setValue(details).setTotalCount(totalCount).setPageNum(dbPageNum + 1).setPageSize(pageSize);
+        pageQuery(result, param, extraInfo, pageStart, pageSize, orders);
+        result.setPageNum(dbPageNum + 1).setPageSize(pageSize);
         // 设置额外字段
         addPageExtraInfo(condition, result);
         return result;
+    }
+
+    protected void pageQuery(Page<T> result, T param, Map<String, Object> extraInfo, int pageStart, int pageSize,
+                             List<Order> orders) {
+        List<T> details = crudMapper.selectPage2(param, extraInfo, pageStart, pageSize, orders);
+        int totalCount = crudMapper.selectCount2(param, extraInfo);
+        result.setValue(details).setTotalCount(totalCount).setPageSize(pageSize);
     }
 
     @Override
