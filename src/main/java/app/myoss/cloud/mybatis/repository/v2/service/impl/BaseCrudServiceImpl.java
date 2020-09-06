@@ -394,7 +394,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     @Transactional(rollbackFor = Exception.class)
     @Override
     public <I> I create(T record) {
-        return createInner(record, null);
+        return create(record, null);
     }
 
     /**
