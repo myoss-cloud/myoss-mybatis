@@ -422,11 +422,11 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
                             errorMsg.append(", ");
                         }
                     }
-                    result.setErrorMsg(errorMsg.append("]").toString());
+                    result.setErrorCode(MybatisConstants.MORE_RECORDS).setErrorMsg(errorMsg.append("]").toString());
                 }
             }
         } else {
-            // 不支持，需要之类重写
+            // 不支持，需要子类重写
             throw new UnsupportedOperationException();
         }
         return false;
