@@ -41,7 +41,7 @@ public class BizServiceException extends RuntimeException {
      * @param errorMessage 错误信息
      */
     public BizServiceException(String errorCode, String errorMessage) {
-        super("{\"errorCode\": " + errorCode + ", \"errorMessage\":" + errorMessage + "}");
+        super("{\"errorCode\": \"" + errorCode + "\", \"errorMessage\": \"" + errorMessage + "\"}");
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }
@@ -54,7 +54,7 @@ public class BizServiceException extends RuntimeException {
      * @param cause 异常信息
      */
     public BizServiceException(String errorCode, String errorMessage, Throwable cause) {
-        super("{\"errorCode\": " + errorCode + ", \"errorMessage\":" + errorMessage + "}", cause);
+        super("{\"errorCode\": \"" + errorCode + "\", \"errorMessage\": \"" + errorMessage + "\"}", cause);
         this.errorCode = errorCode;
         this.errorMessage = errorMessage;
     }
