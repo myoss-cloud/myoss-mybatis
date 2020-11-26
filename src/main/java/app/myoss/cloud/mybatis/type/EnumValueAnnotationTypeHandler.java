@@ -90,7 +90,12 @@ public class EnumValueAnnotationTypeHandler<E extends Enum<E>> extends BaseTypeH
     public static void registryEnumField(Class<?> clazz, Field field) {
         field.setAccessible(true);
         Field absent = ENUM_FIELDS.putIfAbsent(clazz, field);
-        if (absent != null) {
+        if (absent == null) {
+            return;
+        }
+        boolean flag = absent.getDeclaringClass() == field.getDeclaringClass()
+                && Objects.equals(absent.getName(), field.getName());
+        if (!flag) {
             throw new IllegalArgumentException(
                     clazz + " contains multiple annotations '" + EnumValueMappedType.class.getCanonicalName()
                             + "', please check field: " + absent.getName() + ", " + field.getName());
