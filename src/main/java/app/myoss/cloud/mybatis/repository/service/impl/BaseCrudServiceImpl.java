@@ -29,6 +29,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 import java.util.Set;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
@@ -966,9 +967,18 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
 
     @Override
     public <DTO> Page<DTO> findPageByHelper(Page<DTO> condition) {
+        List<Order> orders = convertToOrders(condition.getSort());
+        String orderBy = null;
+        if (!CollectionUtils.isEmpty(orders)) {
+            StringJoiner stringJoiner = new StringJoiner(", ");
+            for (Order order : orders) {
+                stringJoiner.add(order.getProperty() + " " + order.getDirection().name());
+            }
+            orderBy = stringJoiner.toString();
+        }
         int pageNum = condition.getPageNum();
         int pageSize = condition.getPageSize();
-        com.github.pagehelper.Page<DTO> page = com.github.pagehelper.PageHelper.startPage(pageNum, pageSize)
+        com.github.pagehelper.Page<DTO> page = com.github.pagehelper.PageHelper.startPage(pageNum, pageSize, orderBy)
                 .doSelectPage(() -> pageHelperQuery(condition.getParam(), condition));
         Page<DTO> pageResult = new Page<>();
         pageResult.setTotalCount(Math.toIntExact(page.getTotal()))
