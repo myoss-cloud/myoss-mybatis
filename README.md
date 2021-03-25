@@ -11,9 +11,10 @@
 ## Download
 
 - [maven][1]
-- [the latest JAR][2]  
+- [the latest JAR][2]
 
-[1]: https://repo1.maven.org/maven2/app/myoss/cloud/mybatis/myoss-mybatis/  
+[1]: https://repo1.maven.org/maven2/app/myoss/cloud/mybatis/myoss-mybatis/
+
 [2]: https://search.maven.org/remote_content?g=app.myoss.cloud.mybatis&a=myoss-mybatis&v=LATEST
 
 ## Maven
@@ -22,6 +23,6 @@
 <dependency>
     <groupId>app.myoss.cloud.mybatis</groupId>
     <artifactId>myoss-mybatis</artifactId>
-    <version>2.1.5.RELEASE</version>
+    <version>2.1.6.RELEASE</version>
 </dependency>
 ```
