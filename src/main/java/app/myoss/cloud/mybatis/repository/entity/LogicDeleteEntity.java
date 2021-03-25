@@ -29,6 +29,7 @@ import lombok.experimental.Accessors;
  * @author Jerry.Chen
  * @since 2018年5月9日 下午2:20:26
  */
+@io.swagger.annotations.ApiModel("逻辑删除实体基类")
 @Accessors(chain = true)
 @Data
 public class LogicDeleteEntity implements BaseEntity {
@@ -44,6 +45,7 @@ public class LogicDeleteEntity implements BaseEntity {
      * Database Column Remarks: 是否删除
      * </p>
      */
+    @io.swagger.annotations.ApiModelProperty("是否删除")
     @com.alibaba.fastjson.annotation.JSONField(label = LABEL_LOGIC_DELETE_ENTITY)
     @Column(name = "is_deleted", nullable = false, fillRule = {
             FillRule.INSERT }, logicDelete = true, logicDeleteValue = MyossConstants.Y, logicUnDeleteValue = MyossConstants.N)

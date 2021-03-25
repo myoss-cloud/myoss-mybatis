@@ -31,6 +31,7 @@ import lombok.experimental.Accessors;
  * @author Jerry.Chen
  * @since 2018年5月9日 下午2:15:14
  */
+@io.swagger.annotations.ApiModel("审计实体基类，包含审计的字段，增加了主键id字段")
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -46,6 +47,7 @@ public class AuditIdEntity<I extends Serializable> extends AuditEntity implement
      * <p>
      * Database Column Remarks: 主键id
      */
+    @io.swagger.annotations.ApiModelProperty("主键id")
     @Column(primaryKey = true)
     private I                  id;
 

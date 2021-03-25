@@ -31,6 +31,7 @@ import lombok.experimental.Accessors;
  * @author Jerry.Chen
  * @since 2018年5月9日 下午2:10:02
  */
+@io.swagger.annotations.ApiModel("审计实体基类，包含审计的字段")
 @Accessors(chain = true)
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -47,6 +48,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 创建者
      * </p>
      */
+    @io.swagger.annotations.ApiModelProperty("创建者")
     @com.alibaba.fastjson.annotation.JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "creator", nullable = false, fillRule = { FillRule.INSERT })
     private String             creator;
@@ -57,6 +59,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 修改者
      * </p>
      */
+    @io.swagger.annotations.ApiModelProperty("修改者")
     @com.alibaba.fastjson.annotation.JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "modifier", nullable = false, fillRule = { FillRule.INSERT, FillRule.UPDATE })
     private String             modifier;
@@ -67,6 +70,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 创建时间
      * </p>
      */
+    @io.swagger.annotations.ApiModelProperty("创建时间")
     @com.alibaba.fastjson.annotation.JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "gmt_created", nullable = false, fillRule = { FillRule.INSERT })
     private Date               gmtCreated;
@@ -77,6 +81,7 @@ public class AuditEntity extends LogicDeleteEntity {
      * Database Column Remarks: 修改时间
      * </p>
      */
+    @io.swagger.annotations.ApiModelProperty("修改时间")
     @com.alibaba.fastjson.annotation.JSONField(label = LABEL_AUDIT_ENTITY)
     @Column(name = "gmt_modified", nullable = false, fillRule = { FillRule.INSERT, FillRule.UPDATE })
     private Date               gmtModified;
