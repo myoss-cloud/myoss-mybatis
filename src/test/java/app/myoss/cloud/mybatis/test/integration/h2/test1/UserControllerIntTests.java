@@ -52,7 +52,7 @@ import app.myoss.cloud.mybatis.plugin.ParameterHandlerCustomizer;
 import app.myoss.cloud.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import app.myoss.cloud.mybatis.spring.mapper.MapperFactoryBean;
 import app.myoss.cloud.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConfig;
-import app.myoss.cloud.mybatis.test.integration.h2.test1.UserControllerIntTests.MyConfig;
+import app.myoss.cloud.mybatis.test.integration.h2.test1.UserControllerIntTests.MyConfig1;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.constants.UserStatusEnum;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.entity.User;
 import app.myoss.cloud.mybatis.test.integration.h2.test1.mapper.UserMapper;
@@ -71,7 +71,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { DataSourceAutoConfiguration.class, IntAutoConfig.class, MybatisAutoConfiguration.class,
-        MyConfig.class })
+        MyConfig1.class })
 public class UserControllerIntTests {
     @Autowired
     private UserController userController;
@@ -361,7 +361,7 @@ public class UserControllerIntTests {
     @ComponentScan(basePackageClasses = UserControllerIntTests.class)
     @Profile("UserControllerIntTests")
     @Configuration
-    public static class MyConfig {
+    public static class MyConfig1 {
         @Bean
         public ParameterHandlerCustomizer persistenceParameterHandler() {
             return new ParameterHandlerCustomizer() {

@@ -52,9 +52,9 @@ import app.myoss.cloud.mybatis.plugin.ParameterHandlerCustomizer;
 import app.myoss.cloud.mybatis.repository.entity.AuditIdEntity;
 import app.myoss.cloud.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import app.myoss.cloud.mybatis.spring.mapper.MapperFactoryBean;
+import app.myoss.cloud.mybatis.table.Sequence;
 import app.myoss.cloud.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConfig;
-import app.myoss.cloud.mybatis.test.integration.h2.H2DataBaseIntTest.SequenceCustomizer;
-import app.myoss.cloud.mybatis.test.integration.h2.test3.UserLogControllerIntTests.MyConfig;
+import app.myoss.cloud.mybatis.test.integration.h2.test3.UserLogControllerIntTests.MyConfig3;
 import app.myoss.cloud.mybatis.test.integration.h2.test3.entity.UserLog;
 import app.myoss.cloud.mybatis.test.integration.h2.test3.service.UserLogService;
 import app.myoss.cloud.mybatis.test.integration.h2.test3.web.UserLogController;
@@ -71,7 +71,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { DataSourceAutoConfiguration.class, IntAutoConfig.class, MybatisAutoConfiguration.class,
-        MyConfig.class })
+        MyConfig3.class })
 public class UserLogControllerIntTests {
     @Autowired
     private UserLogController userLogController;
@@ -283,7 +283,7 @@ public class UserLogControllerIntTests {
     @ComponentScan(basePackageClasses = UserLogControllerIntTests.class)
     @Profile("UserLogControllerIntTests")
     @Configuration
-    public static class MyConfig {
+    public static class MyConfig3 {
         @Bean
         public ParameterHandlerCustomizer persistenceParameterHandler() {
             return new ParameterHandlerCustomizer() {
@@ -317,6 +317,13 @@ public class UserLogControllerIntTests {
                     return nextId;
                 }
             };
+        }
+    }
+
+    public static class SequenceCustomizer implements Sequence {
+        @Override
+        public Object nextValue(Object parameter) {
+            return null;
         }
     }
 }

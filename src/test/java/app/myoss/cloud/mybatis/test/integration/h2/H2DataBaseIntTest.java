@@ -22,7 +22,6 @@ import org.springframework.boot.autoconfigure.ImportAutoConfiguration;
 import org.springframework.boot.autoconfigure.jdbc.JdbcTemplateAutoConfiguration;
 import org.springframework.context.annotation.Configuration;
 
-import app.myoss.cloud.mybatis.table.Sequence;
 import lombok.extern.slf4j.Slf4j;
 
 /**
@@ -37,12 +36,5 @@ public class H2DataBaseIntTest {
     @EnableAutoConfiguration
     @Configuration
     public static class IntAutoConfig {
-    }
-
-    public static class SequenceCustomizer implements Sequence {
-        @Override
-        public Object nextValue(Object parameter) {
-            return null;
-        }
     }
 }

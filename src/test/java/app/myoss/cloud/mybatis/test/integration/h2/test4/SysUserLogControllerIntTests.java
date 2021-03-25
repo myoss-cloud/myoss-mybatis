@@ -24,7 +24,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
 import org.assertj.core.api.Assertions;
@@ -37,12 +36,14 @@ import org.mybatis.spring.annotation.MapperScan;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.jdbc.DataSourceAutoConfiguration;
+import org.springframework.boot.context.event.ApplicationReadyEvent;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.system.OutputCaptureRule;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
+import org.springframework.context.event.EventListener;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringRunner;
@@ -62,7 +63,7 @@ import app.myoss.cloud.mybatis.spring.mapper.MapperFactoryBean;
 import app.myoss.cloud.mybatis.table.Sequence;
 import app.myoss.cloud.mybatis.table.TableMetaObject;
 import app.myoss.cloud.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConfig;
-import app.myoss.cloud.mybatis.test.integration.h2.test4.SysUserLogControllerIntTests.MyConfig;
+import app.myoss.cloud.mybatis.test.integration.h2.test4.SysUserLogControllerIntTests.MyConfig4;
 import app.myoss.cloud.mybatis.test.integration.h2.test4.entity.SysUserLog;
 import app.myoss.cloud.mybatis.test.integration.h2.test4.mapper.SysUserLogMapper;
 import app.myoss.cloud.mybatis.test.integration.h2.test4.service.SysUserLogService;
@@ -81,7 +82,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { DataSourceAutoConfiguration.class, IntAutoConfig.class, MybatisAutoConfiguration.class,
-        MyConfig.class })
+        MyConfig4.class })
 public class SysUserLogControllerIntTests {
     @Autowired
     private SysUserLogController userLogController;
@@ -591,14 +592,15 @@ public class SysUserLogControllerIntTests {
     @ComponentScan(basePackageClasses = SysUserLogControllerIntTests.class)
     @Profile("SysUserLogControllerIntTests")
     @Configuration
-    public static class MyConfig {
+    public static class MyConfig4 {
         @Bean
         public ParameterHandlerCustomizer persistenceParameterHandler() {
             return new DefaultParameterHandlerCustomizer();
         }
 
-        @Bean
-        public Optional initSequence(JdbcTemplate jdbcTemplate) {
+        @EventListener
+        public void initSequence(ApplicationReadyEvent event) {
+            JdbcTemplate jdbcTemplate = event.getApplicationContext().getBean(JdbcTemplate.class);
             Sequence sequenceBean = parameter -> {
                 Long nextId = jdbcTemplate.queryForObject("select ifnull(max(`id`) ,0) + 1 from t_sys_user_log",
                         Long.class);
@@ -608,10 +610,14 @@ public class SysUserLogControllerIntTests {
 
             Map<String, Sequence> sequenceBeanMap = TableMetaObject.getSequenceBeanMap();
             for (Entry<String, Sequence> entry : sequenceBeanMap.entrySet()) {
-                SequenceCustomizer value = (SequenceCustomizer) entry.getValue();
-                value.setSequence(sequenceBean);
+                Sequence entryValue = entry.getValue();
+                if (entryValue instanceof SequenceCustomizer) {
+                    SequenceCustomizer value = (SequenceCustomizer) entryValue;
+                    value.setSequence(sequenceBean);
+                } else {
+                    log.warn("entryValue is not instanceof SequenceCustomizer: {}", entryValue);
+                }
             }
-            return Optional.empty();
         }
     }
 }

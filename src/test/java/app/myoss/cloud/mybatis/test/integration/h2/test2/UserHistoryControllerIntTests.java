@@ -52,7 +52,7 @@ import app.myoss.cloud.mybatis.repository.entity.AuditIdEntity;
 import app.myoss.cloud.mybatis.spring.boot.autoconfigure.MybatisAutoConfiguration;
 import app.myoss.cloud.mybatis.spring.mapper.MapperFactoryBean;
 import app.myoss.cloud.mybatis.test.integration.h2.H2DataBaseIntTest.IntAutoConfig;
-import app.myoss.cloud.mybatis.test.integration.h2.test2.UserHistoryControllerIntTests.MyConfig;
+import app.myoss.cloud.mybatis.test.integration.h2.test2.UserHistoryControllerIntTests.MyConfig2;
 import app.myoss.cloud.mybatis.test.integration.h2.test2.constants.AccountStatusEnum;
 import app.myoss.cloud.mybatis.test.integration.h2.test2.entity.UserHistory;
 import app.myoss.cloud.mybatis.test.integration.h2.test2.service.UserHistoryService;
@@ -70,7 +70,7 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 @RunWith(SpringRunner.class)
 @SpringBootTest(classes = { DataSourceAutoConfiguration.class, IntAutoConfig.class, MybatisAutoConfiguration.class,
-        MyConfig.class })
+        MyConfig2.class })
 public class UserHistoryControllerIntTests {
     @Autowired
     private UserHistoryController userHistoryController;
@@ -292,7 +292,7 @@ public class UserHistoryControllerIntTests {
     @ComponentScan(basePackageClasses = UserHistoryControllerIntTests.class)
     @Profile("UserHistoryControllerIntTests")
     @Configuration
-    public static class MyConfig {
+    public static class MyConfig2 {
         @Bean
         public ParameterHandlerCustomizer persistenceParameterHandler() {
             return new ParameterHandlerCustomizer() {

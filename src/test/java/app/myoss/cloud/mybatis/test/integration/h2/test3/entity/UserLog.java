@@ -24,7 +24,7 @@ import app.myoss.cloud.mybatis.table.annotation.SequenceGenerator;
 import app.myoss.cloud.mybatis.table.annotation.SequenceGenerator.Order;
 import app.myoss.cloud.mybatis.table.annotation.SequenceKey;
 import app.myoss.cloud.mybatis.table.annotation.Table;
-import app.myoss.cloud.mybatis.test.integration.h2.H2DataBaseIntTest.SequenceCustomizer;
+import app.myoss.cloud.mybatis.test.integration.h2.test3.UserLogControllerIntTests.SequenceCustomizer;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
