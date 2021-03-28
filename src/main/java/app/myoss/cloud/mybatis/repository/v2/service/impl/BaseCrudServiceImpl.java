@@ -20,9 +20,12 @@ package app.myoss.cloud.mybatis.repository.v2.service.impl;
 import static app.myoss.cloud.mybatis.repository.utils.DbUtils.checkDBResult;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -452,6 +455,25 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         return (I) value;
     }
 
+    protected void setPrimaryKeyValue(T record, Object... value) {
+        Set<TableColumnInfo> primaryKeyColumns = tableInfo.getPrimaryKeyColumns();
+        int size = primaryKeyColumns.size();
+        if (size == 0) {
+            // 忽略没有主键字段的情况
+            return;
+        }
+        int idx = 0;
+        for (TableColumnInfo columnInfo : primaryKeyColumns) {
+            Method writeMethod = columnInfo.getPropertyDescriptor().getWriteMethod();
+            try {
+                writeMethod.invoke(record, value[idx++]);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new BizServiceException(MybatisConstants.UPDATE_ENTITY_FIELD_FAILED,
+                        "更新Entity主键失败，请检查。[" + record + ", " + Arrays.toString(value) + "]");
+            }
+        }
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public void createBatch(List<T> records, Object optionParam) {
@@ -548,7 +570,19 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
     public <I> I saveOrUpdate(T record, Object optionParam) {
         I primaryKeyValue = getPrimaryKeyValue(record);
         if (primaryKeyValue == null) {
-            return create(record, optionParam);
+            List<T> exists = findExistRecord4CheckRecord(record);
+            if (CollectionUtils.isEmpty(exists)) {
+                return create(record, optionParam);
+            }
+            T exist = exists.get(0);
+            if (exist != null) {
+                primaryKeyValue = getPrimaryKeyValue(exist);
+                setPrimaryKeyValue(record, primaryKeyValue);
+                updateByPrimaryKey(record, optionParam);
+                return primaryKeyValue;
+            } else {
+                return create(record, optionParam);
+            }
         } else {
             updateByPrimaryKey(record, optionParam);
             return getPrimaryKeyValue(record);

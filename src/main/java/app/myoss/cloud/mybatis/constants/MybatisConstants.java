@@ -27,17 +27,21 @@ public class MybatisConstants {
     /**
      * 字段或者实体对象没有值
      */
-    public static final String VALUE_IS_BLANK    = "valueIsBlank";
+    public static final String VALUE_IS_BLANK             = "valueIsBlank";
     /**
      * 匹配到了多条的记录
      */
-    public static final String MORE_RECORDS      = "moreRecords";
+    public static final String MORE_RECORDS               = "moreRecords";
     /**
      * 数据库插入失败
      */
-    public static final String INSERT_DB_FAILED  = "insertDBFailed";
+    public static final String INSERT_DB_FAILED           = "insertDBFailed";
+    /**
+     * 更新实体类字段失败
+     */
+    public static final String UPDATE_ENTITY_FIELD_FAILED = "updateEntityFieldFailed";
     /**
      * 未匹配到相应的记录
      */
-    public static final String NOT_MATCH_RECORDS = "notMatchRecords";
+    public static final String NOT_MATCH_RECORDS          = "notMatchRecords";
 }

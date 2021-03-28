@@ -23,6 +23,7 @@ import java.beans.Introspector;
 import java.beans.PropertyDescriptor;
 import java.lang.annotation.Annotation;
 import java.lang.reflect.Field;
+import java.lang.reflect.Method;
 import java.lang.reflect.Modifier;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
@@ -65,6 +66,7 @@ import app.myoss.cloud.mybatis.type.EnumValueAnnotationTypeHandler;
 import app.myoss.cloud.mybatis.type.EnumValueMappedType;
 import app.myoss.cloud.mybatis.type.EnumValueTypeHandler;
 import app.myoss.cloud.mybatis.type.UnsupportedTypeHandler;
+import lombok.extern.slf4j.Slf4j;
 
 /**
  * 数据库表结构信息工具类
@@ -72,6 +74,7 @@ import app.myoss.cloud.mybatis.type.UnsupportedTypeHandler;
  * @author Jerry.Chen
  * @since 2018年4月26日 上午10:46:25
  */
+@Slf4j
 public class TableMetaObject {
     /**
      * 实体类 => 表对象
@@ -557,20 +560,36 @@ public class TableMetaObject {
     /**
      * 获取 {@code clazz } Class 中所有的 getter/setter 方法
      *
-     * @param clazz 反射类
+     * @param beanClass 反射类
      * @return clazz 所有的 getter/setter 方法
      */
-    public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(Class<?> clazz) {
+    public static Map<String, PropertyDescriptor> getPropertyDescriptorMap(Class<?> beanClass) {
         BeanInfo beanInfo;
         try {
-            beanInfo = Introspector.getBeanInfo(clazz);
+            beanInfo = Introspector.getBeanInfo(beanClass);
         } catch (IntrospectionException e) {
             throw new BizRuntimeException(e);
         }
         PropertyDescriptor[] descriptors = beanInfo.getPropertyDescriptors();
         return Stream.of(descriptors)
                 .filter(s -> !"class".equals(s.getName()))
-                .collect(Collectors.toMap(PropertyDescriptor::getName, Function.identity()));
+                .collect(Collectors.toMap(PropertyDescriptor::getName, descriptor -> {
+                    if (descriptor.getWriteMethod() == null) {
+                        String propName = descriptor.getName().substring(0, 1).toUpperCase()
+                                + descriptor.getName().substring(1);
+                        String methodName = "set" + propName;
+                        Method writeMethod = org.springframework.util.ReflectionUtils.findMethod(beanClass, methodName,
+                                descriptor.getReadMethod().getReturnType());
+                        if (writeMethod != null) {
+                            try {
+                                descriptor.setWriteMethod(writeMethod);
+                            } catch (final Exception e) {
+                                log.error("Error setting indexed property write method", e);
+                            }
+                        }
+                    }
+                    return descriptor;
+                }));
     }
 
     /**

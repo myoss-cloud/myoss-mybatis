@@ -20,9 +20,12 @@ package app.myoss.cloud.mybatis.repository.service.impl;
 import static app.myoss.cloud.mybatis.repository.utils.DbUtils.checkDBResult;
 
 import java.io.Serializable;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.lang.reflect.ParameterizedType;
 import java.lang.reflect.Type;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
@@ -39,6 +42,7 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.util.CollectionUtils;
 
 import app.myoss.cloud.core.constants.MyossConstants;
+import app.myoss.cloud.core.exception.BizRuntimeException;
 import app.myoss.cloud.core.lang.bean.BeanUtil;
 import app.myoss.cloud.core.lang.concurrent.CallableFunc;
 import app.myoss.cloud.core.lang.dto.Order;
@@ -516,6 +520,25 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         return result.setValue((I) value);
     }
 
+    protected void setPrimaryKeyValue(T record, Object... value) {
+        Set<TableColumnInfo> primaryKeyColumns = tableInfo.getPrimaryKeyColumns();
+        int size = primaryKeyColumns.size();
+        if (size == 0) {
+            // 忽略没有主键字段的情况
+            return;
+        }
+        int idx = 0;
+        for (TableColumnInfo columnInfo : primaryKeyColumns) {
+            Method writeMethod = columnInfo.getPropertyDescriptor().getWriteMethod();
+            try {
+                writeMethod.invoke(record, value[idx++]);
+            } catch (IllegalAccessException | InvocationTargetException e) {
+                throw new BizRuntimeException(MybatisConstants.UPDATE_ENTITY_FIELD_FAILED,
+                        "更新Entity主键失败，请检查。[" + record + ", " + Arrays.toString(value) + "]", null);
+            }
+        }
+    }
+
     @Transactional(rollbackFor = Exception.class)
     @Override
     public Result<Boolean> createBatch(List<T> records, Object optionParam) {
@@ -630,7 +653,23 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
         Result<I> result = new Result<>();
         Result<I> primaryKeyValue = getPrimaryKeyValue(record, result);
         if (primaryKeyValue.getValue() == null) {
-            return create(record, optionParam);
+            List<T> exists = findExistRecord4CheckRecord(result, record);
+            if (CollectionUtils.isEmpty(exists)) {
+                return create(record, optionParam);
+            }
+            T exist = exists.get(0);
+            if (exist != null) {
+                primaryKeyValue = getPrimaryKeyValue(record, result);
+                setPrimaryKeyValue(record, primaryKeyValue.getValue());
+                Result<Boolean> updateResult = updateByPrimaryKey(record, optionParam);
+                result.setSuccess(updateResult.isSuccess())
+                        .setErrorCode(updateResult.getErrorCode())
+                        .setErrorMsg(updateResult.getErrorMsg())
+                        .setValue(primaryKeyValue.getValue())
+                        .setExtraInfo(updateResult.getExtraInfo());
+            } else {
+                return create(record, optionParam);
+            }
         } else {
             Result<Boolean> updateResult = updateByPrimaryKey(record, optionParam);
             result.setSuccess(updateResult.isSuccess())
