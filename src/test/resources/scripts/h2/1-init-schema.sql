@@ -78,3 +78,18 @@ CREATE TABLE IF NOT EXISTS `t_sys_user_log` (
 );
 
 COMMENT ON TABLE `t_sys_user_log` IS '系统用户日志记录表';
+
+CREATE TABLE IF NOT EXISTS `t_sys_menu` (
+  `id` bigint(20) NOT NULL COMMENT '主键id',
+  `menu_name` varchar(32) DEFAULT NULL COMMENT '菜单名称',
+  `menu_path` varchar(32) DEFAULT NULL COMMENT '菜单路径',
+  `menu_icon` varchar(32) DEFAULT NULL COMMENT '菜单图标',
+  `is_deleted` char(1) NOT NULL DEFAULT 'N' COMMENT '是否删除',
+  `creator` varchar(32) NOT NULL COMMENT '创建者',
+  `modifier` varchar(32) NOT NULL COMMENT '修改者',
+  `gmt_created` datetime NOT NULL COMMENT '创建时间',
+  `gmt_modified` datetime NOT NULL COMMENT '修改时间',
+  PRIMARY KEY (`id`)
+);
+
+COMMENT ON TABLE `t_sys_menu` IS '系统菜单表';

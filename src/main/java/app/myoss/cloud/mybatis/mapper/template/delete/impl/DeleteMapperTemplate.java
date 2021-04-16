@@ -231,6 +231,10 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
         StringBuilder builder = new StringBuilder(2048);
         buildDeleteEntitySql(tableInfo, metaObject, builder);
         builder.append(tableInfo.getWhereConditionSql());
+        String extendSql = getWhereExtend(ms);
+        if (extendSql != null) {
+            builder.insert(builder.length() - 8, extendSql);
+        }
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
@@ -324,6 +328,10 @@ public class DeleteMapperTemplate extends AbstractMapperTemplate {
         }
         builder.append("</set>\n");
         builder.append(tableInfo.getWhereConditionWithParameterSql());
+        StringBuilder extendSql = getWhereExtendCondition(ms);
+        if (extendSql != null) {
+            builder.insert(builder.length() - 8, extendSql);
+        }
         String sql = builder.toString();
 
         // 替换 sqlSource 对象

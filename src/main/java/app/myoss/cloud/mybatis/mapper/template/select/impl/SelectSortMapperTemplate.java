@@ -81,6 +81,10 @@ public class SelectSortMapperTemplate extends AbstractMapperTemplate {
         builder.append("SELECT ").append(tableInfo.getSelectAllColumnsSql());
         builder.append(" FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWhereConditionWithParameterSql());
+        StringBuilder extendSql = getWhereExtendCondition(ms);
+        if (extendSql != null) {
+            builder.insert(builder.length() - 8, extendSql);
+        }
         builder.append("\n<if test=\"orders != null and orders.size > 0\">");
         builder.append("\n  order by");
         builder.append("\n  <foreach collection=\"orders\" item=\"item\" separator=\",\">");
@@ -141,6 +145,10 @@ public class SelectSortMapperTemplate extends AbstractMapperTemplate {
         StringBuilder extraConditionSql = getWhereExtraCondition(ms);
         if (extraConditionSql != null) {
             builder.insert(builder.length() - 8, extraConditionSql);
+        }
+        StringBuilder extendSql = getWhereExtendCondition(ms);
+        if (extendSql != null) {
+            builder.insert(builder.length() - 8, extendSql);
         }
         builder.append("\n<if test=\"orders != null and orders.size > 0\">");
         builder.append("\n  order by");

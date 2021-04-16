@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="app.myoss.cloud.mybatis.test.integration.h2.test5.mapper.SysMenuMapper">
+
+    <!-- 通用查询映射结果 -->
+    <resultMap id="BaseResultMap" type="app.myoss.cloud.mybatis.test.integration.h2.test5.entity.SysMenu">
+        <id column="id" jdbcType="BIGINT" property="id"/>
+        <result column="is_deleted" jdbcType="CHAR" property="isDeleted"/>
+        <result column="creator" jdbcType="VARCHAR" property="creator"/>
+        <result column="modifier" jdbcType="VARCHAR" property="modifier"/>
+        <result column="gmt_created" jdbcType="TIMESTAMP" property="gmtCreated"/>
+        <result column="gmt_modified" jdbcType="TIMESTAMP" property="gmtModified"/>
+        <result column="menu_name" jdbcType="VARCHAR" property="menuName"/>
+        <result column="menu_path" jdbcType="VARCHAR" property="menuPath"/>
+        <result column="menu_icon" jdbcType="VARCHAR" property="menuIcon"/>
+    </resultMap>
+
+    <!-- 通用查询结果列 -->
+    <sql id="Base_Column_List">
+     id, menu_name, menu_path, menu_icon, is_deleted, creator, modifier, gmt_created, gmt_modified
+    </sql>
+
+    <!-- 自定义通用SQL查询条件 -->
+    <sql id="Where_Extra_Condition">
+        <if test="extraCondition.menuNameLike != null">
+            AND menu_name LIKE CONCAT('%', #{extraCondition.menuNameLike,jdbcType=VARCHAR}, '%')
+        </if>
+    </sql>
+
+    <sql id="Where_Extend">
+        <if test="_parameter instanceof app.myoss.cloud.mybatis.test.integration.h2.test5.dto.SysMenuDTO">
+            <if test="menuPathLike != null">
+                AND menu_path LIKE CONCAT('%', #{menuPathLike,jdbcType=VARCHAR}, '%')
+            </if>
+        </if>
+    </sql>
+
+    <sql id="Where_Extend_Condition">
+        <if test="condition instanceof app.myoss.cloud.mybatis.test.integration.h2.test5.dto.SysMenuDTO">
+            <if test="condition.menuPathLike != null">
+                AND menu_path LIKE CONCAT('%', #{condition.menuPathLike,jdbcType=VARCHAR}, '%')
+            </if>
+            <if test="condition.menuIconLike != null">
+                AND menu_icon LIKE CONCAT('%', #{condition.menuIconLike}, '%')
+            </if>
+        </if>
+    </sql>
+</mapper>

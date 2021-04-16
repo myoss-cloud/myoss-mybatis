@@ -59,6 +59,72 @@ public abstract class AbstractMapperTemplate {
     /**
      * 获取"自定义通用SQL查询条件"
      *
+     * <pre>
+     *     &lt;sql id=&quot;Where_Extend&quot;&gt;
+     *         &lt;if test=&quot;nameLike != null&quot;&gt;
+     *             AND name LIKE CONCAT('%', #{nameLike,jdbcType=VARCHAR}, '%')
+     *         &lt;/if&gt;
+     *     &lt;/sql&gt;
+     * </pre>
+     *
+     * @param ms sql语句节点信息
+     * @return 自定义通用SQL查询条件
+     */
+    public String getWhereExtend(MappedStatement ms) {
+        Configuration configuration = ms.getConfiguration();
+        String namespace = StringUtils.substringBeforeLast(ms.getId(), ".");
+        String sqlId = namespace + ".Where_Extend";
+        if (!configuration.getSqlFragments().containsKey(sqlId)) {
+            return null;
+        }
+
+        XNode node = configuration.getSqlFragments().get(sqlId);
+        try {
+            StringWriter nodeContent = getNodeContent(node.getNode());
+            return nodeContent.toString();
+        } catch (TransformerException e) {
+            throw new BizRuntimeException("get sqlFragments content failed, sqlId: " + sqlId, e);
+        }
+    }
+
+    /**
+     * 获取"自定义通用SQL查询条件"
+     *
+     * <pre>
+     *     &lt;sql id=&quot;Where_Extend_Condition&quot;&gt;
+     *         &lt;if test=&quot;condition.nameLike != null&quot;&gt;
+     *             AND name LIKE CONCAT('%', #{condition.nameLike,jdbcType=VARCHAR}, '%')
+     *         &lt;/if&gt;
+     *     &lt;/sql&gt;
+     * </pre>
+     *
+     * @param ms sql语句节点信息
+     * @return 自定义通用SQL查询条件
+     */
+    public StringBuilder getWhereExtendCondition(MappedStatement ms) {
+        Configuration configuration = ms.getConfiguration();
+        String namespace = StringUtils.substringBeforeLast(ms.getId(), ".");
+        String sqlId = namespace + ".Where_Extend_Condition";
+        if (!configuration.getSqlFragments().containsKey(sqlId)) {
+            return null;
+        }
+
+        XNode node = configuration.getSqlFragments().get(sqlId);
+        StringBuilder sb = new StringBuilder();
+        sb.append("  <if test=\"condition != null\">\n    ");
+        try {
+            StringWriter nodeContent = getNodeContent(node.getNode());
+            sb.append(nodeContent.toString());
+            sb.append("\n  </if>\n");
+        } catch (TransformerException e) {
+            throw new BizRuntimeException("get sqlFragments content failed, sqlId: " + sqlId, e);
+        }
+        return sb;
+    }
+
+    /**
+     * 获取"自定义通用SQL查询条件"
+     *
      * @param ms sql语句节点信息
      * @return 自定义通用SQL查询条件
      */

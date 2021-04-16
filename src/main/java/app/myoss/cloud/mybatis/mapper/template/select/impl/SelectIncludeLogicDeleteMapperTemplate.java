@@ -80,6 +80,10 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
         builder.append("SELECT ").append(tableInfo.getSelectAllColumnsSql());
         builder.append(" FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWhereConditionIncludeLogicDeleteSql());
+        String extendSql = getWhereExtend(ms);
+        if (extendSql != null) {
+            builder.insert(builder.length() - 8, extendSql);
+        }
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
@@ -139,6 +143,10 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
         StringBuilder builder = new StringBuilder(2048);
         builder.append("SELECT COUNT(1) FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWhereConditionIncludeLogicDeleteSql());
+        String extendSql = getWhereExtend(ms);
+        if (extendSql != null) {
+            builder.insert(builder.length() - 8, extendSql);
+        }
         String sql = builder.toString();
 
         // 替换 sqlSource 对象
@@ -184,6 +192,10 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
         StringBuilder extraConditionSql = getWhereExtraCondition(ms);
         if (extraConditionSql != null) {
             builder.insert(builder.length() - 8, extraConditionSql);
+        }
+        StringBuilder extendSql = getWhereExtendCondition(ms);
+        if (extendSql != null) {
+            builder.insert(builder.length() - 8, extendSql);
         }
         String sql = builder.toString();
 
@@ -234,6 +246,10 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
         builder.append("SELECT ").append(tableInfo.getSelectAllColumnsSql());
         builder.append(" FROM ").append(TableMetaObject.getTableName(tableInfo)).append("\n");
         builder.append(tableInfo.getWhereConditionWithParameterIncludeLogicDeleteSql());
+        StringBuilder extendSql = getWhereExtendCondition(ms);
+        if (extendSql != null) {
+            builder.insert(builder.length() - 8, extendSql);
+        }
         builder.append("\n<if test=\"orders != null and orders.size > 0\">");
         builder.append("\n  order by");
         builder.append("\n  <foreach collection=\"orders\" item=\"item\" separator=\",\">");
@@ -280,7 +296,7 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
      * @param ms sql语句节点信息，会将生成的sql语句替换掉原有的 {@link MappedStatement#sqlSource}
      * @return 生成的sql语句
      * @see SelectPageIncludeLogicDeleteMapper#selectPageIncludeLogicDelete2(Object,
-     *      Map, int, int, List)
+     *      java.util.Map, int, int, List)
      */
     public String selectPageIncludeLogicDelete2(TableInfo tableInfo, MappedStatement ms) {
         MetaObject metaObject = SystemMetaObject.forObject(ms);
@@ -297,6 +313,10 @@ public class SelectIncludeLogicDeleteMapperTemplate extends AbstractMapperTempla
         StringBuilder extraConditionSql = getWhereExtraCondition(ms);
         if (extraConditionSql != null) {
             builder.insert(builder.length() - 8, extraConditionSql);
+        }
+        StringBuilder extendSql = getWhereExtendCondition(ms);
+        if (extendSql != null) {
+            builder.insert(builder.length() - 8, extendSql);
         }
         builder.append("\n<if test=\"orders != null and orders.size > 0\">");
         builder.append("\n  order by");
