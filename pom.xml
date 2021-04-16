@@ -6,12 +6,12 @@
     <parent>
         <groupId>app.myoss.cloud</groupId>
         <artifactId>myoss-spring-boot-parent</artifactId>
-        <version>2021.0.0.RELEASE</version>
+        <version>2021.0.1.RELEASE</version>
     </parent>
 
     <groupId>app.myoss.cloud.mybatis</groupId>
     <artifactId>myoss-mybatis</artifactId>
-    <version>2.1.6.RELEASE</version>
+    <version>2.1.7.RELEASE</version>
     <packaging>jar</packaging>
 
     <name>myoss-mybatis</name>
