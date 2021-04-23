@@ -659,7 +659,7 @@ public class BaseCrudServiceImpl<M extends CrudMapper<T>, T> implements CrudServ
             }
             T exist = exists.get(0);
             if (exist != null) {
-                primaryKeyValue = getPrimaryKeyValue(record, result);
+                primaryKeyValue = getPrimaryKeyValue(exist, result);
                 setPrimaryKeyValue(record, primaryKeyValue.getValue());
                 Result<Boolean> updateResult = updateByPrimaryKey(record, optionParam);
                 result.setSuccess(updateResult.isSuccess())
