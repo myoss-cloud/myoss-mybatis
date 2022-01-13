@@ -23,6 +23,6 @@
 <dependency>
     <groupId>app.myoss.cloud.mybatis</groupId>
     <artifactId>myoss-mybatis</artifactId>
-    <version>2.1.7.RELEASE</version>
+    <version>2.1.8.RELEASE</version>
 </dependency>
 ```
