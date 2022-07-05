@@ -55,6 +55,7 @@ import app.myoss.cloud.core.lang.dto.Page;
 import app.myoss.cloud.core.lang.dto.Result;
 import app.myoss.cloud.core.lang.dto.Sort;
 import app.myoss.cloud.core.lang.json.JsonApi;
+import app.myoss.cloud.core.lang.json.JsonObject;
 import app.myoss.cloud.mybatis.executor.keygen.SequenceKeyGenerator;
 import app.myoss.cloud.mybatis.mapper.template.CrudMapper;
 import app.myoss.cloud.mybatis.plugin.ParameterHandlerCustomizer;
@@ -123,6 +124,9 @@ public class SysMenuControllerIntTests {
         record.setMenuName("系统设置");
         record.setMenuPath("/system/setting");
         record.setMenuIcon("setting.icon");
+        JsonObject content = new JsonObject();
+        content.put("remark", "这是一个备注信息");
+        record.setContent(content);
 
         // 创建记录
         Result<Long> createResult = sysMenuController.create(record);

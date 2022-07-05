@@ -17,6 +17,7 @@
 
 package app.myoss.cloud.mybatis.test.integration.h2.test5.entity;
 
+import app.myoss.cloud.core.lang.json.JsonObject;
 import app.myoss.cloud.mybatis.repository.entity.AuditIdEntity;
 import app.myoss.cloud.mybatis.table.Sequence;
 import app.myoss.cloud.mybatis.table.annotation.Column;
@@ -25,6 +26,7 @@ import app.myoss.cloud.mybatis.table.annotation.SequenceGenerator;
 import app.myoss.cloud.mybatis.table.annotation.SequenceGenerator.Order;
 import app.myoss.cloud.mybatis.table.annotation.SequenceKey;
 import app.myoss.cloud.mybatis.table.annotation.Table;
+import app.myoss.cloud.mybatis.test.integration.h2.test5.typehandler.JsonObjectTypeHandler;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -76,4 +78,12 @@ public class SysMenu extends AuditIdEntity<Long> {
     @Column(name = "menu_icon")
     private String            menuIcon;
 
+    /**
+     * Database Column Name: t_sys_menu.content
+     * <p>
+     * Database Column Remarks: 菜单详情内容
+     * </p>
+     */
+    @Column(name = "content", typeHandler = JsonObjectTypeHandler.class)
+    private JsonObject        content;
 }

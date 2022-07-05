@@ -84,6 +84,7 @@ CREATE TABLE IF NOT EXISTS `t_sys_menu` (
   `menu_name` varchar(32) DEFAULT NULL COMMENT '菜单名称',
   `menu_path` varchar(32) DEFAULT NULL COMMENT '菜单路径',
   `menu_icon` varchar(32) DEFAULT NULL COMMENT '菜单图标',
+  `content` varchar(1024) DEFAULT NULL COMMENT '菜单内容',
   `is_deleted` char(1) NOT NULL DEFAULT 'N' COMMENT '是否删除',
   `creator` varchar(32) NOT NULL COMMENT '创建者',
   `modifier` varchar(32) NOT NULL COMMENT '修改者',
